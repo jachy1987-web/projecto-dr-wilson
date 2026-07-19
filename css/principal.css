@@ -1,0 +1,164 @@
+/* ===== Fondo de la página ===== */
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+
+
+    background-image: url("../imagenes/fondo-doctor-wilson.png");
+
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    min-height: 100vh;
+}
+
+
+header{
+    text-align: center;
+    padding: 20px;
+    background: transparent;
+}
+.logo{
+    width: 420px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+.contenido{
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+
+    /* Fondo blanco semitransparente */
+    background: rgba(255,255,255,0.25);
+
+    /* Efecto vidrio */
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+
+    padding: 30px;
+}
+.tarjeta{
+    background: #ffffff;
+    border: 2px solid #d9e8f5;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+}
+
+/
+.tarjeta{
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,.2);
+}
+
+.tarjeta:hover{
+    transform: translateY(-8px);
+    border-color: #0B3D91;
+    box-shadow: 0 12px 25px rgba(11,61,145,.35);
+}
+
+.tarjeta h2{
+    font-size: 55px;
+    margin: 0;
+}
+
+.tarjeta h3{
+    color: #0B3D91;
+    margin-top: 15px;
+}
+.contenedor{
+    display: flex;
+    gap: 20px;
+    width: 95%;
+    margin: auto;
+}
+
+.menu{
+    width: 240px;
+    min-height: 650px;
+
+    background: #0B3D91;
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.3);
+}
+.contenido{
+    flex: 1;
+}
+.menu h2{
+
+    color:white;
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+.menu ul{
+
+    list-style:none;
+
+    padding:0;
+
+}
+.menu li{
+    margin: 15px;
+}
+
+.menu a{
+
+    display:block;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    transition:.3s;
+
+    font-size:18px;
+
+}
+.menu a:hover{
+
+    background:white;
+
+    color:#0B3D91;
+
+    transform:translateX(8px);
+
+}
+.activo{
+
+    background:white;
+
+    color:#0B3D91 !important;
+
+    font-weight:bold;
+
+}
+.tarjetas{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
