@@ -1,89 +1,264 @@
-/* ===== CONFIGURACIÓN GENERAL ===== */
+/* =========================================
+   CONFIGURACIÓN GENERAL
+   ========================================= */
 
-body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background-image:url("../imagenes/fondo-doctor-wilson.png");
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
+* {
+    box-sizing: border-box;
 }
 
-/* ===== ENCABEZADO ===== */
+body {
+    margin: 0;
+    min-height: 100vh;
 
-header{
-    text-align:center;
-    padding:20px;
+    font-family: Arial, Helvetica, sans-serif;
+
+    background-image: url("../imagenes/fondo doctor wilson.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-.logo{
-    width:320px;
+
+/* =========================================
+   ENCABEZADO
+   ========================================= */
+
+header {
+    min-height: 100px;
+    background: rgba(255, 255, 255, 0.97);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px 40px;
 }
 
-/* ===== CONTENEDOR ===== */
 
-.contenedor{
-    width:700px;
-    margin:20px auto;
-    background:rgba(255,255,255,0.95);
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
+/* LOGO */
+
+.logo {
+    width: 180px;
+    height: auto;
 }
 
-/* ===== TÍTULO ===== */
 
-h1{
-    color:#0B3D91;
-    text-align:center;
+/* TÍTULO */
+
+h1 {
+    margin: 0;
+
+    color: #064563;
+
+    font-size: 30px;
 }
 
-/* ===== FORMULARIO ===== */
 
-.formulario{
-    display:flex;
-    flex-direction:column;
+/* =========================================
+   CONTENEDOR
+   ========================================= */
+
+.contenedor {
+    width: 700px;
+    max-width: 90%;
+
+    margin: 40px auto;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border-radius: 20px;
+
+    padding: 35px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.20);
 }
 
-/* ===== ETIQUETAS ===== */
 
-label{
-    margin-top:15px;
-    margin-bottom:5px;
-    font-weight:bold;
-    color:#0B3D91;
+/* =========================================
+   FORMULARIO
+   ========================================= */
+
+.formulario {
+    display: flex;
+
+    flex-direction: column;
 }
 
-/* ===== CAMPOS ===== */
+
+/* =========================================
+   ETIQUETAS
+   ========================================= */
+
+label {
+    margin-top: 15px;
+    margin-bottom: 6px;
+
+    font-weight: bold;
+
+    color: #2E7D32;
+}
+
+
+/* =========================================
+   CAMPOS
+   ========================================= */
 
 input,
-select{
-    padding:12px;
-    border:1px solid #bfc9d1;
-    border-radius:8px;
-    font-size:16px;
+select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 2px solid #d0d7de;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition: 0.3s;
 }
 
-/* ===== BOTONES ===== */
 
-.botones{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    margin-top:30px;
+/* Cuando el usuario selecciona un campo */
+
+input:focus,
+select:focus {
+    border-color: #2E7D32;
+
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.25);
 }
 
-button{
-    background:#0B3D91;
-    color:white;
-    border:none;
-    padding:12px 25px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    transition:.3s;
+
+/* =========================================
+   BOTONES
+   ========================================= */
+
+.botones {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    margin-top: 30px;
 }
 
-button:hover{
-    background:#1459c7;
+
+button {
+    min-width: 120px;
+
+    padding: 12px 22px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2E7D32;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+
+button:hover {
+    background: #1b5e20;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   DISEÑO RESPONSIVE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    header {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .logo {
+        width: 150px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .contenedor {
+        width: 90%;
+
+        padding: 25px;
+    }
+
+    .botones {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+/* ===== AJUSTE DEL ENCABEZADO ===== */
+
+header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-height: 170px !important;
+    padding: 15px !important;
+}
+
+header .logo {
+    width: 160px !important;
+    height: auto !important;
+    margin: 0 !important;
+}
+
+header h1 {
+    margin: 0 !important;
+    text-align: center !important;
+}
+
+/* ===== AJUSTE FINAL DEL ENCABEZADO ===== */
+
+header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 5px !important;
+
+    min-height: 170px !important;
+
+    padding: 15px !important;
+
+    /* IMPORTANTE: permite ver el fondo */
+    background: transparent !important;
+}
+
+header .logo {
+    width: 160px !important;
+    height: auto !important;
+    margin: 0 !important;
+}
+
+header h1 {
+    margin: 0 !important;
+    text-align: center !important;
 }

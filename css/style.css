@@ -5,13 +5,13 @@ body{
     align-items:center;
     height:100vh;
 
-    background-image:url("../imagenes/fondo-doctor-wilson.png");
+    background-image: url("../imagenes/fondo doctor wilson.png");
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
 
     font-family:Arial, Helvetica, sans-serif;
-    <input type="text" id="version" style="text-transform: lowercase;" placeholder="v1.0.0-alpha">
+    
 }
 
 

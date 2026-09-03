@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Doctor Wilson - Clientes</title>
 
     <link rel="stylesheet" href="css/clientes.css">
@@ -11,53 +12,128 @@
 
 <body>
 
+    <!-- ENCABEZADO -->
     <header>
-        <img src="imagenes/drwilson.png" class="logo" alt="Logo">
+        <img src="imagenes/logo-doctor-wilson.png"
+             class="logo"
+             alt="Doctor Wilson">
+
         <h1>Registro de Clientes</h1>
     </header>
 
+
+    <!-- FORMULARIO DE CLIENTES -->
     <div class="contenedor">
 
-        <form class="formulario">
+        <form class="formulario" id="formularioClientes">
 
-            <label>Nombres</label>
-            <input type="text">
+            <!-- NOMBRES -->
+            <label for="nombre">Nombre</label>
+            <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                placeholder="Ingrese el nombre"
+                required
+            >
 
-            <label>Apellidos</label>
-            <input type="text">
 
-            <label>Tipo de documento</label>
-            <select>
-                <option>Cédula de ciudadanía</option>
-                <option>Tarjeta de identidad</option>
-                <option>Cédula de extranjería</option>
-                <option>Pasaporte</option>
+            <!-- APELLIDOS -->
+            <label for="apellido">Apellido</label>
+            <input
+                type="text"
+                id="apellido"
+                name="apellido"
+                placeholder="Ingrese el apellido"
+                required
+            >
+
+
+            <!-- TIPO DE DOCUMENTO -->
+            <label for="tipoDocumento">Tipo de documento</label>
+
+            <select
+                id="tipoDocumento"
+                name="tipoDocumento"
+                required
+            >
+                <option value="">Seleccione un documento</option>
+                <option value="CC">Cédula de ciudadanía</option>
+                <option value="TI">Tarjeta de identidad</option>
+                <option value="CE">Cédula de extranjería</option>
+                <option value="PAS">Pasaporte</option>
             </select>
 
-            <label>Número de documento</label>
-            <input type="text">
 
-            <label>Teléfono</label>
-            <input type="text">
+            <!-- NUMERO DE DOCUMENTO -->
+            <label for="documento">Número de documento</label>
+<input type="text" id="documento" name="documento"
+       placeholder="Ingrese el número de documento" required>
+    
 
-            <label>Correo electrónico</label>
-            <input type="email">
 
-            <label>Dirección</label>
-            <input type="text">
+            <!-- TELEFONO -->
+            <label for="telefono">Teléfono</label>
 
-            <label>Ciudad</label>
-            <input type="text">
+            <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                placeholder="Ingrese el teléfono"
+                required
+            >
 
+
+            <!-- CORREO -->
+            <label for="correo">Correo electrónico</label>
+
+            <input
+                type="email"
+                id="correo"
+                name="correo"
+                placeholder="Ingrese el correo electrónico"
+                required
+            >
+
+
+            <!-- DIRECCION -->
+            <label for="direccion">Dirección</label>
+
+            <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                placeholder="Ingrese la dirección"
+            
+        >
+
+
+            <!-- BOTONES -->
             <div class="botones">
-                <button type="submit">Guardar</button>
-                <button type="reset">Limpiar</button>
-                <button type="button" onclick="window.location.href='principal.html'">Volver</button>
+
+                <button type="submit">
+                    Guardar
+                </button>
+
+                <button type="reset">
+                    Limpiar
+                </button>
+
+                <button
+                    type="button"
+                    onclick="window.location.href='principal.html'">
+                    Volver
+                </button>
+
             </div>
 
         </form>
 
     </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="clientes.js"></script>
 
 </body>
 
