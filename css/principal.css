@@ -5,7 +5,7 @@ body{
     font-family: Arial, sans-serif;
 
 
-    background-image: url("../imagenes/fondo-doctor-wilson.png");
+    background-image: url("../imagenes/fondo doctor wilson.png");
 
 
     background-size: cover;
@@ -54,7 +54,7 @@ header{
     box-shadow: 0 8px 20px rgba(0,0,0,.15);
 }
 
-/
+
 .tarjeta{
     background: rgba(255,255,255,0.95);
     border-radius: 15px;

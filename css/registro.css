@@ -1,0 +1,95 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+
+
+background-image: url("../imagenes/fondo doctor wilson.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+
+
+
+min-height: 100vh;
+
+display: flex;
+justify-content: center;
+align-items: center;
+
+}
+
+.contenedor {
+
+    width: 400px;
+    background: rgba(255, 255 , 255, 0.90);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px rgba(0, 0, 0, 0.15);
+
+}
+
+.contenedor h2 {
+
+    text-align: center;
+    color: #0B3d91;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+
+
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+
+}
+
+button {
+
+
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #2F80C9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 18px;
+font-weight: bold;
+}
+
+
+
+.logo {
+
+    width: 200px;
+    display: block;
+    margin: 0 auto 15px auto;
+
+}
+
+.icono-btn {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+
+}
