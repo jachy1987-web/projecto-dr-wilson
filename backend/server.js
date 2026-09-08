@@ -1,6 +1,6 @@
 const express = require("express");
 
-const conexion =require("./db");
+const conexion = require("./db");
 
 const cors = require("cors");
 
@@ -70,51 +70,52 @@ app.post("/api/propietarios", function(req, res) {
 
 app.post("/api/usuarios/registro", async function(req, res) {
 
-const {
-    nombre,
-    apellido,
-    documento,
-    correo,
-    contrasena
-} = req.body;
-
-const contrasenaHash = await bcrypt.hash(contrasena, 10);
-
-const idRol = 4;
-
-const sql = `
-    INSERT INTO usuarios
-    (nombre, apellido, documento, correo, contrasena, id_rol)
-    VALUES (?, ?, ?, ?, ?, ?)
-`;
-conexion.query(
-    sql,
-    [
+    const {
         nombre,
         apellido,
         documento,
         correo,
-        contrasenaHash,
-        idRol
-    ],
-    function(error, resultado) {
+        contrasena
+    } = req.body;
 
-        if (error) {
-            console.error(error);
+    const contrasenaHash = await bcrypt.hash(contrasena, 10);
 
-            res.status(500).json({
-                mensaje: "Error al registrar el usuario"
+    const idRol = 4;
+
+    const sql = `
+        INSERT INTO usuarios
+        (nombre, apellido, documento, correo, contrasena, id_rol)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    conexion.query(
+        sql,
+        [
+            nombre,
+            apellido,
+            documento,
+            correo,
+            contrasenaHash,
+            idRol
+        ],
+        function(error, resultado) {
+
+            if (error) {
+                console.error(error);
+
+                res.status(500).json({
+                    mensaje: "Error al registrar el usuario"
+                });
+
+                return;
+            }
+
+            res.status(201).json({
+                mensaje: "Usuario registrado correctamente",
+                id_usuario: resultado.insertId
             });
-
-            return;
         }
-
-        res.status(201).json({
-            mensaje: "Usuario registrado correctamente",
-            id_usuario: resultado.insertId
-        });
-    }
-);
+    );
+});
 
 app.post("/api/usuarios/login", function(req, res) {
 
@@ -176,9 +177,6 @@ app.post("/api/usuarios/login", function(req, res) {
             });
         }
     );
-});
-
-
 });
 
 app.get("/api/propietarios", function(req, res) {
