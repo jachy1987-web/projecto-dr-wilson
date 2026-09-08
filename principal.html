@@ -2,104 +2,84 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Doctor Wilson - Panel Principal</title>
-
     <link rel="stylesheet" href="css/principal.css">
-
 </head>
 
 <body>
 
+    <header>
+        <img src="imagenes/drwilson.png" class="logo" alt="Logo Doctor Wilson">
+    </header>
+
+    <div class="contenedor">
+
+        <aside class="menu">
+            <h2>Menú</h2>
+            <ul>
+                <li><a href="#" class="activo">🏠 Inicio</a></li>
+                <li><a href="clientes.html">👤 Clientes</a></li>
+                <!-- CORREGIDO: El menú lateral de Registrar Pacientes va directo al formulario -->
+                <li><a href="Pacientes.html">🐶 Registrar Pacientes</a></li>
+                <li><a href="historias.html">🩺 Historias Clínicas</a></li>
+                <li><a href="menu-citas.html">📅 Citas</a></li>
+                <li><a href="#">💰 Facturación</a></li>
+                <li><a href="#">👨‍💼 Administrativos</a></li>
+                <li><a href="#">📊 Reportes</a></li>
+                <li><a href="#">⚙ Configuración</a></li>
+                <li><a href="inicio.html">🚪 Cerrar sesión</a></li>
+            </ul>
+        </aside>
+
+        <main class="contenido">
+
+            <div class="tarjetas">
+
+                <!-- CONTROLADO: Lleva a la pantalla de las 5 opciones -->
+                <div class="tarjeta" onclick="window.location.href='menu-pacientes.html'" style="cursor: pointer;">
+                    <h2>🐶</h2>
+                    <h3>Pacientes</h3>
+                </div>
+
+                <div class="tarjeta" onclick="window.location.href='clientes.html'" style="cursor: pointer;">
+                    <h2>👤</h2>
+                    <h3>Clientes</h3>
+                </div>
+
+                <div class="tarjeta" onclick="window.location.href='menu-citas.html'" style="cursor: pointer;">
+                    <h2>📅</h2>
+                    <h3>Citas</h3>
+                </div>
 
 
-<header>
 
-    <img src="imagenes/drwilson.png"
-         class="logo"
-         alt="Logo Doctor Wilson">
+                <div class="tarjeta" onclick="window.location.href='historias.html'" style="cursor: pointer;">
+                    <h2>📋</h2>
+                    <h3>Historias Clínicas</h3>
+                </div>
 
-</header>
+                <div class="tarjeta">
+                    <h2>💰</h2>
+                    <h3>Facturación</h3>
+                </div>
 
-<div class="contenedor">
+                <!-- CORREGIDO: Esta tarjeta central te manda directo al Formulario de Registro -->
+                <div class="tarjeta" onclick="window.location.href='Pacientes.html'" style="cursor: pointer;">
+                    <h2>🐶</h2>
+                    <h3>Registrar Pacientes</h3>
+                </div>
 
-    <aside class="menu">
-
-        <h2>Menú</h2>
-
-        <ul>
-
-<li><a href="#" class="activo">🏠 Inicio</a></li>
-
-<<li><a href="clientes.html">👤 Clientes</a></li>
-
-<li><a href="#">🐶 Registrar Pacientes</a></li>
-
-<li><a href="#">🩺 Historias Clínicas</a></li>
-
-<li><a href="#">📅 Citas</a></li>
-
-
-<li><a href="#">💰 Facturación</a></li>
-
-<li><a href="#">👨‍💼 Administrativos</a></li>
-
-<li><a href="#">📊 Reportes</a></li>
-
-<li><a href="#">⚙ Configuración</a></li>
-
-<li><a href="inicio.html">🚪 Cerrar sesión</a></li>
-
-</ul>
-
-    </aside>
-
-    <main class="contenido">
-
-        <div class="tarjetas">
-
-            <div class="tarjeta">
-                <h2>🐶</h2>
-                <h3>Pacientes</h3>
+                <div class="tarjeta">
+                    <h2>👨‍💼</h2>
+                    <h3>Administrativos</h3>
+                </div>
             </div>
 
-            <div class="tarjeta" onclick="window.location.href='clientes.html'">
-                <h2>👤</h2>
-                <h3>Clientes</h3>
-            </div>
+        </main>
 
-            <div class="tarjeta">
-                <h2>📅</h2>
-                <h3>Citas</h3>
-            </div>
-
-            <div class="tarjeta">
-                <h2>📋</h2>
-                <h3>Historias Clínicas</h3>
-            </div>
-
-            <div class="tarjeta">
-                <h2>💰</h2>
-                <h3>Facturación</h3>
-            </div>
-<div class="tarjeta">
-    <h2>🐶</h2>
-    <h3>Registrar Pacientes</h3>
-</div>
-
-<div class="tarjeta">
-    <h2>👨‍💼</h2>
-    <h3>Administrativos</h3>
-</div>
-        </div>
-
-    </main>
-
-</div>
+    </div>
 
 </body>
 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Maestros - Dr. Wilson</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png");
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+            margin: 0; padding: 30px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        }
+        .cabecera-estatica { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; max-width: 700px; margin-bottom: 20px; }
+        .btn-volver-atras { position: absolute; left: 5px; top: 10px; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
+        .btn-volver-atras .circulo-flecha { width: 38px; height: 38px; background-color: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .btn-volver-atras span { margin-top: 4px; font-size: 10px; color: #034870; font-weight: bold; }
+        .logo-cabecera { max-width: 220px; }
+
+        .contenedor-grande {
+            width: 100%; max-width: 700px; background: #ffffff; border-radius: 25px; padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); box-sizing: border-box; border-top: 8px solid #557a2b;
+        }
+        .titulo { color: #1e3a8a; font-size: 22px; font-weight: bold; margin-bottom: 5px; text-align: left; }
+        .subtitulo-bloque { color: #557a2b; font-size: 14px; font-weight: bold; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 5px; text-transform: uppercase; text-align: left; }
+        
+        .grid-formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #475569; }
+        .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .form-group input:focus { border-color: #007bff; outline: none; }
+        .col-completa { grid-column: span 2; }
+        
+        .btn-guardar { width: 100%; padding: 14px; background: #557a2b; color: white; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: background 0.2s; }
+        .btn-guardar:hover { background: #3f5c1f; }
+    </style>
+</head>
+<body>
+
+    <div class="cabecera-estatica">
+        <a href="menu-historias.html" class="btn-volver-atras">
+            <div class="circulo-flecha">←</div>
+            <span>VOLVER</span>
+        </a>
+        <img src="imagenes/drwilson.png" class="logo-cabecera">
+    </div>
+
+    <div class="contenedor-grande">
+        <div class="titulo">📋 Ficha de Datos Maestros</div>
+        <form id="form-datos">
+            
+            <div class="subtitulo-bloque">1. Información de la Mascota</div>
+            <div class="grid-formulario">
+                <div class="form-group">
+                    <label>Nombre del Paciente:</label>
+                    <input type="text" id="dt-mascota" required>
+                </div>
+                <div class="form-group">
+                    <label>Especie / Familia:</label>
+                    <input type="text" id="dt-especie" required placeholder="Ej: Canino, Felino">
+                </div>
+                <div class="form-group">
+                    <label>Raza Detallada:</label>
+                    <input type="text" id="dt-raza" placeholder="Ej: Labrador, Siamés">
+                </div>
+                <div class="form-group">
+                    <label>Sexo / Género:</label>
+                    <select id="dt-sexo">
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="subtitulo-bloque">2. Información del Propietario</div>
+            <div class="grid-formulario">
+                <div class="form-group">
+                    <label>Documento de Identidad (Cédula):</label>
+                    <input type="text" id="dt-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre Completo del Dueño:</label>
+                    <input type="text" id="dt-dueño" required>
+                </div>
+                <div class="form-group col-completa">
+                    <label>Dirección de Residencia:</label>
+                    <input type="text" id="dt-direccion" placeholder="Calle, Avenida, Barrio">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-guardar">Actualizar Información General</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const mascotaActiva = localStorage.getItem('mascota_activa');
+            let listaPacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
+            const idx = listaPacientes.findIndex(p => p.mascota.toLowerCase() === mascotaActiva);
+
+            if (idx !== -1) {
+                const p = listaPacientes[idx];
+                document.getElementById('dt-mascota').value = p.mascota || "";
+                document.getElementById('dt-especie').value = p.especie || "";
+                document.getElementById('dt-raza').value = p.raza || "";
+                document.getElementById('dt-sexo').value = p.sexo || "Macho";
+                document.getElementById('dt-id').value = p.propietario || "";
+                document.getElementById('dt-dueño').value = p.propietarioNombre || "";
+                document.getElementById('dt-direccion').value = p.direccion || "";
+            }
+
+            document.getElementById('form-datos').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (idx !== -1) {
+                    listaPacientes[idx].mascota = document.getElementById('dt-mascota').value;
+                    listaPacientes[idx].especie = document.getElementById('dt-especie').value;
+                    listaPacientes[idx].raza = document.getElementById('dt-raza').value;
+                    listaPacientes[idx].sexo = document.getElementById('dt-sexo').value;
+                    listaPacientes[idx].propietario = document.getElementById('dt-id').value;
+                    listaPacientes[idx].propietarioNombre = document.getElementById('dt-dueño').value;
+                    listaPacientes[idx].direccion = document.getElementById('dt-direccion').value;
+
+                    localStorage.setItem('pacientes', JSON.stringify(listaPacientes));
+                    localStorage.setItem('mascota_activa', listaPacientes[idx].mascota.toLowerCase());
+                    window.location.href = "menu-historias.html";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

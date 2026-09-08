@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tratamientos Clínicos - Dr. Wilson</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png");
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+            margin: 0; padding: 30px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        }
+        .cabecera-estatica { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; max-width: 750px; margin-bottom: 20px; }
+        .btn-volver-atras { position: absolute; left: 5px; top: 10px; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
+        .btn-volver-atras .circulo-flecha { width: 38px; height: 38px; background-color: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .btn-volver-atras span { margin-top: 4px; font-size: 10px; color: #034870; font-weight: bold; }
+        .logo-cabecera { max-width: 220px; }
+
+        .contenedor-grande {
+            width: 100%; max-width: 750px; background: white; border-radius: 25px; padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border-top: 8px solid #557a2b; text-align: left; box-sizing: border-box;
+        }
+        .titulo { color: #1e3a8a; font-size: 22px; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; text-transform: uppercase; }
+        .subtitulo-bloque { color: #557a2b; font-size: 14px; font-weight: bold; margin-top: 10px; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 5px; text-transform: uppercase; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #475569; }
+        .form-group textarea { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; font-family: inherit; box-sizing: border-box; line-height: 1.5; }
+        
+        .btn-guardar { width: 100%; padding: 14px; background: #557a2b; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .btn-guardar:hover { background: #3f5c1f; }
+
+        .tabla-historial { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fafafa; border-radius: 8px; overflow: hidden; }
+        .tabla-historial th { background-color: #1e3a8a; color: white; padding: 12px; font-size: 13px; text-align: left; }
+        .tabla-historial td { padding: 12px; font-size: 13px; border-bottom: 1px solid #e2e8f0; color: #334155; white-space: pre-line; vertical-align: top; }
+        .sin-datos { text-align: center; padding: 20px; color: #94a3b8; font-style: italic; background: #f8fafc; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="cabecera-estatica"><a href="menu-historias.html" class="btn-volver-atras"><div class="circulo-flecha">←</div><span>VOLVER</span></a><img src="imagenes/drwilson.png" class="logo-cabecera"></div>
+    
+    <div class="contenedor-grande">
+        <div class="titulo">💊 Prescripciones y Fórmulas Médicas</div>
+        
+        <!-- Formulario para agregar una nueva receta -->
+        <form id="form-tx">
+            <div class="subtitulo-bloque">Generar Nueva Receta Veterinaria</div>
+            <div class="form-group">
+                <label>Tratamiento Sugerido, Medicación y Posología exacta:</label>
+                <textarea id="tx-input" rows="4" placeholder="Ejemplo:&#10;- Amoxicilina 250mg: Dar 1 tableta cada 12 horas por 7 días junto al alimento.&#10;- Limpieza de oídos con solución ótica cada 48 horas." required></textarea>
+            </div>
+            <button type="submit" class="btn-guardar">Emitir y Guardar Receta Médica</button>
+        </form>
+
+        <!-- Historial de recetas -->
+        <div class="subtitulo-bloque" style="margin-top: 35px;">Historial de Fórmulas Emitidas</div>
+        <div id="contenedor-tabla-tx">
+            <!-- Se dibuja dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const mascotaActiva = localStorage.getItem('mascota_activa');
+            let listaTratamientos = JSON.parse(localStorage.getItem('historiales-tratamientos')) || [];
+            
+            let misTratamientos = listaTratamientos.filter(item => item.mascota.toLowerCase() === mascotaActiva);
+            const contenedorTabla = document.getElementById('contenedor-tabla-tx');
+
+            function pintarTratamientos() {
+                if (misTratamientos.length === 0) {
+                    contenedorTabla.innerHTML = `<div class="sin-datos">No se registran recetas médicas prescritas anteriormente.</div>`;
+                    return;
+                }
+                
+                let tablaHTML = `
+                    <table class="tabla-historial">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Fecha de Emisión</th>
+                                <th style="width: 75%;">Detalle de la Receta / Tratamiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                misTratamientos.slice().reverse().forEach(reg => {
+                    tablaHTML += `
+                        <tr>
+                            <td><b>${reg.fecha}</b></td>
+                            <td>${reg.tratamiento}</td>
+                        </tr>
+                    `;
+                });
+                
+                tablaHTML += `</tbody></table>`;
+                contenedorTabla.innerHTML = tablaHTML;
+            }
+
+            pintarTratamientos();
+
+            document.getElementById('form-tx').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const ahora = new Date();
+                const fechaFormateada = ahora.toLocaleDateString() + ' - ' + ahora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                const nuevoTratamiento = {
+                    mascota: mascotaActiva,
+                    fecha: fechaFormateada,
+                    tratamiento: document.getElementById('tx-input').value
+                };
+
+                listaTratamientos.push(nuevoTratamiento);
+                localStorage.setItem('historiales-tratamientos', JSON.stringify(listaTratamientos));
+                
+                misTratamientos.push(nuevoTratamiento);
+                pintarTratamientos();
+                
+                document.getElementById('tx-input').value = "";
+                alert("¡Nueva receta guardada en el historial médico!");
+            });
+        });
+    </script>
+</body>
+</html>

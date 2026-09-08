@@ -1,0 +1,136 @@
+body { 
+    font-family: 'Arial', sans-serif; 
+   
+    background-image: url("../imagenes/fondo doctor wilson.png"); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #bcd9f5; /* Color azul de respaldo por si acaso */
+    margin: 0; 
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 🐾 CONTENEDOR DEL LOGO ARRIBA */
+.logo-contenedor {
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: auto;
+}
+.logo{
+    width: 420px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+/* 🏢 EL CUADRO BLANCO CENTRAL DEL FORMULARIO */
+.container { 
+    width: 100%;
+    max-width: 550px; 
+    background: #ffffff; 
+    padding: 30px; 
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+    border: 1px solid #eef2f5;
+    box-sizing: border-box;
+}
+
+/* 📝 TÍTULO CENTRADO EN AZUL */
+.titulo-formulario {
+    text-align: center;
+    color: #0c4a6e; /* Azul oscuro corporativo */
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.form-group { 
+    margin-bottom: 15px; 
+}
+
+/* 🟢 LETRAS DE LOS CAMPOS EN VERDE OSCURO */
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    font-weight: bold; 
+    color: #1e5128; /* Verde oscuro  */
+    font-size: 14px;
+}
+
+/* ✏️ ENTRADAS DE TEXTO CON BORDES SUAVES */
+input, select { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #cbd5e1; 
+    border-radius: 6px; 
+    box-sizing: border-box; 
+    font-size: 14px; 
+    color: #334155;
+}
+
+input::placeholder {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+/* 🟩 CONTENEDOR PARA ACOMODAR LOS 3 BOTONES JUNTOS EN FILA */
+.botones-contenedor {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espacio de separación entre los botones */
+    margin-top: 25px;
+}
+
+/* ESTILO BASE PARA LOS TRES BOTONES VERDES */
+.btn-verde { 
+    background-color: #1e5128; 
+    color: #ffffff; 
+    padding: 10px 25px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 14px; 
+    font-weight: bold; 
+    transition: background-color 0.2s;
+    min-width: 100px;
+}
+
+/* Efecto para que se oscurezca un poquito al pasar el mouse por encima */
+.btn-verde:hover { 
+    background-color: #14361b; 
+}
+/* 🔵 BOTÓN ATRÁS: MÁS GRANDE, MÁS AZUL Y FLOTANTE */
+.btn-volver-atras {
+    position: absolute; /* Flota por encima de todo */
+    top: 25px;          /* Distancia desde el borde superior */
+    left: 25px;         /* Distancia desde el borde izquierdo */
+    padding: 10px 22px; /* Relleno para que envuelva bien la palabra */
+    border-radius: 20px; /* Óvalo elegante */
+    background-color: #007bff; /*  azul rey encendido */
+    color: #ffffff;     /* Letras blancas */
+    font-size: 15px;    
+    font-weight: bold;  
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); /* Sombra azul brillante */
+    transition: background-color 0.2s, transform 0.1s;
+    z-index: 10;        
+}
+
+/* Efecto al pasar el mouse por encima */
+.btn-volver-atras:hover {
+    background-color: #0056b3; /* Azul profundo */
+    transform: scale(1.05);    /* Se agranda un poquitico */
+}
+
+/* 🎯 AJUSTE DE SEGURIDAD PARA EL CUERPO */
+body {
+    position: relative; /* Obligatorio para que el botón sepa dónde ubicarse en la esquina */
+}

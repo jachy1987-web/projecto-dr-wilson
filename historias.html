@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historias Clínicas - Dr. Wilson</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png"); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            box-sizing: border-box;
+        }
+
+        /* 🔝 CABECERA FIJA SUPERIOR (Siempre visible) */
+        .cabecera-estatica {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            min-height: 80px;
+        }
+
+        /* Botón Volver con CSS puro (Círculo azul con flecha blanca) */
+        .btn-volver-atras {
+            position: absolute;
+            left: 5px;
+            top: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-volver-atras .circulo-flecha {
+            width: 36px; 
+            height: 36px; 
+            background-color: #007bff; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 20px; 
+            font-weight: bold; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+        .btn-volver-atras:hover .circulo-flecha {
+            transform: scale(1.1);
+        }
+        .btn-volver-atras span {
+            margin-top: 3px; 
+            font-size: 9px; 
+            color: #034870; 
+            font-weight: bold; 
+            letter-spacing: 0.5px;
+        }
+
+        /* Logo de Doctor Wilson centrado */
+        .logo-cabecera {
+            max-width: 220px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 🔍 CONTENEDOR DEL BUSCADOR PRINCIPAL */
+        .container-box {
+            background: #ffffff; 
+            width: 100%; 
+            max-width: 420px; 
+            padding: 20px; 
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+            box-sizing: border-box; 
+            margin-bottom: 15px; 
+            text-align: center;
+            position: relative;
+        }
+        .select-control { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            outline: none; 
+            box-sizing: border-box; 
+        }
+
+        /* Lista desplegable predictiva flotante */
+        #lista-sugerencias-ver-historias {
+            background-color: #ffffff;
+            width: 100%;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            display: none;
+            position: absolute;
+            top: 75px;
+            left: 0;
+            z-index: 99;
+            box-sizing: border-box;
+        }
+        #lista-sugerencias-ver-historias div {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: left;
+            color: #1e293b;
+            font-size: 15px;
+        }
+        #lista-sugerencias-ver-historias div:hover { background-color: #f8fafc; }
+
+
+        /* 📱 INTERFAZ ESTILO MÓVIL BLANCA (Boceto) */
+        #interfaz-historia-clinica {
+            display: none; 
+            width: 100%; 
+            max-width: 420px; 
+            background: rgba(255, 255, 255, 0.92); 
+            border-radius: 35px; 
+            padding: 25px 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+
+        /* Icono de Carpeta Médica Central Verde */
+        .icono-carpeta {
+            width: 65px;
+            height: auto;
+            margin: 0 auto 5px auto;
+            display: block;
+        }
+
+        .seccion-titulo { 
+            color: #1e3a8a; 
+            font-size: 13px; 
+            font-weight: bold; 
+            letter-spacing: 0.8px; 
+            margin-bottom: 22px; 
+            text-transform: uppercase;
+        }
+
+        /* 🏷️ INPUTS DE DATOS BÁSICOS (Colores exactos del boceto) */
+        .info-inputs { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            margin-bottom: 30px; 
+            padding: 0 10px;
+        }
+        .input-row { 
+            display: flex; 
+            align-items: center; 
+        }
+        .input-row label { 
+            width: 32%; 
+            text-align: right; 
+            padding-right: 12px; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        .lbl-nombre { color: #527a2b; }
+        .lbl-identificacion { color: #70a443; }
+        .lbl-propietario { color: #61873b; }
+
+        .input-row input { 
+            width: 68%; 
+            padding: 6px 10px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            background-color: #ffffff; 
+            color: #334155; 
+            pointer-events: none; 
+        }
+
+        /* 🎴 REJILLA DE LAS 4 TARJETAS CUADRADAS */
+        .grid-tarjetas { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 35px; 
+            padding: 0 10px;
+        }
+        .tarjeta-medica {
+            background: #ffffff; 
+            border-radius: 18px; 
+            padding: 15px 10px; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            border: 1px solid #eef2f5; 
+            box-sizing: border-box; 
+            height: 125px; 
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tarjeta-medica:hover { 
+            transform: scale(1.02); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .tarjeta-medica img { 
+            width: 45px; 
+            height: 45px; 
+            object-fit: contain; 
+        }
+        .tarjeta-medica span { 
+            font-size: 11px; 
+            font-weight: bold; 
+            color: #475569; 
+            line-height: 1.3; 
+        }
+
+        /* 🟩 BOTÓN CERRAR VERDE MAQUETA */
+        .btn-cerrar-clinico { 
+            width: 50%; 
+            padding: 10px; 
+            background-color: #557a2b; 
+            color: white; 
+            font-size: 15px; 
+            font-weight: bold; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            display: block; 
+            margin: 0 auto; 
+        }
+        .btn-cerrar-clinico:hover { background-color: #3f5c1f; }
+
+        /* 📄 HOJA GRANDE DE EDICIÓN INTEGRAL */
+        #seccion-hoja-grande {
+            display: none; 
+            width: 100%; 
+            max-width: 700px; 
+            background: #ffffff;
+            border-radius: 20px; 
+            padding: 30px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-sizing: border-box; 
+            border-top: 8px solid #557a2b;
+        }
+        .titulo-hoja { color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; }
+        .subseccion-titulo { color: #557a2b; font-size: 15px; font-weight: bold; margin-top: 15px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; text-align: left; }
+        .formulario-hoja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group-hoja { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+        .form-group-hoja label { font-size: 13px; font-weight: bold; color: #475569; }
+        .form-group-hoja input, .form-group-hoja textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .col-completa { grid-column: span 2; }
+        .botones-hoja { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        .btn-hoja { padding: 12px 30px; border-radius: 6px; font-size: 15px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-hoja-guardar { background-color: #557a2b; color: white; }
+        .btn-hoja-cancelar { background-color: #7f8c8d; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="cabecera-estatica">
+        <a href="principal.html" class="btn-volver-atras" id="btn-volver-menu">
+            <div class="circulo-flecha">←</div>
+            <span>VOLVER</span>
+        </a>
+        <img src="imagenes/drwilson.png" class="logo-cabecera" alt="Doctor Wilson">
+    </div>
+
+       <!-- Buscador Principal -->
+    <div class="container-box" id="caja-buscador-principal">
+        <div style="position: relative; width: 100%;">
+            <label style="color: #1e3a8a; font-weight: bold; display: block; margin-bottom: 8px; text-align: left;">Buscar Paciente Clínico:</label>
+            <input type="text" id="buscador-nombre-ver-historias" class="select-control" placeholder="🔍 Digite el nombre de la mascota...">
+            <div id="lista-sugerencias-ver-historias"></div>
+        </div>
+    </div>
+
+    
+    <script src="./historias.js"></script>
+</body>
+</html>

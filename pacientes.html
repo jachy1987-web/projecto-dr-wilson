@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pacientes - Dr. Wilson</title>
+    <link rel="stylesheet" href="formulario-pacientes.css">
+</head>
+<body>
+<body>
+    <!-- ⬅️ BOTÓN AZUL PARA VOLVER ATRÁS -->
+    <button class="btn-volver-atras" id="btn-retroceder-registro">Atrás</button>
+
+    
+    <div class="logo-contenedor">
+
+   
+    <div class="logo-contenedor">
+        <img src="imagenes/drwilson.png" class="logo" alt="Logo Doctor Wilson">
+    </div>
+
+    
+    <div class="container">
+        <h2 class="titulo-formulario">Registro de Pacientes</h2>
+        
+        <form id="form-paciente">
+            <div class="form-group">
+                <label for="nombre-paciente">Nombre del Paciente</label>
+                <input type="text" id="nombre-paciente" placeholder="Ingrese el nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="especie">Especie</label>
+                <select id="especie" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="canino">Canino (Perro)</option>
+                    <option value="felino">Felino (Gato)</option>
+                    <option value="ave">Ave</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="raza">Raza</label>
+                <input type="text" id="raza" placeholder="Ingrese la raza">
+            </div>
+
+            <div class="form-group">
+                <label for="edad">Edad (Años)</label>
+                <input type="number" id="edad" placeholder="Ingrese la edad" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="sexo">Sexo</label>
+                <select id="sexo" required>
+                    <option value="">Seleccione el sexo</option>
+                    <option value="macho">Macho</option>
+                    <option value="hembra">Hembra</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha-nacimiento">Fecha de Nacimiento</label>
+                <input type="date" id="fecha-nacimiento">
+            </div>
+
+            <div class="form-group">
+                <label for="propietario-id">ID del Propietario (Cliente)</label>
+                <input type="text" id="propietario-id" placeholder="Ingrese la cédula del dueño" required>
+            </div>
+
+            
+            <div class="botones-contenedor">
+                <button type="submit" class="btn-verde">Guardar</button>
+                <button type="button" class="btn-verde" id="btn-limpiar">Limpiar</button>
+                <button type="button" class="btn-verde" id="btn-volver">Volver</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Vincula archivo JavaScript -->
+    <script src="Pacientes.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha del Paciente - Dr. Wilson</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .btn-volver-atras {
+            position: absolute; top: 25px; left: 25px;         
+            padding: 10px 22px; border-radius: 20px; 
+            background-color: #007bff; color: #ffffff;     
+            font-size: 15px; font-weight: bold; border: none;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); transition: background-color 0.2s, transform 0.1s; z-index: 10;        
+        }
+        .btn-volver-atras:hover { background-color: #0056b3; transform: scale(1.05); }
+
+        h2 { color: #0c4a6e; margin-top: 20px; margin-bottom: 30px; font-size: 28px; font-weight: bold; text-align: center; width: 100%; }
+
+        .container-box {
+            background: #ffffff; width: 100%; max-width: 650px;
+            padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eef2f5; box-sizing: border-box; margin-bottom: 20px;
+        }
+
+        .select-paciente-box { display: flex; flex-direction: column; gap: 10px; }
+        .select-paciente-box label { color: #0c4a6e; font-weight: bold; }
+        .select-control { width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box; }
+
+        #lista-sugerencias-ficha { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 8px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; max-height: 200px; overflow-y: auto; }
+        #lista-sugerencias-ficha div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 15px; }
+
+        #seccion-ficha { display: none; background: #ffffff; border-top: 5px solid #2e7d32; }
+        .ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 15px; margin-bottom: 20px; }
+        .ficha-header h3 { margin: 0; color: #2e7d32; font-size: 22px; }
+        .status-badge { background-color: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold; }
+
+        .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-item { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+        .info-label { color: #64748b; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+        .info-valor { color: #1e293b; font-size: 16px; font-weight: 500; padding: 8px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #cbd5e1; }
+
+        .botones-contenedor { display: flex; justify-content: center; margin-top: 30px; }
+        .btn-accion-ficha { padding: 12px 25px; border-radius: 8px; font-size: 15px; font-weight: bold; border: none; cursor: pointer; color: white; background-color: #7f8c8d; transition: background 0.2s; }
+    </style>
+</head>
+
+<body>
+    <button class="btn-volver-atras" id="btn-volver-menu">Atrás</button>
+
+    <!-- LOGO CENTRADO -->
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px; width: 100%;">
+        <img src="imagenes/drwilson.png" alt="Logo Doctor Wilson" style="max-width: 420px !important; width: 100% !important; height: auto !important; display: block; margin: 0 auto;">
+    </div>
+
+    <h2>📋 Ficha del Paciente</h2>
+
+    <div class="container-box">
+        <div class="select-paciente-box" style="position: relative;">
+            <label for="buscador-nombre-ficha">Escriba el Nombre de la Mascota para visualizar su Ficha:</label>
+            <input type="text" id="buscador-nombre-ficha" class="select-control" placeholder="🔍 Empiece a escribir el nombre de la mascota...">
+            <div id="lista-sugerencias-ficha" style="position: absolute; width: 100%; top: 75px; z-index: 20; display: none;"></div>
+        </div>
+    </div>
+
+    <div class="container-box" id="seccion-ficha">
+        <div class="ficha-header">
+            <h3><i class="fa-solid fa-file-medical"></i> Resumen Clínico</h3>
+            <span class="status-badge">Estado: Activo</span>
+        </div>
+        <div class="ficha-grid">
+            <div class="info-item"><span class="info-label">🐾 Nombre de la Mascota</span><span class="info-valor" id="lbl-nombre">-</span></div>
+            <div class="info-item"><span class="info-label">🧬 Especie</span><span class="info-valor" id="lbl-especie">-</span></div>
+            <div class="info-item"><span class="info-label">📌 Raza</span><span class="info-valor" id="lbl-raza">-</span></div>
+            <div class="info-item"><span class="info-label">🎂 Edad</span><span class="info-valor" id="lbl-edad">-</span></div>
+            <div class="info-item"><span class="info-label">⚥ Sexo</span><span class="info-valor" id="lbl-sexo">-</span></div>
+            <div class="info-item"><span class="info-label">📅 Fecha de Nacimiento</span><span class="info-valor" id="lbl-fecha">-</span></div>
+            <div class="info-item" style="grid-column: span 2;"><span class="info-label">👤 Identificación del Propietario</span><span class="info-valor" id="lbl-propietario">-</span></div>
+        </div>
+        <div class="botones-contenedor">
+            <button type="button" class="btn-accion-ficha" id="btn-cerrar-ficha">Cerrar Ficha</button>
+        </div>
+    </div>
+
+    <script src="ficha-paciente.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Citas - Dr. Wilson</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* 🔵 BOTÓN OVALADO AZUL ATRÁS */
+        .btn-volver-atras {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            padding: 10px 22px;
+            border-radius: 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.1s;
+            z-index: 10;
+        }
+
+        .btn-volver-atras:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        h2 {
+            color: #0c4a6e;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        .container-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eef2f5;
+            box-sizing: border-box;
+        }
+
+        /* TABLA DE CITAS */
+        .tabla-resultados {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .tabla-resultados th,
+        .tabla-resultados td {
+            padding: 14px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-resultados th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: bold;
+        }
+
+        .tabla-resultados tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Botón de papelera para cancelar */
+        /* 🎯 NUEVO ESTILO PARA EL BOTÓN DE TEXTO ROJO */
+        .btn-cancelar-cita {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-cancelar-cita:hover {
+            background-color: #dc2626;
+            /* Un rojo más oscuro al pasar el mouse */
+        }
+                /* 🎯 BOTÓN VERDE PARA CONFIRMAR LA CITA */
+        .btn-confirmar-cita {
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 8px 14px;
+            border-radius: 6px;
+            margin-right: 8px; /* Separación con el botón de cancelar */
+            transition: background 0.2s;
+        }
+        .btn-confirmar-cita:hover {
+            background-color: #059669;
+        }
+
+        /* Distintivos visuales para los estados (badges) */
+        .badge-estado {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .estado-pendiente { background-color: #fef3c7; color: #d97706; }
+        .estado-atendido { background-color: #d1fae5; color: #065f46; }
+
+    </style>
+</head>
+
+<body>
+    <!-- Regresa a tu submenú de citas -->
+    <a href="menu-citas.html" class="btn-volver-atras">Atrás</a>
+
+    <!-- LOGO CORPORATIVO CENTRADO -->
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px; width: 100%;">
+        <img src="imagenes/drwilson.png" alt="Logo Doctor Wilson"
+            style="max-width: 420px !important; width: 100% !important; height: auto !important; display: block; margin: 0 auto;">
+    </div>
+
+    <h2>📋 Citas Programadas</h2>
+
+    <div class="container-box">
+        <table class="tabla-resultados">
+            <thead>
+                <tr>
+                    <th>Mascota</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Motivo de Consulta</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-cuerpo-citas">
+                <!-- Se llenará dinámicamente con JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Conexión al archivo de lógica -->
+    <script src="ver-citas.js"></script>
+</body>
+
+</html>

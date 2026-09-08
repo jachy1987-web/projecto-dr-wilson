@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente Clínico Integral - Dr. Wilson</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url("imagenes/fondo doctor wilson.png"); 
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        }
+        .cabecera-estatica { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; max-width: 750px; margin-bottom: 15px; }
+        .btn-volver-atras { position: absolute; left: 5px; top: 10px; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
+        .btn-volver-atras .circulo-flecha { width: 36px; height: 36px; background-color: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .btn-volver-atras span { margin-top: 3px; font-size: 9px; color: #034870; font-weight: bold; }
+        .logo-cabecera { max-width: 200px; height: auto; display: block; margin: 0 auto; }
+
+        /* Contenedor del Expediente */
+        .seccion-hoja-grande {
+            width: 100%; max-width: 750px; background: #ffffff; border-radius: 25px; padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); box-sizing: border-box; border-top: 8px solid #557a2b;
+        }
+        .titulo-hoja { color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-top: 0; margin-bottom: 25px; text-align: left; font-size: 22px; }
+        .subseccion-titulo { color: #557a2b; font-size: 15px; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 5px; text-align: left; text-transform: uppercase; }
+        .formulario-hoja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group-hoja { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+        .form-group-hoja label { font-size: 13px; font-weight: bold; color: #475569; }
+        .form-group-hoja input, .form-group-hoja textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
+        .form-group-hoja input:focus, .form-group-hoja textarea:focus { border-color: #007bff; outline: none; }
+        .col-completa { grid-column: span 2; }
+        
+        .botones-hoja { display: flex; gap: 15px; justify-content: center; margin-top: 35px; }
+        .btn-hoja { padding: 13px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-hoja-guardar { background-color: #557a2b; color: white; }
+        .btn-hoja-guardar:hover { background-color: #3f5c1f; }
+        .btn-hoja-cancelar { background-color: #7f8c8d; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="cabecera-estatica">
+        <a href="menu-historias.html" class="btn-volver-atras">
+            <div class="circulo-flecha">←</div>
+            <span>VOLVER</span>
+        </a>
+        <img src="imagenes/drwilson.png" class="logo-cabecera" alt="Doctor Wilson">
+    </div>
+
+    <div class="seccion-hoja-grande">
+        <h2 class="titulo-hoja">Expediente Clínico Integral</h2>
+        <form id="form-hoja-grande">
+            <div class="formulario-hoja-grid">
+                
+                <div class="col-completa subseccion-titulo">1. Datos de Mascota y Propietario</div>
+                <div class="form-group-hoja">
+                    <label>Nombre de la Mascota:</label>
+                    <input type="text" id="hj-mascota" required>
+                </div>
+                <div class="form-group-hoja">
+                    <label>Especie / Raza:</label>
+                    <input type="text" id="hj-especie" required>
+                </div>
+                <div class="form-group-hoja">
+                    <label>Cédula Propietario:</label>
+                    <input type="text" id="hj-propietario-id" required>
+                </div>
+                <div class="form-group-hoja">
+                    <label>Nombre Propietario:</label>
+                    <input type="text" id="hj-propietario-nombre" required>
+                </div>
+
+                <div class="col-completa subseccion-titulo">2. Antecedentes Médicos y Evaluación</div>
+                <div class="form-group-hoja">
+                    <label>Peso (Kg):</label>
+                    <input type="text" id="hj-peso" placeholder="Ej: 12.5">
+                </div>
+                <div class="form-group-hoja">
+                    <label>Temperatura (°C):</label>
+                    <input type="text" id="hj-temp" placeholder="Ej: 38.8">
+                </div>
+                <div class="col-completa form-group-hoja">
+                    <label>Historial de Enfermedades / Antecedentes:</label>
+                    <textarea id="hj-diagnostico" rows="3" placeholder="Escriba aquí los antecedentes médicos del paciente..."></textarea>
+                </div>
+
+                <div class="col-completa subseccion-titulo">3. Control de Vacunación</div>
+                <div class="col-completa form-group-hoja">
+                    <label>Registro de Vacunas Aplicadas y Fechas:</label>
+                    <textarea id="hj-vacunas-input" rows="3" placeholder="Ej: Parvovirus (10/05/2026), Triple Felina..."></textarea>
+                </div>
+
+                <div class="col-completa subseccion-titulo">4. Tratamientos y Medicamentos</div>
+                <div class="col-completa form-group-hoja">
+                    <label>Tratamiento Sugerido, Medicación Actual y Notas Adicionales:</label>
+                    <textarea id="hj-tratamiento" rows="3" placeholder="Detalle las recetas o procedimientos médicos..."></textarea>
+                </div>
+            </div>
+
+            <div class="botones-hoja">
+                <button type="submit" class="btn-hoja btn-hoja-guardar">Guardar Cambios</button>
+                <button type="button" class="btn-hoja btn-hoja-cancelar" onclick="window.location.href='menu-historias.html'">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="expediente.js"></script>
+</body>
+</html>
