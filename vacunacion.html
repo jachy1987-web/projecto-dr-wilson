@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Wilson - Vacunación</title>
+    <link rel="stylesheet" href="css/vacunacion.css">
+</head>
+<body>
+<header>
+    <img src="imagenes/logo-doctor-wilson.png" class="logo" alt="Doctor Wilson">
+    <h1>Registro de Vacunación</h1>
+</header>
+
+<div class="contenedor">
+<form class="formulario" id="formularioVacunacion">
+    <h2>Registrar vacunación</h2>
+
+    <label for="mascota">Mascota</label>
+    <select id="mascota" required><option value="">Seleccione una mascota</option></select>
+
+    <label for="vacuna">Vacuna</label>
+    <select id="vacuna" required><option value="">Seleccione una vacuna</option></select>
+
+    <label for="fechaAplicacion">Fecha de aplicación</label>
+    <input type="date" id="fechaAplicacion" required>
+
+    <label for="proximaDosis">Próxima dosis</label>
+    <input type="date" id="proximaDosis">
+
+    <label for="observaciones">Observaciones</label>
+    <textarea id="observaciones" rows="4" placeholder="Escriba observaciones sobre la vacunación"></textarea>
+
+    <div class="botones">
+        <button type="submit">Guardar</button>
+        <button type="reset">Limpiar</button>
+        <button type="button" onclick="window.location.href='principal.html'">Volver</button>
+    </div>
+</form>
+</div>
+
+<div class="contenedor">
+    <h2>Vacunaciones registradas</h2>
+    <div class="tabla-contenedor">
+    <table>
+        <thead><tr><th>N.º</th><th>Mascota</th><th>Vacuna</th><th>Aplicación</th><th>Próxima dosis</th><th>Observaciones</th></tr></thead>
+        <tbody id="cuerpoVacunaciones"><tr><td colspan="6" class="vacio">Cargando registros...</td></tr></tbody>
+    </table>
+    </div>
+</div>
+<script src="vacunacion.js"></script>
+</body>
+</html>
