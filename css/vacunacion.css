@@ -1,0 +1,22 @@
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background-image:url("../imagenes/fondo doctor wilson.png");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed}
+header{min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:15px;background:transparent}
+.logo{width:160px;height:auto}
+h1{margin:0;color:#064563;font-size:30px;text-align:center}
+.contenedor{width:90%;max-width:1100px;margin:30px auto;background:rgba(255,255,255,.96);border-radius:20px;padding:35px;box-shadow:0 8px 25px rgba(0,0,0,.20)}
+.formulario{display:flex;flex-direction:column}
+h2{color:#064563;margin-top:0}
+label{margin-top:15px;margin-bottom:6px;font-weight:bold;color:#2E7D32}
+input,select,textarea{width:100%;padding:12px;border:2px solid #d0d7de;border-radius:8px;font-size:16px;outline:none;transition:.3s;background:white;font-family:Arial,Helvetica,sans-serif}
+input:focus,select:focus,textarea:focus{border-color:#2E7D32;box-shadow:0 0 5px rgba(46,125,50,.25)}
+textarea{resize:vertical}
+.botones{display:flex;justify-content:center;gap:15px;margin-top:30px}
+button{min-width:120px;padding:12px 22px;border:0;border-radius:8px;background:#2E7D32;color:white;cursor:pointer;font-size:16px;font-weight:bold;transition:.3s}
+button:hover{background:#1b5e20;transform:translateY(-2px)}
+.tabla-contenedor{width:100%;overflow-x:auto;margin-top:20px}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{padding:12px;border-bottom:1px solid #d9e8f5;text-align:center}
+th{background:#0B3D91;color:white}
+tr:hover td{background:#f5faff}
+.vacio{color:#777;padding:20px}
+@media(max-width:700px){.botones{flex-direction:column}button{width:100%}.contenedor{padding:25px}h1{font-size:24px}}
