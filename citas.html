@@ -4,133 +4,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Citas - Dr. Wilson</title>
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url("imagenes/fondo doctor wilson.png");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
-            position: relative;
-        }
 
-        /* 🔵 BOTÓN OVALADO AZUL ATRÁS */
-        .btn-volver-atras {
-            position: absolute; top: 25px; left: 25px;         
-            padding: 10px 22px; border-radius: 20px; 
-            background-color: #007bff; color: #ffffff;     
-            font-size: 15px; font-weight: bold; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); text-decoration: none;
-            transition: background-color 0.2s, transform 0.1s; z-index: 10;        
-        }
-        .btn-volver-atras:hover { background-color: #0056b3; transform: scale(1.05); }
+    <title>Gestión de Citas - Doctor Wilson</title>
 
-        h2 { color: #0c4a6e; margin-top: 20px; margin-bottom: 30px; font-size: 28px; font-weight: bold; text-align: center; width: 100%; }
-
-        .container-box {
-            background: #ffffff; width: 100%; max-width: 850px;
-            padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eef2f5; box-sizing: border-box; margin-bottom: 20px;
-        }
-
-        /* Formulario de agendamiento */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; }
-        .form-group label { color: #2e7d32; font-weight: bold; font-size: 14px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
-        .form-group input:focus, .form-group select:focus { border-color: #007bff; outline: none; }
-        
-        .full-width { grid-column: span 2; }
-
-        .botones-contenedor { display: flex; gap: 15px; justify-content: center; margin-top: 10px; }
-        .btn-verde { padding: 13px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; color: white; background-color: #1e4620; transition: background 0.2s; }
-        .btn-verde:hover { background-color: #143016; }
-
-        /* Tabla de Citas */
-        .tabla-citas { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .tabla-citas th, .tabla-citas td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        .tabla-citas th { background-color: #f8fafc; color: #475569; font-weight: bold; }
-        .tabla-citas tr:hover { background-color: #f8fafc; }
-        
-        .badge-cita { padding: 4px 10px; border-radius: 15px; font-size: 13px; font-weight: bold; background-color: #fef3c7; color: #d97706; }
-    </style>
+    <link rel="stylesheet" href="css/citas.css">
 </head>
 
 <body>
-    <!-- Enlace nativo que te regresa a la pantalla de inicio -->
-    <a href="principal.html" class="btn-volver-atras">Atrás</a>
 
-    <!-- LOGO CORPORATIVO CENTRADO -->
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px; width: 100%;">
-        <img src="imagenes/drwilson.png" alt="Logo Doctor Wilson" style="max-width: 420px !important; width: 100% !important; height: auto !important; display: block; margin: 0 auto;">
-    </div>
+    <!-- =====================================================
+         BOTÓN VOLVER
+    ====================================================== -->
 
-    <h2>📅 Agendamiento de Citas Médicas</h2>
+    <a href="principal.html" class="btn-volver">
+        <span>←</span>
+        Volver
+    </a>
 
-    <!-- Formulario para Registrar Nueva Cita -->
-    <div class="container-box">
-        <form id="form-citas">
-            <div class="form-grid">
-                <!-- Buscador predictivo de pacientes que ya existen en el sistema -->
-                <div class="form-group full-width" style="position: relative;">
-                    <label for="cita-buscar-paciente">Nombre del Paciente (Mascota)</label>
-                    <input type="text" id="cita-buscar-paciente" placeholder="🔍 Escriba el nombre de la mascota registrada..." required>
-                    <div id="lista-sugerencias-citas" style="position: absolute; width: 100%; top: 75px; z-index: 20;"></div>
+
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
+    <header class="encabezado">
+
+        <img
+            src="imagenes/drwilson.png"
+            alt="Doctor Wilson"
+            class="logo"
+        >
+
+        <h1>Gestión de Citas Médicas</h1>
+
+        <p>
+            Administración y seguimiento de las citas veterinarias
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENEDOR PRINCIPAL
+    ====================================================== -->
+
+    <main class="contenido">
+
+
+        <!-- =================================================
+             TARJETA DEL FORMULARIO
+        ================================================== -->
+
+        <section class="tarjeta formulario-tarjeta">
+
+            <div class="titulo-seccion">
+
+                <div class="icono-titulo">
+                    📅
                 </div>
 
-                <div class="form-group">
-                    <label for="cita-fecha">Fecha de la Cita</label>
-                    <input type="date" id="cita-fecha" required>
+                <div>
+                    <h2 id="titulo-formulario">
+                        Registrar nueva cita
+                    </h2>
+
+                    <p>
+                        Complete la información de la cita
+                    </p>
                 </div>
 
-                <div class="form-group">
-                    <label for="cita-hora">Hora de la Cita</label>
-                    <input type="time" id="cita-hora" required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="cita-motivo">Motivo de la Consulta / Síntomas</label>
-                    <input type="text" id="cita-motivo" placeholder="Ej: Control de vacunas, dolor de estómago..." required>
-                </div>
             </div>
 
-            <div class="botones-contenedor">
-                <button type="submit" class="btn-verde">Agendar Turno</button>
+
+            <!-- FORMULARIO -->
+
+            <form id="form-cita">
+
+                <!-- ID oculto para edición -->
+
+                <input
+                    type="hidden"
+                    id="id_cita"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- MASCOTA -->
+
+                    <div class="campo">
+
+                        <label for="id_mascota">
+                            🐾 Mascota
+                        </label>
+
+                        <select
+                            id="id_mascota"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione una mascota
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- VETERINARIO -->
+
+                    <div class="campo">
+
+                        <label for="id_usuario">
+                            👨‍⚕️ Veterinario
+                        </label>
+
+                        <select
+                            id="id_usuario"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione un veterinario
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- FECHA -->
+
+                    <div class="campo">
+
+                        <label for="fecha">
+                            📆 Fecha
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fecha"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- HORA -->
+
+                    <div class="campo">
+
+                        <label for="hora">
+                            🕐 Hora
+                        </label>
+
+                        <input
+                            type="time"
+                            id="hora"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- MOTIVO -->
+
+                    <div class="campo campo-completo">
+
+                        <label for="motivo">
+                            🩺 Motivo de la consulta
+                        </label>
+
+                        <input
+                            type="text"
+                            id="motivo"
+                            maxlength="200"
+                            placeholder="Ejemplo: Control general, vacunación, revisión..."
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="campo">
+
+                        <label for="estado">
+                            📌 Estado
+                        </label>
+
+                        <select id="estado">
+
+                            <option value="Programada">
+                                Programada
+                            </option>
+
+                            <option value="Atendida">
+                                Atendida
+                            </option>
+
+                            <option value="Cancelada">
+                                Cancelada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- OBSERVACIONES -->
+
+                    <div class="campo">
+
+                        <label for="observaciones">
+                            📝 Observaciones
+                        </label>
+
+                        <input
+                            type="text"
+                            id="observaciones"
+                            maxlength="250"
+                            placeholder="Observaciones adicionales"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTONES -->
+
+                <div class="botones-formulario">
+
+                    <button
+                        type="submit"
+                        class="btn btn-guardar"
+                        id="btn-guardar"
+                    >
+                        💾 Registrar cita
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-cancelar"
+                        id="btn-cancelar-edicion"
+                        style="display:none;"
+                    >
+                        ✖ Cancelar edición
+                    </button>
+
+                    <button
+                        type="reset"
+                        class="btn btn-limpiar"
+                        id="btn-limpiar"
+                    >
+                        🧹 Limpiar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RESUMEN
+        ================================================== -->
+
+        <section class="resumen-grid">
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    📅
+                </div>
+
+                <div>
+
+                    <span>
+                        Total de citas
+                    </span>
+
+                    <strong id="total-citas">
+                        0
+                    </strong>
+
+                </div>
+
             </div>
-        </form>
-    </div>
 
-    <!-- Tabla Dinámica para visualizar las citas agendadas -->
-    <div class="container-box">
-        <h3 style="color: #0c4a6e; text-align: left; margin-top: 0;">📋 Próximas Citas Programadas</h3>
-        <table class="tabla-citas">
-            <thead>
-                <tr>
-                    <th>Mascota</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Motivo</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-cuerpo-citas">
-                <!-- Aquí se inyectarán las citas programadas -->
-            </tbody>
-        </table>
-    </div>
 
-    <!-- Vinculación del script de control -->
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    ⏰
+                </div>
+
+                <div>
+
+                    <span>
+                        Programadas
+                    </span>
+
+                    <strong id="citas-programadas">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    ✅
+                </div>
+
+                <div>
+
+                    <span>
+                        Atendidas
+                    </span>
+
+                    <strong id="citas-atendidas">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    ❌
+                </div>
+
+                <div>
+
+                    <span>
+                        Canceladas
+                    </span>
+
+                    <strong id="citas-canceladas">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TABLA DE CITAS
+        ================================================== -->
+
+        <section class="tarjeta tabla-tarjeta">
+
+            <div class="titulo-tabla">
+
+                <div>
+
+                    <h2>
+                        📋 Citas registradas
+                    </h2>
+
+                    <p>
+                        Consulte, edite o elimine las citas del sistema
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-recargar"
+                    id="btn-recargar"
+                >
+                    🔄 Actualizar
+                </button>
+
+            </div>
+
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador">
+
+                <span>
+                    🔍
+                </span>
+
+                <input
+                    type="text"
+                    id="buscar-cita"
+                    placeholder="Buscar por mascota, motivo, veterinario o estado..."
+                >
+
+            </div>
+
+
+            <!-- TABLA -->
+
+            <div class="tabla-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Mascota
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Hora
+                            </th>
+
+                            <th>
+                                Motivo
+                            </th>
+
+                            <th>
+                                Veterinario
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th>
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabla-citas">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="cargando"
+                            >
+                                Cargando citas...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         PIE DE PÁGINA
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+            Sistema de gestión veterinaria
+            <strong>Doctor Wilson</strong>
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
     <script src="citas.js"></script>
+
 </body>
 
 </html>
