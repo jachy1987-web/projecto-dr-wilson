@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('tarjeta-antecedentes').addEventListener('click', () => {
         window.location.href = "antecedentes.html";
     });
-    document.getElementById('tarjeta-vacunas').addEventListener('click', () => {
-    window.location.href = "vacunacion-historias.html"; 
+   document.getElementById('tarjeta-vacunas').addEventListener('click', () => {
+    window.location.href = "vacunación.html"; 
 });
 
     document.getElementById('tarjeta-tratamientos').addEventListener('click', () => {
