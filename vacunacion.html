@@ -1,53 +1,492 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Wilson - Vacunación</title>
-    <link rel="stylesheet" href="css/vacunacion.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Vacunación - Doctor Wilson</title>
+
+    <link
+        rel="stylesheet"
+        href="css/vacunacion.css"
+    >
+
 </head>
+
+
 <body>
-<header>
-    <img src="imagenes/logo-doctor-wilson.png" class="logo" alt="Doctor Wilson">
-    <h1>Registro de Vacunación</h1>
-</header>
 
-<div class="contenedor">
-<form class="formulario" id="formularioVacunacion">
-    <h2>Registrar vacunación</h2>
 
-    <label for="mascota">Mascota</label>
-    <select id="mascota" required><option value="">Seleccione una mascota</option></select>
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
 
-    <label for="vacuna">Vacuna</label>
-    <select id="vacuna" required><option value="">Seleccione una vacuna</option></select>
+    <header class="cabecera">
 
-    <label for="fechaAplicacion">Fecha de aplicación</label>
-    <input type="date" id="fechaAplicacion" required>
+        <a
+            href="principal.html"
+            class="btn-volver"
+        >
 
-    <label for="proximaDosis">Próxima dosis</label>
-    <input type="date" id="proximaDosis">
+            <span class="circulo-flecha">
+                ←
+            </span>
 
-    <label for="observaciones">Observaciones</label>
-    <textarea id="observaciones" rows="4" placeholder="Escriba observaciones sobre la vacunación"></textarea>
+            <span class="texto-volver">
+                VOLVER
+            </span>
 
-    <div class="botones">
-        <button type="submit">Guardar</button>
-        <button type="reset">Limpiar</button>
-        <button type="button" onclick="window.location.href='principal.html'">Volver</button>
-    </div>
-</form>
-</div>
+        </a>
 
-<div class="contenedor">
-    <h2>Vacunaciones registradas</h2>
-    <div class="tabla-contenedor">
-    <table>
-        <thead><tr><th>N.º</th><th>Mascota</th><th>Vacuna</th><th>Aplicación</th><th>Próxima dosis</th><th>Observaciones</th></tr></thead>
-        <tbody id="cuerpoVacunaciones"><tr><td colspan="6" class="vacio">Cargando registros...</td></tr></tbody>
-    </table>
-    </div>
-</div>
-<script src="vacunacion.js"></script>
+
+        <img
+            src="imagenes/drwilson.png"
+            class="logo"
+            alt="Doctor Wilson"
+        >
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main class="contenedor-principal">
+
+
+        <!-- =================================================
+             TITULO
+        ================================================== -->
+
+        <section class="encabezado-seccion">
+
+            <img
+                src="imagenes/vacunacion.png"
+                class="icono-vacunacion"
+                alt="Vacunación"
+            >
+
+            <div>
+
+                <h1>
+                    Registro de Vacunación
+                </h1>
+
+                <p>
+                    Control y seguimiento de las vacunas
+                    aplicadas a las mascotas.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FORMULARIO
+        ================================================== -->
+
+        <section class="tarjeta formulario-tarjeta">
+
+
+            <div class="titulo-tarjeta">
+
+                <div class="icono-titulo">
+                    💉
+                </div>
+
+                <div>
+
+                    <h2 id="titulo-formulario">
+                        Registrar vacunación
+                    </h2>
+
+                    <p>
+                        Ingrese los datos correspondientes
+                        a la aplicación de la vacuna.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <form id="formularioVacunacion">
+
+
+                <input
+                    type="hidden"
+                    id="id_vacunacion"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- MASCOTA -->
+
+                    <div class="campo">
+
+                        <label for="mascota">
+                            🐾 Mascota
+                        </label>
+
+                        <select
+                            id="mascota"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione una mascota
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- VACUNA -->
+
+                    <div class="campo">
+
+                        <label for="vacuna">
+                            💉 Vacuna
+                        </label>
+
+                        <select
+                            id="vacuna"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione una vacuna
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- FECHA APLICACION -->
+
+                    <div class="campo">
+
+                        <label for="fechaAplicacion">
+                            📅 Fecha de aplicación
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fechaAplicacion"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- PROXIMA DOSIS -->
+
+                    <div class="campo">
+
+                        <label for="proximaDosis">
+                            📆 Próxima dosis
+                        </label>
+
+                        <input
+                            type="date"
+                            id="proximaDosis"
+                        >
+
+                    </div>
+
+
+
+                    <!-- OBSERVACIONES -->
+
+                    <div class="campo campo-completo">
+
+                        <label for="observaciones">
+                            📝 Observaciones
+                        </label>
+
+                        <textarea
+                            id="observaciones"
+                            rows="4"
+                            maxlength="300"
+                            placeholder="Escriba observaciones relacionadas con la vacunación..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BOTONES -->
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="btn btn-guardar"
+                        id="btnGuardar"
+                    >
+                        💾 Registrar vacunación
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-cancelar"
+                        id="btnCancelar"
+                        style="display:none;"
+                    >
+                        ✖ Cancelar edición
+                    </button>
+
+
+                    <button
+                        type="reset"
+                        class="btn btn-limpiar"
+                        id="btnLimpiar"
+                    >
+                        🧹 Limpiar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RESUMEN
+        ================================================== -->
+
+        <section class="resumen-grid">
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    💉
+                </div>
+
+                <div>
+
+                    <span>
+                        Total vacunaciones
+                    </span>
+
+                    <strong id="totalVacunaciones">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    🐾
+                </div>
+
+                <div>
+
+                    <span>
+                        Mascotas vacunadas
+                    </span>
+
+                    <strong id="mascotasVacunadas">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-icono">
+                    📆
+                </div>
+
+                <div>
+
+                    <span>
+                        Próximas dosis
+                    </span>
+
+                    <strong id="proximasDosis">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             TABLA
+        ================================================== -->
+
+        <section class="tarjeta registros-tarjeta">
+
+
+            <div class="titulo-registros">
+
+                <div>
+
+                    <h2>
+                        📋 Vacunaciones registradas
+                    </h2>
+
+                    <p>
+                        Consulte, edite o elimine los registros.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-actualizar"
+                    id="btnActualizar"
+                >
+                    🔄 Actualizar
+                </button>
+
+            </div>
+
+
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador">
+
+                <span>
+                    🔍
+                </span>
+
+                <input
+                    type="text"
+                    id="buscarVacunacion"
+                    placeholder="Buscar por mascota, vacuna u observaciones..."
+                >
+
+            </div>
+
+
+
+            <!-- TABLA -->
+
+            <div class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Mascota
+                            </th>
+
+                            <th>
+                                Vacuna
+                            </th>
+
+                            <th>
+                                Aplicación
+                            </th>
+
+                            <th>
+                                Próxima dosis
+                            </th>
+
+                            <th>
+                                Observaciones
+                            </th>
+
+                            <th>
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="cuerpoVacunaciones">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="vacio"
+                            >
+                                Cargando registros...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         PIE DE PÁGINA
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+            Sistema de gestión veterinaria
+            <strong>Doctor Wilson</strong>
+        </p>
+
+    </footer>
+
+
+
+    <script src="vacunacion.js"></script>
+
 </body>
+
 </html>
