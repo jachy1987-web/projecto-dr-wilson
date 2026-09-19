@@ -1,84 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // =====================================================
-    // CONFIGURACIÓN
-    // =====================================================
-
     const API = "http://localhost:3001/api";
 
+    const formulario = document.getElementById("form-historia");
+    const idHistoria = document.getElementById("id_historia");
+    const mascotaSelect = document.getElementById("id_mascota");
+    const usuarioSelect = document.getElementById("id_usuario");
+    const fechaInput = document.getElementById("fecha");
+    const motivoInput = document.getElementById("motivo_consulta");
+    const diagnosticoInput = document.getElementById("diagnostico");
+    const tratamientoInput = document.getElementById("tratamiento");
+    const observacionesInput = document.getElementById("observaciones");
+    const tablaHistorias = document.getElementById("tabla-historias");
+    const buscarInput = document.getElementById("buscar-historia");
+    const btnGuardar = document.getElementById("btn-guardar");
+    const btnCancelar = document.getElementById("btn-cancelar");
+    const btnLimpiar = document.getElementById("btn-limpiar");
+    const btnActualizar = document.getElementById("btn-actualizar");
+    const tituloFormulario = document.getElementById("titulo-formulario");
 
-    // =====================================================
-    // ELEMENTOS
-    // =====================================================
+    const filtroFecha = document.getElementById("filtro-fecha");
+    const filtroMascota = document.getElementById("filtro-mascota");
+    const btnLimpiarFiltros =
+        document.getElementById("btn-limpiar-filtros");
 
-    const formulario =
-        document.getElementById("form-historia");
+    const modalDetalle =
+        document.getElementById("modal-detalle");
 
-    const idHistoria =
-        document.getElementById("id_historia");
+    const btnCerrarModal =
+        document.getElementById("btn-cerrar-modal");
 
-    const mascotaSelect =
-        document.getElementById("id_mascota");
-
-    const usuarioSelect =
-        document.getElementById("id_usuario");
-
-    const fechaInput =
-        document.getElementById("fecha");
-
-    const motivoInput =
-        document.getElementById("motivo_consulta");
-
-    const diagnosticoInput =
-        document.getElementById("diagnostico");
-
-    const tratamientoInput =
-        document.getElementById("tratamiento");
-
-    const observacionesInput =
-        document.getElementById("observaciones");
-
-    const tablaHistorias =
-        document.getElementById("tabla-historias");
-
-    const buscarInput =
-        document.getElementById("buscar-historia");
-
-    const btnGuardar =
-        document.getElementById("btn-guardar");
-
-    const btnCancelar =
-        document.getElementById("btn-cancelar");
-
-    const btnLimpiar =
-        document.getElementById("btn-limpiar");
-
-    const btnActualizar =
-        document.getElementById("btn-actualizar");
-
-    const tituloFormulario =
-        document.getElementById("titulo-formulario");
-
-
-    // =====================================================
-    // VARIABLES
-    // =====================================================
+    const btnCerrarModalFooter =
+        document.getElementById("btn-cerrar-modal-footer");
 
     let historias = [];
-
     let mascotas = [];
-
     let usuarios = [];
 
-
-
-    // =====================================================
-    // CARGA INICIAL
-    // =====================================================
-
     cargarDatos();
-
-
 
     async function cargarDatos() {
 
@@ -89,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 cargarUsuarios(),
                 cargarHistorias()
             ]);
+
+            establecerFechaMinima();
 
         } catch (error) {
 
@@ -101,19 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-
-    // =====================================================
-    // CARGAR MASCOTAS
-    // =====================================================
-
     async function cargarMascotas() {
 
         try {
 
             const respuesta =
                 await fetch(`${API}/mascotas`);
-
 
             if (!respuesta.ok) {
 
@@ -123,58 +77,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             mascotas =
                 await respuesta.json();
 
-
-            mascotaSelect.innerHTML =
-                `
-                <option value="">
-                    Seleccione una mascota
-                </option>
-                `;
-
-
-            mascotas.forEach(mascota => {
-
-                const opcion =
-                    document.createElement("option");
-
-
-                opcion.value =
-                    mascota.id_mascota;
-
-
-                opcion.textContent =
-                    mascota.nombre;
-
-
-                mascotaSelect.appendChild(opcion);
-
-            });
-
+            llenarMascotas();
 
         } catch (error) {
 
             console.error(error);
 
             mascotaSelect.innerHTML =
-                `
-                <option value="">
+                `<option value="">
                     Error al cargar mascotas
-                </option>
-                `;
+                </option>`;
 
         }
 
     }
 
+    function llenarMascotas() {
 
+        mascotaSelect.innerHTML =
+            `<option value="">
+                Seleccione una mascota
+            </option>`;
 
-    // =====================================================
-    // CARGAR USUARIOS
-    // =====================================================
+        filtroMascota.innerHTML =
+            `<option value="">
+                Todas las mascotas
+            </option>`;
+
+        mascotas.forEach(mascota => {
+
+            const id =
+                mascota.id_mascota ??
+                mascota.id;
+
+            const nombre =
+                mascota.nombre ||
+                "Sin nombre";
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value = id;
+            opcion.textContent = nombre;
+
+            mascotaSelect.appendChild(opcion);
+
+            const filtro =
+                document.createElement("option");
+
+            filtro.value = id;
+            filtro.textContent = nombre;
+
+            filtroMascota.appendChild(filtro);
+
+        });
+
+    }
 
     async function cargarUsuarios() {
 
@@ -182,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const respuesta =
                 await fetch(`${API}/usuarios`);
-
 
             if (!respuesta.ok) {
 
@@ -192,70 +152,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             usuarios =
                 await respuesta.json();
 
-
             usuarioSelect.innerHTML =
-                `
-                <option value="">
+                `<option value="">
                     Seleccione un veterinario
-                </option>
-                `;
-
+                </option>`;
 
             usuarios.forEach(usuario => {
+
+                const id =
+                    usuario.id_usuario ??
+                    usuario.id;
+
+                const nombre =
+                    `${usuario.nombre || ""}
+                    ${usuario.apellido || ""}`
+                    .trim()
+                    || usuario.usuario
+                    || `Usuario #${id}`;
 
                 const opcion =
                     document.createElement("option");
 
-
-                opcion.value =
-                    usuario.id_usuario;
-
-
-                opcion.textContent =
-                    `${usuario.nombre} ${usuario.apellido}`;
-
+                opcion.value = id;
+                opcion.textContent = nombre;
 
                 usuarioSelect.appendChild(opcion);
 
             });
-
 
         } catch (error) {
 
             console.error(error);
 
             usuarioSelect.innerHTML =
-                `
-                <option value="">
+                `<option value="">
                     Error al cargar veterinarios
-                </option>
-                `;
+                </option>`;
 
         }
 
     }
 
-
-
-    // =====================================================
-    // CARGAR HISTORIAS
-    // =====================================================
-
     async function cargarHistorias() {
 
         tablaHistorias.innerHTML =
-            `
-            <tr>
+            `<tr>
                 <td colspan="7" class="cargando">
                     Cargando historias clínicas...
                 </td>
-            </tr>
-            `;
-
+            </tr>`;
 
         try {
 
@@ -263,7 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 await fetch(
                     `${API}/historias-clinicas`
                 );
-
 
             if (!respuesta.ok) {
 
@@ -273,152 +220,102 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             historias =
                 await respuesta.json();
 
-
-            mostrarHistorias(historias);
-
             actualizarResumen();
 
+            aplicarFiltros();
 
         } catch (error) {
 
             console.error(error);
 
-
             tablaHistorias.innerHTML =
-                `
-                <tr>
+                `<tr>
                     <td colspan="7" class="error-tabla">
-
                         ⚠️ No fue posible cargar
                         las historias clínicas.
-
                         <br><br>
-
                         Verifique que el servidor
                         de Doctor Wilson esté funcionando.
-
                     </td>
-                </tr>
-                `;
+                </tr>`;
 
         }
 
     }
 
-
-
-    // =====================================================
-    // MOSTRAR HISTORIAS
-    // =====================================================
-
     function mostrarHistorias(lista) {
 
         tablaHistorias.innerHTML = "";
 
-
-        if (!lista || lista.length === 0) {
+        if (!lista.length) {
 
             tablaHistorias.innerHTML =
-                `
-                <tr>
+                `<tr>
                     <td colspan="7" class="vacio">
-
-                        📋 No hay historias clínicas
-                        registradas.
-
+                        📋 No se encontraron historias clínicas
+                        con los filtros seleccionados.
                     </td>
-                </tr>
-                `;
+                </tr>`;
 
             return;
         }
-
 
         lista.forEach((historia, indice) => {
 
             const fila =
                 document.createElement("tr");
 
-
-            fila.innerHTML =
-                `
-
+            fila.innerHTML = `
                 <td>
-
                     <span class="numero">
                         ${indice + 1}
                     </span>
-
                 </td>
-
 
                 <td>
                     ${formatearFecha(historia.fecha)}
                 </td>
 
-
                 <td>
-
                     <div class="mascota">
-
-                        <span>
-                            🐾
-                        </span>
+                        <span>🐾</span>
 
                         <strong>
                             ${escaparHTML(
-                                historia.mascota
+                                historia.mascota ||
+                                "Sin nombre"
                             )}
                         </strong>
-
                     </div>
-
                 </td>
 
-
                 <td>
-
                     <span class="texto-celda">
-
                         ${escaparHTML(
-                            historia.motivo_consulta
+                            historia.motivo_consulta ||
+                            "Sin motivo"
                         )}
-
                     </span>
-
                 </td>
 
-
                 <td>
-
                     <span class="texto-celda">
-
-                        ${
-                            historia.diagnostico
-                                ? escaparHTML(
-                                    historia.diagnostico
-                                )
-                                : "Sin diagnóstico registrado"
-                        }
-
+                        ${escaparHTML(
+                            historia.diagnostico ||
+                            "Sin diagnóstico registrado"
+                        )}
                     </span>
-
                 </td>
 
-
                 <td>
-
                     ${escaparHTML(
                         historia.veterinario ||
                         "Sin asignar"
                     )}
-
                 </td>
-
 
                 <td>
 
@@ -426,46 +323,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         <button
                             type="button"
-                            class="btn-accion btn-editar"
+                            class="btn-accion btn-detalle"
                             data-id="${historia.id_historia}"
-                            title="Editar historia"
-                        >
-                            ✏️
+                            title="Ver detalle">
+                            👁️
                         </button>
 
+                        <button
+                            type="button"
+                            class="btn-accion btn-editar"
+                            data-id="${historia.id_historia}"
+                            title="Editar historia">
+                            ✏️
+                        </button>
 
                         <button
                             type="button"
                             class="btn-accion btn-eliminar"
                             data-id="${historia.id_historia}"
-                            title="Eliminar historia"
-                        >
+                            title="Eliminar historia">
                             🗑️
                         </button>
 
                     </div>
 
                 </td>
-
-                `;
-
+            `;
 
             tablaHistorias.appendChild(fila);
 
         });
 
-
         activarBotones();
 
     }
 
-
-
-    // =====================================================
-    // BOTONES EDITAR / ELIMINAR
-    // =====================================================
-
     function activarBotones() {
+
+        document
+            .querySelectorAll(".btn-detalle")
+            .forEach(boton => {
+
+                boton.addEventListener(
+                    "click",
+                    () => {
+
+                        mostrarDetalle(
+                            boton.dataset.id
+                        );
+
+                    }
+                );
+
+            });
 
         document
             .querySelectorAll(".btn-editar")
@@ -483,7 +393,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             });
-
 
         document
             .querySelectorAll(".btn-eliminar")
@@ -504,32 +413,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-
-    // =====================================================
-    // GUARDAR / ACTUALIZAR
-    // =====================================================
-
     formulario.addEventListener(
         "submit",
         async evento => {
 
             evento.preventDefault();
 
-
             if (
                 !mascotaSelect.value ||
-                !usuarioSelect.value
+                !usuarioSelect.value ||
+                !fechaInput.value ||
+                !motivoInput.value.trim()
             ) {
 
                 alert(
-                    "Debe seleccionar la mascota y el veterinario."
+                    "Complete todos los campos obligatorios."
                 );
 
                 return;
 
             }
 
+            if (
+                fechaInput.value >
+                obtenerFechaActual()
+            ) {
+
+                alert(
+                    "La fecha de la historia clínica no puede ser futura."
+                );
+
+                return;
+
+            }
 
             const datos = {
 
@@ -556,68 +472,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
             };
 
-
             btnGuardar.disabled = true;
-
 
             try {
 
-                let respuesta;
+                const editando =
+                    Boolean(idHistoria.value);
 
+                const url =
+                    editando
+                        ? `${API}/historias-clinicas/${idHistoria.value}`
+                        : `${API}/historias-clinicas`;
 
-                // =========================================
-                // ACTUALIZAR
-                // =========================================
+                const respuesta =
+                    await fetch(
+                        url,
+                        {
+                            method:
+                                editando
+                                    ? "PUT"
+                                    : "POST",
 
-                if (idHistoria.value) {
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                    respuesta =
-                        await fetch(
-                            `${API}/historias-clinicas/${idHistoria.value}`,
-                            {
-                                method: "PUT",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(datos)
-                            }
-                        );
-
-                }
-
-
-                // =========================================
-                // INSERTAR
-                // =========================================
-
-                else {
-
-                    respuesta =
-                        await fetch(
-                            `${API}/historias-clinicas`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(datos)
-                            }
-                        );
-
-                }
-
+                            body:
+                                JSON.stringify(datos)
+                        }
+                    );
 
                 const resultado =
                     await respuesta.json();
-
 
                 if (!respuesta.ok) {
 
@@ -629,37 +516,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
-
-                if (idHistoria.value) {
-
-                    alert(
-                        "Historia clínica actualizada correctamente."
-                    );
-
-                } else {
-
-                    alert(
-                        "Historia clínica registrada correctamente."
-                    );
-
-                }
-
+                alert(
+                    editando
+                        ? "Historia clínica actualizada correctamente."
+                        : "Historia clínica registrada correctamente."
+                );
 
                 limpiarFormulario();
 
                 await cargarHistorias();
 
-
             } catch (error) {
 
                 console.error(error);
 
-
                 alert(
-                    "No fue posible guardar la historia clínica.\n\n" +
-                    error.message
-                );
+                    `No fue posible guardar la historia clínica.
 
+${error.message}`
+                );
 
             } finally {
 
@@ -670,12 +545,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
-
-    // =====================================================
-    // EDITAR HISTORIA
-    // =====================================================
-
     async function editarHistoria(id) {
 
         try {
@@ -685,7 +554,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     `${API}/historias-clinicas/${id}`
                 );
 
-
             if (!respuesta.ok) {
 
                 throw new Error(
@@ -694,71 +562,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             const historia =
                 await respuesta.json();
-
 
             idHistoria.value =
                 historia.id_historia;
 
-
             mascotaSelect.value =
                 historia.id_mascota;
 
-
             usuarioSelect.value =
                 historia.id_usuario;
-
 
             fechaInput.value =
                 obtenerFechaInput(
                     historia.fecha
                 );
 
-
             motivoInput.value =
                 historia.motivo_consulta ||
                 "";
-
 
             diagnosticoInput.value =
                 historia.diagnostico ||
                 "";
 
-
             tratamientoInput.value =
                 historia.tratamiento ||
                 "";
-
 
             observacionesInput.value =
                 historia.observaciones ||
                 "";
 
-
             tituloFormulario.textContent =
                 "Editar historia clínica";
-
 
             btnGuardar.innerHTML =
                 "💾 Guardar cambios";
 
-
             btnCancelar.style.display =
                 "inline-flex";
-
 
             window.scrollTo({
                 top: 0,
                 behavior: "smooth"
             });
 
-
         } catch (error) {
 
             console.error(error);
-
 
             alert(
                 "No fue posible cargar la historia clínica."
@@ -767,12 +620,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     }
-
-
-
-    // =====================================================
-    // ELIMINAR HISTORIA
-    // =====================================================
 
     async function eliminarHistoria(id) {
 
@@ -783,32 +630,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     String(id)
             );
 
-
         if (!historia) {
-
-            alert(
-                "No se encontró la historia clínica."
-            );
-
             return;
-
         }
-
 
         const confirmar =
             confirm(
-                `¿Está seguro de eliminar la historia clínica de ${historia.mascota}?\n\n` +
-                `Motivo: ${historia.motivo_consulta}\n\n` +
-                `Esta acción no se puede deshacer.`
+                `¿Está seguro de eliminar la historia clínica de ${
+                    historia.mascota ||
+                    "la mascota"
+                }?
+
+Esta acción no se puede deshacer.`
             );
 
-
         if (!confirmar) {
-
             return;
-
         }
-
 
         try {
 
@@ -820,10 +658,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 );
 
-
             const resultado =
                 await respuesta.json();
-
 
             if (!respuesta.ok) {
 
@@ -835,49 +671,117 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             alert(
                 "Historia clínica eliminada correctamente."
             );
 
-
             await cargarHistorias();
-
 
         } catch (error) {
 
             console.error(error);
 
-
             alert(
-                "No fue posible eliminar la historia clínica.\n\n" +
-                error.message
+                `No fue posible eliminar la historia clínica.
+
+${error.message}`
             );
 
         }
 
     }
 
+    function mostrarDetalle(id) {
 
+        const historia =
+            historias.find(
+                item =>
+                    String(item.id_historia) ===
+                    String(id)
+            );
 
-    // =====================================================
-    // CANCELAR EDICIÓN
-    // =====================================================
+        if (!historia) {
+            return;
+        }
+
+        document.getElementById(
+            "detalle-mascota"
+        ).textContent =
+            historia.mascota ||
+            "Sin nombre";
+
+        document.getElementById(
+            "detalle-veterinario"
+        ).textContent =
+            historia.veterinario ||
+            "Sin asignar";
+
+        document.getElementById(
+            "detalle-fecha"
+        ).textContent =
+            formatearFecha(
+                historia.fecha
+            );
+
+        document.getElementById(
+            "detalle-motivo"
+        ).textContent =
+            historia.motivo_consulta ||
+            "Sin motivo";
+
+        document.getElementById(
+            "detalle-diagnostico"
+        ).textContent =
+            historia.diagnostico ||
+            "Sin diagnóstico registrado.";
+
+        document.getElementById(
+            "detalle-tratamiento"
+        ).textContent =
+            historia.tratamiento ||
+            "Sin tratamiento registrado.";
+
+        document.getElementById(
+            "detalle-observaciones"
+        ).textContent =
+            historia.observaciones ||
+            "Sin observaciones.";
+
+        modalDetalle.classList.remove(
+            "hidden"
+        );
+
+    }
+
+    function cerrarDetalle() {
+
+        modalDetalle.classList.add(
+            "hidden"
+        );
+
+    }
+
+    btnCerrarModal.addEventListener(
+        "click",
+        cerrarDetalle
+    );
+
+    btnCerrarModalFooter.addEventListener(
+        "click",
+        cerrarDetalle
+    );
+
+    modalDetalle
+        .querySelector(".modal-overlay")
+        .addEventListener(
+            "click",
+            cerrarDetalle
+        );
 
     btnCancelar.addEventListener(
         "click",
-        () => {
-
-            limpiarFormulario();
-
-        }
+        limpiarFormulario
     );
-
-
-
-    // =====================================================
-    // LIMPIAR
-    // =====================================================
 
     formulario.addEventListener(
         "reset",
@@ -891,7 +795,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
     btnLimpiar.addEventListener(
         "click",
         () => {
@@ -904,7 +807,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
     function limpiarFormulario() {
 
         formulario.reset();
@@ -913,96 +815,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
         salirModoEdicion();
 
-    }
+        establecerFechaMinima();
 
+    }
 
     function salirModoEdicion() {
 
         tituloFormulario.textContent =
             "Registrar historia clínica";
 
-
         btnGuardar.innerHTML =
             "💾 Registrar historia";
-
 
         btnCancelar.style.display =
             "none";
 
     }
 
-
-
-    // =====================================================
-    // BUSCADOR
-    // =====================================================
-
     buscarInput.addEventListener(
         "input",
+        aplicarFiltros
+    );
+
+    filtroFecha.addEventListener(
+        "change",
+        aplicarFiltros
+    );
+
+    filtroMascota.addEventListener(
+        "change",
+        aplicarFiltros
+    );
+
+    btnLimpiarFiltros.addEventListener(
+        "click",
         () => {
 
-            const texto =
-                buscarInput.value
-                    .toLowerCase()
-                    .trim();
+            buscarInput.value = "";
+            filtroFecha.value = "";
+            filtroMascota.value = "";
 
-
-            if (texto === "") {
-
-                mostrarHistorias(historias);
-
-                return;
-
-            }
-
-
-            const resultados =
-                historias.filter(historia => {
-
-                    const mascota =
-                        String(
-                            historia.mascota || ""
-                        ).toLowerCase();
-
-
-                    const motivo =
-                        String(
-                            historia.motivo_consulta || ""
-                        ).toLowerCase();
-
-
-                    const diagnostico =
-                        String(
-                            historia.diagnostico || ""
-                        ).toLowerCase();
-
-
-                    const veterinario =
-                        String(
-                            historia.veterinario || ""
-                        ).toLowerCase();
-
-
-                    return (
-                        mascota.includes(texto) ||
-                        motivo.includes(texto) ||
-                        diagnostico.includes(texto) ||
-                        veterinario.includes(texto)
-                    );
-
-                });
-
-
-            mostrarHistorias(resultados);
+            aplicarFiltros();
 
         }
     );
-
-
-
-    // =====================================================
-    // ACTUALIZAR
-    // =====================================================
 
     btnActualizar.addEventListener(
         "click",
@@ -1017,118 +873,176 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
+    function aplicarFiltros() {
 
-
-    // =====================================================
-    // RESUMEN
-    // =====================================================
-
-    function actualizarResumen() {
-
-        const total =
-            historias.length;
-
-
-        const mascotasUnicas =
-            new Set(
-                historias.map(
-                    historia =>
-                        historia.id_mascota
-                )
-            );
-
-
-        document.getElementById(
-            "total-historias"
-        ).textContent =
-            total;
-
-
-        document.getElementById(
-            "total-mascotas"
-        ).textContent =
-            mascotasUnicas.size;
-
-
-        document.getElementById(
-            "total-consultas"
-        ).textContent =
-            total;
-
-    }
-
-
-
-    // =====================================================
-    // FECHA PARA MOSTRAR
-    // =====================================================
-
-    function formatearFecha(valor) {
-
-        if (!valor) {
-
-            return "-";
-
-        }
-
+        const texto =
+            buscarInput.value
+                .toLowerCase()
+                .trim();
 
         const fecha =
-            new Date(valor);
+            filtroFecha.value;
 
+        const mascota =
+            filtroMascota.value;
 
-        if (isNaN(fecha.getTime())) {
+        const resultados =
+            historias.filter(historia => {
 
-            return String(valor)
-                .substring(0, 10);
+                const contenido = [
 
-        }
+                    historia.mascota,
+                    historia.motivo_consulta,
+                    historia.diagnostico,
+                    historia.tratamiento,
+                    historia.observaciones,
+                    historia.veterinario
 
+                ].map(
+                    valor =>
+                        String(
+                            valor || ""
+                        ).toLowerCase()
+                );
 
-        return fecha.toLocaleDateString(
-            "es-CO"
+                const coincideTexto =
+                    !texto ||
+                    contenido.some(
+                        valor =>
+                            valor.includes(texto)
+                    );
+
+                const coincideFecha =
+                    !fecha ||
+                    obtenerFechaInput(
+                        historia.fecha
+                    ) === fecha;
+
+                const coincideMascota =
+                    !mascota ||
+                    String(
+                        historia.id_mascota
+                    ) === String(mascota);
+
+                return (
+                    coincideTexto &&
+                    coincideFecha &&
+                    coincideMascota
+                );
+
+            });
+
+        mostrarHistorias(
+            resultados
         );
 
     }
 
+    function actualizarResumen() {
 
+        document.getElementById(
+            "total-historias"
+        ).textContent =
+            historias.length;
 
-    // =====================================================
-    // FECHA PARA INPUT
-    // =====================================================
+        document.getElementById(
+            "total-mascotas"
+        ).textContent =
+            new Set(
+                historias.map(
+                    h =>
+                        h.id_mascota
+                )
+            ).size;
+
+        document.getElementById(
+            "total-consultas"
+        ).textContent =
+            historias.length;
+
+    }
+
+    function formatearFecha(valor) {
+
+        const fecha =
+            obtenerFechaInput(valor);
+
+        if (!fecha) {
+            return "-";
+        }
+
+        const [
+            año,
+            mes,
+            dia
+        ] =
+            fecha.split("-");
+
+        return `${dia}/${mes}/${año}`;
+
+    }
 
     function obtenerFechaInput(valor) {
 
         if (!valor) {
-
             return "";
-
         }
 
-
-        const texto =
-            String(valor)
-                .replace("T", " ");
-
-
-        return texto
+        return String(valor)
+            .replace("T", " ")
             .split(" ")[0];
 
     }
 
+    function obtenerFechaActual() {
 
+        const fecha =
+            new Date();
 
-    // =====================================================
-    // SEGURIDAD
-    // =====================================================
+        return `${fecha.getFullYear()}-${
+            String(
+                fecha.getMonth() + 1
+            ).padStart(2, "0")
+        }-${
+            String(
+                fecha.getDate()
+            ).padStart(2, "0")
+        }`;
+
+    }
+
+    function establecerFechaMinima() {
+
+        fechaInput.max =
+            obtenerFechaActual();
+
+    }
 
     function escaparHTML(texto) {
 
-        return String(texto ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return String(
+            texto ?? ""
+        )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
     }
 
