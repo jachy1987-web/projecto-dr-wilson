@@ -1,309 +1,208 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-
-    // =====================================================
-    // CONFIGURACIÓN
-    // =====================================================
-
     const API = "http://localhost:3001/api";
 
-
-
-    // =====================================================
-    // ELEMENTOS
-    // =====================================================
-
     const form =
-        document.getElementById(
-            "formularioVacunacion"
-        );
-
+        document.getElementById("formularioVacunacion");
 
     const idVacunacion =
-        document.getElementById(
-            "id_vacunacion"
-        );
-
+        document.getElementById("id_vacunacion");
 
     const mascotaSelect =
-        document.getElementById(
-            "mascota"
-        );
-
+        document.getElementById("mascota");
 
     const vacunaSelect =
-        document.getElementById(
-            "vacuna"
-        );
-
+        document.getElementById("vacuna");
 
     const fechaAplicacion =
-        document.getElementById(
-            "fechaAplicacion"
-        );
-
+        document.getElementById("fechaAplicacion");
 
     const proximaDosis =
-        document.getElementById(
-            "proximaDosis"
-        );
-
+        document.getElementById("proximaDosis");
 
     const observaciones =
-        document.getElementById(
-            "observaciones"
-        );
-
+        document.getElementById("observaciones");
 
     const cuerpoTabla =
-        document.getElementById(
-            "cuerpoVacunaciones"
-        );
-
+        document.getElementById("cuerpoVacunaciones");
 
     const btnGuardar =
-        document.getElementById(
-            "btnGuardar"
-        );
-
+        document.getElementById("btnGuardar");
 
     const btnCancelar =
-        document.getElementById(
-            "btnCancelar"
-        );
+        document.getElementById("btnCancelar");
 
+    const btnLimpiar =
+        document.getElementById("btnLimpiar");
 
     const btnActualizar =
-        document.getElementById(
-            "btnActualizar"
-        );
-
+        document.getElementById("btnActualizar");
 
     const buscarInput =
-        document.getElementById(
-            "buscarVacunacion"
-        );
+        document.getElementById("buscarVacunacion");
 
+    const filtroEstado =
+        document.getElementById("filtroEstado");
+
+    const btnLimpiarFiltros =
+        document.getElementById("btnLimpiarFiltros");
+
+    const resultadoFiltro =
+        document.getElementById("resultadoFiltro");
 
     const tituloFormulario =
-        document.getElementById(
-            "titulo-formulario"
-        );
+        document.getElementById("titulo-formulario");
 
+    const mensajeFormulario =
+        document.getElementById("mensajeFormulario");
 
+    const contadorObservaciones =
+        document.getElementById("contadorObservaciones");
 
-    // =====================================================
-    // VARIABLES
-    // =====================================================
+    const modal =
+        document.getElementById("modalDetalle");
+
+    const btnCerrarModal =
+        document.getElementById("btnCerrarModal");
+
+    const btnCerrarModalFooter =
+        document.getElementById("btnCerrarModalFooter");
+
 
     let vacunaciones = [];
-
     let mascotas = [];
-
     let vacunas = [];
 
 
+    function hoyISO() {
 
-    // =====================================================
-    // CARGAR INFORMACIÓN INICIAL
-    // =====================================================
+        return new Date()
+            .toISOString()
+            .slice(0, 10);
+
+    }
+
 
     cargarDatosIniciales();
 
 
-
     async function cargarDatosIniciales() {
 
-        await Promise.all([
-            cargarMascotas(),
-            cargarVacunas(),
-            cargarVacunaciones()
-        ]);
+        try {
+
+            await Promise.all([
+                cargarMascotas(),
+                cargarVacunas(),
+                cargarVacunaciones()
+            ]);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
 
     }
 
 
-
-    // =====================================================
+    // ============================
     // CARGAR MASCOTAS
-    // =====================================================
+    // ============================
 
     async function cargarMascotas() {
 
-        try {
+        const respuesta =
+            await fetch(`${API}/mascotas`);
 
-            const respuesta =
-                await fetch(
-                    `${API}/mascotas`
-                );
+        if (!respuesta.ok) {
 
-
-            if (!respuesta.ok) {
-
-                throw new Error(
-                    "No se pudieron cargar las mascotas."
-                );
-
-            }
-
-
-            mascotas =
-                await respuesta.json();
-
-
-            mascotaSelect.innerHTML =
-                `
-                <option value="">
-                    Seleccione una mascota
-                </option>
-                `;
-
-
-            mascotas.forEach(mascota => {
-
-                const opcion =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                opcion.value =
-                    mascota.id_mascota;
-
-
-                opcion.textContent =
-                    mascota.nombre;
-
-
-                mascotaSelect.appendChild(
-                    opcion
-                );
-
-            });
-
-
-        } catch (error) {
-
-            console.error(error);
-
-
-            mascotaSelect.innerHTML =
-                `
-                <option value="">
-                    Error al cargar mascotas
-                </option>
-                `;
+            throw new Error(
+                "No se pudieron cargar las mascotas."
+            );
 
         }
+
+        mascotas = await respuesta.json();
+
+        mascotaSelect.innerHTML =
+            '<option value="">Seleccione una mascota</option>';
+
+        mascotas.forEach(mascota => {
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value =
+                mascota.id_mascota;
+
+            opcion.textContent =
+                mascota.nombre;
+
+            mascotaSelect.appendChild(opcion);
+
+        });
 
     }
 
 
-
-    // =====================================================
+    // ============================
     // CARGAR VACUNAS
-    // =====================================================
+    // ============================
 
     async function cargarVacunas() {
 
-        try {
+        const respuesta =
+            await fetch(`${API}/vacunas`);
 
-            const respuesta =
-                await fetch(
-                    `${API}/vacunas`
-                );
+        if (!respuesta.ok) {
 
-
-            if (!respuesta.ok) {
-
-                throw new Error(
-                    "No se pudieron cargar las vacunas."
-                );
-
-            }
-
-
-            vacunas =
-                await respuesta.json();
-
-
-            vacunaSelect.innerHTML =
-                `
-                <option value="">
-                    Seleccione una vacuna
-                </option>
-                `;
-
-
-            vacunas.forEach(vacuna => {
-
-                const opcion =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                opcion.value =
-                    vacuna.id_vacuna;
-
-
-                opcion.textContent =
-                    vacuna.nombre;
-
-
-                vacunaSelect.appendChild(
-                    opcion
-                );
-
-            });
-
-
-        } catch (error) {
-
-            console.error(error);
-
-
-            vacunaSelect.innerHTML =
-                `
-                <option value="">
-                    Error al cargar vacunas
-                </option>
-                `;
+            throw new Error(
+                "No se pudieron cargar las vacunas."
+            );
 
         }
+
+        vacunas = await respuesta.json();
+
+        vacunaSelect.innerHTML =
+            '<option value="">Seleccione una vacuna</option>';
+
+        vacunas.forEach(vacuna => {
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value =
+                vacuna.id_vacuna;
+
+            opcion.textContent =
+                vacuna.nombre;
+
+            vacunaSelect.appendChild(opcion);
+
+        });
 
     }
 
 
-
-    // =====================================================
+    // ============================
     // CARGAR VACUNACIONES
-    // =====================================================
+    // ============================
 
     async function cargarVacunaciones() {
 
-        cuerpoTabla.innerHTML =
-            `
+        cuerpoTabla.innerHTML = `
             <tr>
-
-                <td
-                    colspan="7"
-                    class="cargando"
-                >
+                <td colspan="7" class="cargando">
                     Cargando vacunaciones...
                 </td>
-
             </tr>
-            `;
-
+        `;
 
         try {
 
             const respuesta =
-                await fetch(
-                    `${API}/vacunaciones`
-                );
-
+                await fetch(`${API}/vacunaciones`);
 
             if (!respuesta.ok) {
 
@@ -313,281 +212,325 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             vacunaciones =
                 await respuesta.json();
 
-
-            mostrarVacunaciones(
-                vacunaciones
-            );
-
-
             actualizarResumen();
 
+            aplicarFiltros();
 
         } catch (error) {
 
             console.error(error);
 
-
-            cuerpoTabla.innerHTML =
-                `
+            cuerpoTabla.innerHTML = `
                 <tr>
-
-                    <td
-                        colspan="7"
-                        class="error-tabla"
-                    >
-
-                        ⚠️ No fue posible cargar
-                        las vacunaciones.
-
-                        <br><br>
-
-                        Verifique que el servidor
-                        de Doctor Wilson esté funcionando.
-
+                    <td colspan="7" class="error-tabla">
+                        ⚠️ No fue posible cargar las vacunaciones.
+                        Verifique que el servidor esté funcionando.
                     </td>
-
                 </tr>
-                `;
+            `;
 
         }
 
     }
 
 
+    // ============================
+    // FILTROS
+    // ============================
 
-    // =====================================================
-    // MOSTRAR VACUNACIONES
-    // =====================================================
+    function aplicarFiltros() {
+
+        const texto =
+            buscarInput.value
+                .toLowerCase()
+                .trim();
+
+        const estado =
+            filtroEstado.value;
+
+
+        const resultados =
+            vacunaciones.filter(registro => {
+
+                const contenido = [
+
+                    registro.mascota,
+                    registro.vacuna,
+                    registro.observaciones,
+                    formatearFecha(
+                        registro.fecha_aplicacion
+                    ),
+                    formatearFecha(
+                        registro.proxima_dosis
+                    )
+
+                ]
+                    .join(" ")
+                    .toLowerCase();
+
+
+                const coincideTexto =
+                    !texto ||
+                    contenido.includes(texto);
+
+
+                const coincideEstado =
+                    estado === "todos" ||
+                    obtenerEstadoDosis(registro) === estado;
+
+
+                return coincideTexto &&
+                    coincideEstado;
+
+            });
+
+
+        mostrarVacunaciones(resultados);
+
+
+        resultadoFiltro.textContent =
+            resultados.length === vacunaciones.length
+                ? `Mostrando ${resultados.length} registro(s).`
+                : `Mostrando ${resultados.length} de ${vacunaciones.length} registro(s).`;
+
+    }
+
+
+    // ============================
+    // MOSTRAR TABLA
+    // ============================
 
     function mostrarVacunaciones(lista) {
 
         cuerpoTabla.innerHTML = "";
 
 
-        if (
-            !lista ||
-            lista.length === 0
-        ) {
+        if (!lista.length) {
 
-            cuerpoTabla.innerHTML =
-                `
+            cuerpoTabla.innerHTML = `
                 <tr>
-
-                    <td
-                        colspan="7"
-                        class="vacio"
-                    >
-
-                        💉 No hay vacunaciones
-                        registradas.
-
+                    <td colspan="7" class="vacio">
+                        💉 No se encontraron vacunaciones
+                        con los filtros seleccionados.
                     </td>
-
                 </tr>
-                `;
+            `;
 
             return;
 
         }
 
 
+        lista.forEach((vacunacion, indice) => {
 
-        lista.forEach(
-            (vacunacion, indice) => {
-
-
-                const fila =
-                    document.createElement(
-                        "tr"
-                    );
+            const fila =
+                document.createElement("tr");
 
 
-                fila.innerHTML =
-                    `
-
-                    <td>
-
-                        <span class="numero">
-                            ${indice + 1}
-                        </span>
-
-                    </td>
+            const estado =
+                obtenerEstadoDosis(vacunacion);
 
 
-                    <td>
-
-                        <div class="mascota">
-
-                            <span>
-                                🐾
-                            </span>
-
-                            <strong>
-                                ${escaparHTML(
-                                    vacunacion.mascota
-                                )}
-                            </strong>
-
-                        </div>
-
-                    </td>
+            const estadoTexto =
+                estado === "vencida"
+                    ? "Vencida"
+                    : estado === "pendiente"
+                        ? "Próxima"
+                        : "Sin programación";
 
 
-                    <td>
+            fila.innerHTML = `
 
-                        <span class="vacuna-nombre">
+                <td>
+                    <span class="numero">
+                        ${indice + 1}
+                    </span>
+                </td>
 
-                            💉
 
+                <td>
+
+                    <div class="mascota">
+
+                        <span>🐾</span>
+
+                        <strong>
                             ${escaparHTML(
-                                vacunacion.vacuna
+                                vacunacion.mascota
+                            )}
+                        </strong>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="vacuna-nombre">
+
+                        💉
+                        ${escaparHTML(
+                            vacunacion.vacuna
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${formatearFecha(
+                        vacunacion.fecha_aplicacion
+                    )}
+                </td>
+
+
+                <td>
+
+                    ${
+                        vacunacion.proxima_dosis
+
+                        ?
+
+                        `
+                        <span
+                            class="proxima-dosis ${estado}">
+
+                            📆
+                            ${formatearFecha(
+                                vacunacion.proxima_dosis
                             )}
 
                         </span>
 
-                    </td>
+                        <small class="estado-dosis">
+                            ${estadoTexto}
+                        </small>
+                        `
 
+                        :
 
-                    <td>
-                        ${formatearFecha(
-                            vacunacion.fecha_aplicacion
-                        )}
-                    </td>
-
-
-                    <td>
-
-                        ${
-                            vacunacion.proxima_dosis
-                                ? `
-                                    <span class="proxima-dosis">
-
-                                        📆
-
-                                        ${formatearFecha(
-                                            vacunacion.proxima_dosis
-                                        )}
-
-                                    </span>
-                                  `
-                                : `
-                                    <span class="sin-dosis">
-                                        No programada
-                                    </span>
-                                  `
-                        }
-
-                    </td>
-
-
-                    <td>
-
-                        <span class="observacion-tabla">
-
-                            ${
-                                vacunacion.observaciones
-                                    ? escaparHTML(
-                                        vacunacion.observaciones
-                                    )
-                                    : "Sin observaciones"
-                            }
-
+                        `
+                        <span class="sin-dosis">
+                            No programada
                         </span>
+                        `
+                    }
 
-                    </td>
-
-
-                    <td>
-
-                        <div class="acciones">
-
-                            <button
-                                type="button"
-                                class="btn-accion btn-editar"
-                                data-id="${vacunacion.id_vacunacion}"
-                                title="Editar vacunación"
-                            >
-                                ✏️
-                            </button>
+                </td>
 
 
-                            <button
-                                type="button"
-                                class="btn-accion btn-eliminar"
-                                data-id="${vacunacion.id_vacunacion}"
-                                title="Eliminar vacunación"
-                            >
-                                🗑️
-                            </button>
+                <td>
 
-                        </div>
+                    <span
+                        class="observacion-tabla"
+                        title="${escaparHTML(
+                            vacunacion.observaciones ||
+                            "Sin observaciones"
+                        )}">
 
-                    </td>
+                        ${escaparHTML(
+                            vacunacion.observaciones ||
+                            "Sin observaciones"
+                        )}
 
-                    `;
+                    </span>
 
-
-                cuerpoTabla.appendChild(
-                    fila
-                );
-
-            }
-        );
+                </td>
 
 
-        activarBotones();
+                <td>
 
-    }
+                    <div class="acciones">
+
+                        <button
+                            type="button"
+                            class="btn-accion btn-detalle"
+                            data-id="${vacunacion.id_vacunacion}"
+                            title="Ver detalle">
+
+                            👁️
+
+                        </button>
 
 
+                        <button
+                            type="button"
+                            class="btn-accion btn-editar"
+                            data-id="${vacunacion.id_vacunacion}"
+                            title="Editar">
 
-    // =====================================================
-    // ACTIVAR BOTONES
-    // =====================================================
+                            ✏️
 
-    function activarBotones() {
+                        </button>
 
 
-        document
-            .querySelectorAll(
-                ".btn-editar"
-            )
+                        <button
+                            type="button"
+                            class="btn-accion btn-eliminar"
+                            data-id="${vacunacion.id_vacunacion}"
+                            title="Eliminar">
+
+                            🗑️
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            `;
+
+
+            cuerpoTabla.appendChild(fila);
+
+        });
+
+
+        cuerpoTabla
+            .querySelectorAll(".btn-detalle")
             .forEach(boton => {
 
                 boton.addEventListener(
                     "click",
-                    () => {
+                    () =>
+                        mostrarDetalle(
+                            boton.dataset.id
+                        )
+                );
 
+            });
+
+
+        cuerpoTabla
+            .querySelectorAll(".btn-editar")
+            .forEach(boton => {
+
+                boton.addEventListener(
+                    "click",
+                    () =>
                         editarVacunacion(
                             boton.dataset.id
-                        );
-
-                    }
+                        )
                 );
 
             });
 
 
-
-        document
-            .querySelectorAll(
-                ".btn-eliminar"
-            )
+        cuerpoTabla
+            .querySelectorAll(".btn-eliminar")
             .forEach(boton => {
 
                 boton.addEventListener(
                     "click",
-                    () => {
-
+                    () =>
                         eliminarVacunacion(
                             boton.dataset.id
-                        );
-
-                    }
+                        )
                 );
 
             });
@@ -595,27 +538,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    // ============================
+    // ESTADO DE DOSIS
+    // ============================
 
-    // =====================================================
-    // GUARDAR / ACTUALIZAR
-    // =====================================================
+    function obtenerEstadoDosis(registro) {
+
+        if (!registro.proxima_dosis) {
+
+            return "sin";
+
+        }
+
+
+        return obtenerFechaInput(
+            registro.proxima_dosis
+        ) < hoyISO()
+
+            ? "vencida"
+
+            : "pendiente";
+
+    }
+
+
+    // ============================
+    // GUARDAR
+    // ============================
 
     form.addEventListener(
         "submit",
-        async evento => {
+        async event => {
 
-            evento.preventDefault();
+            event.preventDefault();
+
+            ocultarMensaje();
 
 
-            if (
-                !mascotaSelect.value ||
-                !vacunaSelect.value ||
-                !fechaAplicacion.value
-            ) {
-
-                alert(
-                    "Complete los campos obligatorios."
-                );
+            if (!validarFormulario()) {
 
                 return;
 
@@ -647,69 +607,48 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
 
-            btnGuardar.disabled =
-                true;
+            const editando =
+                Boolean(idVacunacion.value);
+
+
+            btnGuardar.disabled = true;
+
+            btnGuardar.textContent =
+                editando
+                    ? "⏳ Guardando cambios..."
+                    : "⏳ Registrando...";
 
 
             try {
 
-                let respuesta;
+                const url =
+                    editando
+
+                        ? `${API}/vacunaciones/${idVacunacion.value}`
+
+                        : `${API}/vacunaciones`;
 
 
-                // =========================================
-                // ACTUALIZAR
-                // =========================================
+                const respuesta =
+                    await fetch(
+                        url,
+                        {
 
-                if (
-                    idVacunacion.value
-                ) {
+                            method:
+                                editando
+                                    ? "PUT"
+                                    : "POST",
 
-                    respuesta =
-                        await fetch(
-                            `${API}/vacunaciones/${idVacunacion.value}`,
-                            {
-                                method: "PUT",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
+                            body:
+                                JSON.stringify(datos)
 
-                                body:
-                                    JSON.stringify(
-                                        datos
-                                    )
-                            }
-                        );
-
-                }
-
-
-                // =========================================
-                // REGISTRAR
-                // =========================================
-
-                else {
-
-                    respuesta =
-                        await fetch(
-                            `${API}/vacunaciones`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        datos
-                                    )
-                            }
-                        );
-
-                }
+                        }
+                    );
 
 
                 const resultado =
@@ -727,14 +666,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                alert(
+                mostrarMensaje(
                     resultado.mensaje ||
-                    "Operación realizada correctamente."
+                    "Operación realizada correctamente.",
+                    "exito"
                 );
 
 
                 limpiarFormulario();
-
 
                 await cargarVacunaciones();
 
@@ -743,17 +682,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 console.error(error);
 
-
-                alert(
-                    "No fue posible guardar la vacunación.\n\n" +
-                    error.message
+                mostrarMensaje(
+                    error.message,
+                    "error"
                 );
-
 
             } finally {
 
-                btnGuardar.disabled =
-                    false;
+                btnGuardar.disabled = false;
+
+                btnGuardar.textContent =
+                    idVacunacion.value
+                        ? "💾 Guardar cambios"
+                        : "💾 Registrar vacunación";
 
             }
 
@@ -761,10 +702,103 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    // ============================
+    // VALIDACIONES
+    // ============================
 
-    // =====================================================
-    // EDITAR VACUNACIÓN
-    // =====================================================
+    function validarFormulario() {
+
+        if (
+            !mascotaSelect.value ||
+            !vacunaSelect.value ||
+            !fechaAplicacion.value
+        ) {
+
+            mostrarMensaje(
+                "Complete todos los campos obligatorios.",
+                "error"
+            );
+
+            return false;
+
+        }
+
+
+        if (
+            fechaAplicacion.value >
+            hoyISO()
+        ) {
+
+            mostrarMensaje(
+                "La fecha de aplicación no puede ser posterior a hoy.",
+                "error"
+            );
+
+            return false;
+
+        }
+
+
+        if (
+            proximaDosis.value &&
+            proximaDosis.value <
+            fechaAplicacion.value
+        ) {
+
+            mostrarMensaje(
+                "La próxima dosis no puede ser anterior a la fecha de aplicación.",
+                "error"
+            );
+
+            return false;
+
+        }
+
+
+        const duplicado =
+            vacunaciones.some(registro =>
+
+                String(registro.id_mascota) ===
+                mascotaSelect.value &&
+
+                String(registro.id_vacuna) ===
+                vacunaSelect.value &&
+
+                obtenerFechaInput(
+                    registro.fecha_aplicacion
+                ) ===
+                fechaAplicacion.value &&
+
+                String(
+                    registro.id_vacunacion
+                ) !==
+                String(
+                    idVacunacion.value || ""
+                )
+
+            );
+
+
+        if (duplicado) {
+
+            mostrarMensaje(
+                "Ya existe un registro para esta mascota, vacuna y fecha de aplicación.",
+                "error"
+            );
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    // ============================
+    // EDITAR
+    // ============================
 
     async function editarVacunacion(id) {
 
@@ -818,16 +852,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 "";
 
 
+            actualizarContador();
+
+
             tituloFormulario.textContent =
                 "Editar vacunación";
 
 
-            btnGuardar.innerHTML =
+            btnGuardar.textContent =
                 "💾 Guardar cambios";
 
 
-            btnCancelar.style.display =
-                "inline-flex";
+            btnCancelar.hidden = false;
 
 
             window.scrollTo({
@@ -838,11 +874,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-            console.error(error);
-
-
-            alert(
-                "No fue posible cargar la vacunación."
+            mostrarMensaje(
+                error.message,
+                "error"
             );
 
         }
@@ -850,27 +884,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    // =====================================================
-    // ELIMINAR VACUNACIÓN
-    // =====================================================
+    // ============================
+    // ELIMINAR
+    // ============================
 
     async function eliminarVacunacion(id) {
 
         const registro =
             vacunaciones.find(
-                elemento =>
+                item =>
                     String(
-                        elemento.id_vacunacion
+                        item.id_vacunacion
                     ) === String(id)
             );
 
 
         if (!registro) {
-
-            alert(
-                "No se encontró el registro."
-            );
 
             return;
 
@@ -879,10 +908,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const confirmar =
             confirm(
-                `¿Está seguro de eliminar la vacunación?\n\n` +
-                `Mascota: ${registro.mascota}\n` +
-                `Vacuna: ${registro.vacuna}\n\n` +
-                `Esta acción no se puede deshacer.`
+                `¿Desea eliminar esta vacunación?
+
+Mascota: ${registro.mascota}
+Vacuna: ${registro.vacuna}
+Fecha: ${formatearFecha(
+    registro.fecha_aplicacion
+)}
+
+Esta acción no se puede deshacer.`
             );
 
 
@@ -919,9 +953,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            alert(
+            mostrarMensaje(
                 resultado.mensaje ||
-                "Vacunación eliminada correctamente."
+                "Vacunación eliminada correctamente.",
+                "exito"
             );
 
 
@@ -930,12 +965,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-            console.error(error);
-
-
-            alert(
-                "No fue posible eliminar la vacunación.\n\n" +
-                error.message
+            mostrarMensaje(
+                error.message,
+                "error"
             );
 
         }
@@ -943,36 +975,149 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    // ============================
+    // DETALLE
+    // ============================
 
-    // =====================================================
-    // CANCELAR EDICIÓN
-    // =====================================================
+    function mostrarDetalle(id) {
 
-    btnCancelar.addEventListener(
+        const registro =
+            vacunaciones.find(
+                item =>
+                    String(
+                        item.id_vacunacion
+                    ) === String(id)
+            );
+
+
+        if (!registro) {
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "detalleMascota"
+        ).textContent =
+            registro.mascota || "—";
+
+
+        document.getElementById(
+            "detalleVacuna"
+        ).textContent =
+            registro.vacuna || "—";
+
+
+        document.getElementById(
+            "detalleAplicacion"
+        ).textContent =
+            formatearFecha(
+                registro.fecha_aplicacion
+            );
+
+
+        document.getElementById(
+            "detalleProxima"
+        ).textContent =
+            registro.proxima_dosis
+                ? formatearFecha(
+                    registro.proxima_dosis
+                )
+                : "No programada";
+
+
+        document.getElementById(
+            "detalleObservaciones"
+        ).textContent =
+            registro.observaciones ||
+            "Sin observaciones";
+
+
+        modal.hidden = false;
+
+        document.body.classList.add(
+            "modal-abierto"
+        );
+
+    }
+
+
+    // ============================
+    // CERRAR MODAL
+    // ============================
+
+    function cerrarModal() {
+
+        modal.hidden = true;
+
+        document.body.classList.remove(
+            "modal-abierto"
+        );
+
+    }
+
+
+    btnCerrarModal.addEventListener(
         "click",
-        () => {
+        cerrarModal
+    );
 
-            limpiarFormulario();
+
+    btnCerrarModalFooter.addEventListener(
+        "click",
+        cerrarModal
+    );
+
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.dataset
+                    .cerrarModal !==
+                undefined
+            ) {
+
+                cerrarModal();
+
+            }
 
         }
     );
 
 
+    document.addEventListener(
+        "keydown",
+        event => {
 
-    // =====================================================
-    // LIMPIAR FORMULARIO
-    // =====================================================
+            if (
+                event.key === "Escape" &&
+                !modal.hidden
+            ) {
 
-    form.addEventListener(
-        "reset",
-        () => {
+                cerrarModal();
 
-            setTimeout(
-                salirModoEdicion,
-                50
-            );
+            }
 
         }
+    );
+
+
+    // ============================
+    // LIMPIAR FORMULARIO
+    // ============================
+
+    btnCancelar.addEventListener(
+        "click",
+        limpiarFormulario
+    );
+
+
+    btnLimpiar.addEventListener(
+        "click",
+        limpiarFormulario
     );
 
 
@@ -980,10 +1125,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         form.reset();
 
-        idVacunacion.value =
-            "";
+        idVacunacion.value = "";
 
         salirModoEdicion();
+
+        ocultarMensaje();
+
+        actualizarContador();
 
     }
 
@@ -994,113 +1142,92 @@ document.addEventListener("DOMContentLoaded", () => {
             "Registrar vacunación";
 
 
-        btnGuardar.innerHTML =
+        btnGuardar.textContent =
             "💾 Registrar vacunación";
 
 
-        btnCancelar.style.display =
-            "none";
+        btnCancelar.hidden = true;
 
     }
 
 
-
-    // =====================================================
-    // BUSCADOR
-    // =====================================================
+    // ============================
+    // BUSCAR Y FILTRAR
+    // ============================
 
     buscarInput.addEventListener(
         "input",
+        aplicarFiltros
+    );
+
+
+    filtroEstado.addEventListener(
+        "change",
+        aplicarFiltros
+    );
+
+
+    btnLimpiarFiltros.addEventListener(
+        "click",
         () => {
 
-            const texto =
-                buscarInput.value
-                    .toLowerCase()
-                    .trim();
+            buscarInput.value = "";
 
+            filtroEstado.value = "todos";
 
-            if (!texto) {
-
-                mostrarVacunaciones(
-                    vacunaciones
-                );
-
-                return;
-
-            }
-
-
-            const resultados =
-                vacunaciones.filter(
-                    vacunacion => {
-
-
-                        const mascota =
-                            String(
-                                vacunacion.mascota ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const vacuna =
-                            String(
-                                vacunacion.vacuna ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const observacion =
-                            String(
-                                vacunacion.observaciones ||
-                                ""
-                            ).toLowerCase();
-
-
-                        return (
-                            mascota.includes(texto) ||
-                            vacuna.includes(texto) ||
-                            observacion.includes(texto)
-                        );
-
-                    }
-                );
-
-
-            mostrarVacunaciones(
-                resultados
-            );
+            aplicarFiltros();
 
         }
     );
 
 
-
-    // =====================================================
+    // ============================
     // ACTUALIZAR
-    // =====================================================
+    // ============================
 
     btnActualizar.addEventListener(
         "click",
         async () => {
 
-            btnActualizar.disabled =
-                true;
+            btnActualizar.disabled = true;
+
+            btnActualizar.textContent =
+                "⏳ Actualizando...";
 
 
             await cargarVacunaciones();
 
 
-            btnActualizar.disabled =
-                false;
+            btnActualizar.disabled = false;
+
+            btnActualizar.textContent =
+                "🔄 Actualizar";
 
         }
     );
 
 
+    // ============================
+    // CONTADOR
+    // ============================
 
-    // =====================================================
+    observaciones.addEventListener(
+        "input",
+        actualizarContador
+    );
+
+
+    function actualizarContador() {
+
+        contadorObservaciones.textContent =
+            observaciones.value.length;
+
+    }
+
+
+    // ============================
     // RESUMEN
-    // =====================================================
+    // ============================
 
     function actualizarResumen() {
 
@@ -1110,78 +1237,73 @@ document.addEventListener("DOMContentLoaded", () => {
             vacunaciones.length;
 
 
-        const mascotasUnicas =
-            new Set(
-                vacunaciones.map(
-                    vacunacion =>
-                        vacunacion.id_mascota
-                )
-            );
-
-
         document.getElementById(
             "mascotasVacunadas"
         ).textContent =
-            mascotasUnicas.size;
-
-
-        const hoy =
-            new Date();
-
-
-        hoy.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        const proximas =
-            vacunaciones.filter(
-                vacunacion => {
-
-                    if (
-                        !vacunacion.proxima_dosis
-                    ) {
-
-                        return false;
-
-                    }
-
-
-                    const fecha =
-                        new Date(
-                            vacunacion.proxima_dosis
-                        );
-
-
-                    fecha.setHours(
-                        0,
-                        0,
-                        0,
-                        0
-                    );
-
-
-                    return fecha >= hoy;
-
-                }
-            ).length;
+            new Set(
+                vacunaciones.map(
+                    registro =>
+                        registro.id_mascota
+                )
+            ).size;
 
 
         document.getElementById(
             "proximasDosis"
         ).textContent =
-            proximas;
+            vacunaciones.filter(
+                registro =>
+                    obtenerEstadoDosis(
+                        registro
+                    ) === "pendiente"
+            ).length;
+
+
+        document.getElementById(
+            "dosisVencidas"
+        ).textContent =
+            vacunaciones.filter(
+                registro =>
+                    obtenerEstadoDosis(
+                        registro
+                    ) === "vencida"
+            ).length;
 
     }
 
 
+    // ============================
+    // MENSAJES
+    // ============================
 
-    // =====================================================
-    // FORMATEAR FECHA
-    // =====================================================
+    function mostrarMensaje(
+        texto,
+        tipo
+    ) {
+
+        mensajeFormulario.textContent =
+            texto;
+
+        mensajeFormulario.className =
+            `mensaje-formulario ${tipo}`;
+
+    }
+
+
+    function ocultarMensaje() {
+
+        mensajeFormulario.textContent =
+            "";
+
+        mensajeFormulario.className =
+            "mensaje-formulario";
+
+    }
+
+
+    // ============================
+    // FORMATO DE FECHAS
+    // ============================
 
     function formatearFecha(valor) {
 
@@ -1201,24 +1323,14 @@ document.addEventListener("DOMContentLoaded", () => {
             texto.split("-");
 
 
-        if (
-            partes.length !== 3
-        ) {
+        return partes.length === 3
 
-            return texto;
+            ? `${partes[2]}/${partes[1]}/${partes[0]}`
 
-        }
-
-
-        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            : texto;
 
     }
 
-
-
-    // =====================================================
-    // FECHA PARA INPUT
-    // =====================================================
 
     function obtenerFechaInput(valor) {
 
@@ -1236,34 +1348,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    // =====================================================
+    // ============================
     // SEGURIDAD HTML
-    // =====================================================
+    // ============================
 
     function escaparHTML(texto) {
 
         return String(texto ?? "")
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
     }
 
