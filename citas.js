@@ -1,23 +1,13 @@
-const API_URL = "/api";
+const API = "http://localhost:3001/api";
 
-let citas = [];
-let mascotas = [];
-let veterinarios = [];
-
-const formCita = document.getElementById("form-cita");
-const formularioCita = document.getElementById("formulario-cita");
-
-const btnNuevaCita = document.getElementById("btn-nueva-cita");
-const btnCancelarForm = document.getElementById("btn-cancelar-form");
-const btnActualizar = document.getElementById("btn-actualizar");
-const btnLimpiar = document.getElementById("btn-limpiar");
-
-const tablaCitas = document.getElementById("tabla-citas");
+const form = document.getElementById("form-cita");
+const formulario = document.getElementById("formulario-cita");
+const tabla = document.getElementById("tabla-citas");
 
 const mascotaSelect = document.getElementById("mascota_id");
-const veterinarioSelect = document.getElementById("veterinario_id");
+const usuarioSelect = document.getElementById("veterinario_id");
 
-const citaId = document.getElementById("cita-id");
+const idInput = document.getElementById("cita-id");
 const fechaInput = document.getElementById("fecha");
 const horaInput = document.getElementById("hora");
 const motivoInput = document.getElementById("motivo");
@@ -27,127 +17,46 @@ const estadoInput = document.getElementById("estado");
 const buscador = document.getElementById("buscador");
 const filtroEstado = document.getElementById("filtro-estado");
 const filtroFecha = document.getElementById("filtro-fecha");
-const btnLimpiarFiltros =
-    document.getElementById("btn-limpiar-filtros");
 
-const resultadoFiltro =
-    document.getElementById("resultado-filtro");
+const mensajeTabla = document.getElementById("mensaje-tabla");
+const modal = document.getElementById("modal-detalle");
 
-const totalCitas =
-    document.getElementById("total-citas");
+let citas = [];
+let mascotas = [];
+let usuarios = [];
 
-const citasPendientes =
-    document.getElementById("citas-pendientes");
-
-const citasAtendidas =
-    document.getElementById("citas-atendidas");
-
-const citasCanceladas =
-    document.getElementById("citas-canceladas");
-
-const tituloFormulario =
-    document.getElementById("titulo-formulario");
-
-const mensajeTabla =
-    document.getElementById("mensaje-tabla");
-
-const modalDetalle =
-    document.getElementById("modal-detalle");
-
-const btnCerrarModal =
-    document.getElementById("btn-cerrar-modal");
-
-const btnCerrarModalFooter =
-    document.getElementById("btn-cerrar-modal-footer");
-
-const detalleEstado =
-    document.getElementById("detalle-estado");
-
-const detalleMascota =
-    document.getElementById("detalle-mascota");
-
-const detalleVeterinario =
-    document.getElementById("detalle-veterinario");
-
-const detalleFecha =
-    document.getElementById("detalle-fecha");
-
-const detalleHora =
-    document.getElementById("detalle-hora");
-
-const detalleMotivo =
-    document.getElementById("detalle-motivo");
-
-const detalleObservaciones =
-    document.getElementById("detalle-observaciones");
+const $ = id => document.getElementById(id);
 
 
-/* ============================================================
-   INICIO
-   ============================================================ */
+window.addEventListener("DOMContentLoaded", iniciar);
 
-document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar() {
 
-    establecerFechaMinima();
+    fechaInput.min = hoy();
+
+    await Promise.all([
+        cargarMascotas(),
+        cargarUsuarios()
+    ]);
+
+    await cargarCitas();
 
     configurarEventos();
-
-    try {
-
-        await cargarMascotas();
-        await cargarVeterinarios();
-        await cargarCitas();
-
-    } catch (error) {
-
-        console.error(error);
-
-        mostrarMensaje(
-            "No fue posible cargar toda la información.",
-            "error"
-        );
-
-    }
 }
 
 
-/* ============================================================
-   EVENTOS
-   ============================================================ */
-
 function configurarEventos() {
 
-    btnNuevaCita.addEventListener(
-        "click",
-        abrirFormulario
-    );
+    $("btn-nueva-cita")
+        .addEventListener("click", abrirFormulario);
 
-    btnCancelarForm.addEventListener(
-        "click",
-        cerrarFormulario
-    );
+    $("btn-cancelar-form")
+        .addEventListener("click", cerrarFormulario);
 
-    btnActualizar.addEventListener(
-        "click",
-        cargarCitas
-    );
+    form.addEventListener("submit", guardarCita);
 
-    btnLimpiar.addEventListener(
-        "click",
-        limpiarFormulario
-    );
-
-    formCita.addEventListener(
-        "submit",
-        guardarCita
-    );
-
-    buscador.addEventListener(
-        "input",
-        aplicarFiltros
-    );
+    buscador.addEventListener("input", aplicarFiltros);
 
     filtroEstado.addEventListener(
         "change",
@@ -159,224 +68,646 @@ function configurarEventos() {
         aplicarFiltros
     );
 
-    btnLimpiarFiltros.addEventListener(
-        "click",
-        limpiarFiltros
-    );
+    $("btn-limpiar-filtros")
+        .addEventListener(
+            "click",
+            limpiarFiltros
+        );
 
-    btnCerrarModal.addEventListener(
-        "click",
-        cerrarDetalle
-    );
+    $("btn-cerrar-modal")
+        .addEventListener(
+            "click",
+            cerrarModal
+        );
 
-    btnCerrarModalFooter.addEventListener(
-        "click",
-        cerrarDetalle
-    );
+    $("btn-cerrar-modal-footer")
+        .addEventListener(
+            "click",
+            cerrarModal
+        );
 
-    document
+    modal
         .querySelector(".modal-overlay")
         .addEventListener(
             "click",
-            cerrarDetalle
+            cerrarModal
         );
-
 }
 
-
-/* ============================================================
-   CARGAR MASCOTAS
-   ============================================================ */
 
 async function cargarMascotas() {
 
-    const respuesta =
-        await fetch(`${API_URL}/mascotas`);
+    try {
 
-    if (!respuesta.ok) {
-        throw new Error(
-            "No se pudieron cargar las mascotas."
+        const respuesta =
+            await fetch(`${API}/mascotas`);
+
+        if (!respuesta.ok) {
+            throw new Error(
+                "No se pudieron cargar las mascotas."
+            );
+        }
+
+        mascotas =
+            await respuesta.json();
+
+        mascotaSelect.innerHTML =
+            `<option value="">
+                Seleccionar mascota
+            </option>`;
+
+        mascotas.forEach(mascota => {
+
+            mascotaSelect.insertAdjacentHTML(
+                "beforeend",
+                `
+                <option value="${mascota.id_mascota}">
+                    ${escapeHtml(mascota.nombre)}
+                    ${mascota.raza
+                        ? ` - ${escapeHtml(mascota.raza)}`
+                        : ""}
+                </option>
+                `
+            );
+
+        });
+
+    } catch (error) {
+
+        mostrarMensaje(
+            error.message,
+            "error"
         );
     }
-
-    const datos = await respuesta.json();
-
-    mascotas = Array.isArray(datos)
-        ? datos
-        : datos.mascotas || datos.data || [];
-
-    mascotaSelect.innerHTML =
-        `<option value="">
-            Seleccionar mascota
-        </option>`;
-
-    mascotas.forEach(mascota => {
-
-        const id =
-            mascota.id_mascota ??
-            mascota.id ??
-            mascota.ID;
-
-        const nombre =
-            mascota.nombre ||
-            mascota.nombre_mascota ||
-            "Sin nombre";
-
-        if (!id) return;
-
-        const opcion =
-            document.createElement("option");
-
-        opcion.value = id;
-
-        opcion.textContent = nombre;
-
-        mascotaSelect.appendChild(opcion);
-
-    });
-
 }
 
 
-/* ============================================================
-   CARGAR VETERINARIOS
-   ============================================================ */
+async function cargarUsuarios() {
 
-async function cargarVeterinarios() {
+    try {
 
-    const respuesta =
-        await fetch(`${API_URL}/usuarios`);
+        const respuesta =
+            await fetch(`${API}/usuarios`);
 
-    if (!respuesta.ok) {
-        throw new Error(
-            "No se pudieron cargar los usuarios."
+        if (!respuesta.ok) {
+            throw new Error(
+                "No se pudieron cargar los veterinarios."
+            );
+        }
+
+        usuarios =
+            await respuesta.json();
+
+        usuarioSelect.innerHTML =
+            `<option value="">
+                Seleccionar veterinario
+            </option>`;
+
+        usuarios.forEach(usuario => {
+
+            const nombre =
+                `${usuario.nombre || ""}
+                 ${usuario.apellido || ""}`
+                    .trim()
+                || usuario.correo
+                || `Usuario #${usuario.id_usuario}`;
+
+            usuarioSelect.insertAdjacentHTML(
+                "beforeend",
+                `
+                <option value="${usuario.id_usuario}">
+                    ${escapeHtml(nombre)}
+                </option>
+                `
+            );
+
+        });
+
+    } catch (error) {
+
+        mostrarMensaje(
+            error.message,
+            "error"
         );
     }
-
-    const datos = await respuesta.json();
-
-    const usuarios = Array.isArray(datos)
-        ? datos
-        : datos.usuarios || datos.data || [];
-
-    veterinarios = usuarios.filter(usuario => {
-
-        const rol = String(
-            usuario.rol ||
-            usuario.nombre_rol ||
-            usuario.tipo_rol ||
-            ""
-        ).toLowerCase();
-
-        return rol.includes("veterin");
-
-    });
-
-    if (!veterinarios.length) {
-        veterinarios = usuarios;
-    }
-
-    veterinarioSelect.innerHTML =
-        `<option value="">
-            Seleccionar veterinario
-        </option>`;
-
-    veterinarios.forEach(veterinario => {
-
-        const id =
-            veterinario.id_usuario ??
-            veterinario.id ??
-            veterinario.ID;
-
-        if (!id) return;
-
-        const nombre = (
-            `${veterinario.nombre || ""}
-             ${veterinario.apellido || ""}`
-        ).replace(/\s+/g, " ").trim();
-
-        const opcion =
-            document.createElement("option");
-
-        opcion.value = id;
-
-        opcion.textContent =
-            nombre ||
-            veterinario.usuario ||
-            `Veterinario #${id}`;
-
-        veterinarioSelect.appendChild(opcion);
-
-    });
-
 }
 
-
-/* ============================================================
-   CARGAR CITAS
-   ============================================================ */
 
 async function cargarCitas() {
 
-    mostrarMensaje(
-        "Cargando citas...",
-        "info"
-    );
+    try {
 
-    const respuesta =
-        await fetch(`${API_URL}/citas`);
+        const respuesta =
+            await fetch(`${API}/citas`);
 
-    if (!respuesta.ok) {
-        throw new Error(
-            "No se pudieron consultar las citas."
-        );
+        if (!respuesta.ok) {
+            throw new Error(
+                "No se pudieron cargar las citas."
+            );
+        }
+
+        citas =
+            await respuesta.json();
+
+        actualizarResumen();
+
+        aplicarFiltros();
+
+    } catch (error) {
+
+        console.error(error);
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-state">
+                    No fue posible cargar las citas.
+                    Verifique que el servidor esté funcionando.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+function mostrarCitas(lista) {
+
+    if (!lista.length) {
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-state">
+                    No se encontraron citas.
+                </td>
+            </tr>
+        `;
+
+        return;
     }
 
-    const datos = await respuesta.json();
+    tabla.innerHTML =
+        lista.map(cita => {
 
-    citas = Array.isArray(datos)
-        ? datos
-        : datos.citas || datos.data || [];
+            const fechaHora =
+                separarFechaHora(
+                    cita.fecha_hora
+                );
 
-    actualizarResumen();
+            return `
+                <tr>
 
-    aplicarFiltros();
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                cita.mascota ||
+                                "Sin nombre"
+                            )}
+                        </strong>
+                    </td>
 
-    mostrarMensaje("", "");
+                    <td>
+                        ${escapeHtml(
+                            cita.veterinario ||
+                            "Sin asignar"
+                        )}
+                    </td>
 
+                    <td>
+                        ${formatearFecha(
+                            fechaHora.fecha
+                        )}
+                    </td>
+
+                    <td>
+                        ${fechaHora.hora || "-"}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            cita.motivo || "-"
+                        )}
+                    </td>
+
+                    <td>
+                        <span
+                            class="status-badge
+                            ${claseEstado(cita.estado)}">
+                            ${escapeHtml(
+                                cita.estado
+                            )}
+                        </span>
+                    </td>
+
+                    <td class="actions-cell">
+
+                        <button
+                            class="btn-action btn-detail"
+                            data-action="detalle"
+                            data-id="${cita.id_cita}"
+                            title="Ver detalle">
+                            👁
+                        </button>
+
+                        <button
+                            class="btn-action btn-edit"
+                            data-action="editar"
+                            data-id="${cita.id_cita}"
+                            title="Editar cita">
+                            ✏️
+                        </button>
+
+                        <button
+                            class="btn-action btn-delete"
+                            data-action="eliminar"
+                            data-id="${cita.id_cita}"
+                            title="Eliminar cita">
+                            🗑️
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+
+    tabla
+        .querySelectorAll("[data-action]")
+        .forEach(boton => {
+
+            boton.addEventListener(
+                "click",
+                () => {
+
+                    const id =
+                        Number(
+                            boton.dataset.id
+                        );
+
+                    if (
+                        boton.dataset.action ===
+                        "detalle"
+                    ) {
+                        mostrarDetalle(id);
+                    }
+
+                    if (
+                        boton.dataset.action ===
+                        "editar"
+                    ) {
+                        editarCita(id);
+                    }
+
+                    if (
+                        boton.dataset.action ===
+                        "eliminar"
+                    ) {
+                        eliminarCita(id);
+                    }
+
+                }
+            );
+
+        });
 }
 
 
-/* ============================================================
-   RESUMEN
-   ============================================================ */
+async function guardarCita(event) {
 
-function actualizarResumen() {
+    event.preventDefault();
 
-    totalCitas.textContent =
-        citas.length;
+    const datos = {
 
-    citasPendientes.textContent =
-        citas.filter(c =>
-            normalizarEstado(c.estado) === "programada" ||
-            normalizarEstado(c.estado) === "pendiente"
-        ).length;
+        id_mascota:
+            Number(
+                mascotaSelect.value
+            ),
 
-    citasAtendidas.textContent =
-        citas.filter(c =>
-            normalizarEstado(c.estado) === "atendida"
-        ).length;
+        id_usuario:
+            Number(
+                usuarioSelect.value
+            ),
 
-    citasCanceladas.textContent =
-        citas.filter(c =>
-            normalizarEstado(c.estado) === "cancelada"
-        ).length;
+        fecha_hora:
+            `${fechaInput.value}
+             ${horaInput.value}:00`,
+
+        motivo:
+            motivoInput.value.trim(),
+
+        observaciones:
+            observacionesInput.value.trim()
+            || null,
+
+        estado:
+            estadoInput.value
+
+    };
+
+
+    if (
+        !datos.id_mascota ||
+        !datos.id_usuario ||
+        !fechaInput.value ||
+        !horaInput.value ||
+        !datos.motivo
+    ) {
+
+        mostrarMensaje(
+            "Complete todos los campos obligatorios.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const editando =
+            Boolean(idInput.value);
+
+        const respuesta =
+            await fetch(
+                editando
+                    ? `${API}/citas/${idInput.value}`
+                    : `${API}/citas`,
+                {
+                    method:
+                        editando
+                            ? "PUT"
+                            : "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(datos)
+                }
+            );
+
+
+        const resultado =
+            await respuesta
+                .json()
+                .catch(() => ({}));
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                resultado.mensaje ||
+                "No fue posible guardar la cita."
+            );
+        }
+
+
+        mostrarMensaje(
+            resultado.mensaje ||
+            "Cita guardada correctamente.",
+            "success"
+        );
+
+
+        cerrarFormulario();
+
+        await cargarCitas();
+
+    } catch (error) {
+
+        mostrarMensaje(
+            error.message,
+            "error"
+        );
+    }
 }
 
 
-/* ============================================================
-   FILTROS
-   ============================================================ */
+function editarCita(id) {
+
+    const cita =
+        citas.find(
+            item =>
+                Number(item.id_cita) ===
+                Number(id)
+        );
+
+    if (!cita) return;
+
+
+    idInput.value =
+        cita.id_cita;
+
+    mascotaSelect.value =
+        cita.id_mascota;
+
+    usuarioSelect.value =
+        cita.id_usuario;
+
+
+    const fechaHora =
+        separarFechaHora(
+            cita.fecha_hora
+        );
+
+
+    fechaInput.value =
+        fechaHora.fecha;
+
+    horaInput.value =
+        fechaHora.hora;
+
+    motivoInput.value =
+        cita.motivo || "";
+
+    observacionesInput.value =
+        cita.observaciones || "";
+
+    estadoInput.value =
+        cita.estado || "Programada";
+
+
+    $("titulo-formulario")
+        .textContent =
+        "Editar cita";
+
+
+    formulario.classList.remove(
+        "hidden"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+async function eliminarCita(id) {
+
+    const cita =
+        citas.find(
+            item =>
+                Number(item.id_cita) ===
+                Number(id)
+        );
+
+    if (!cita) return;
+
+
+    const confirmar =
+        confirm(
+            `¿Desea eliminar la cita de ${
+                cita.mascota ||
+                "la mascota"
+            }?`
+        );
+
+
+    if (!confirmar) return;
+
+
+    try {
+
+        const respuesta =
+            await fetch(
+                `${API}/citas/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const resultado =
+            await respuesta
+                .json()
+                .catch(() => ({}));
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                resultado.mensaje ||
+                "No fue posible eliminar la cita."
+            );
+        }
+
+
+        mostrarMensaje(
+            resultado.mensaje ||
+            "Cita eliminada correctamente.",
+            "success"
+        );
+
+
+        await cargarCitas();
+
+    } catch (error) {
+
+        mostrarMensaje(
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+function mostrarDetalle(id) {
+
+    const cita =
+        citas.find(
+            item =>
+                Number(item.id_cita) ===
+                Number(id)
+        );
+
+    if (!cita) return;
+
+
+    const fechaHora =
+        separarFechaHora(
+            cita.fecha_hora
+        );
+
+
+    $("detalle-estado").textContent =
+        cita.estado || "-";
+
+    $("detalle-mascota").textContent =
+        cita.mascota || "-";
+
+    $("detalle-veterinario").textContent =
+        cita.veterinario || "-";
+
+    $("detalle-fecha").textContent =
+        formatearFecha(
+            fechaHora.fecha
+        );
+
+    $("detalle-hora").textContent =
+        fechaHora.hora || "-";
+
+    $("detalle-motivo").textContent =
+        cita.motivo || "-";
+
+    $("detalle-observaciones").textContent =
+        cita.observaciones ||
+        "Sin observaciones.";
+
+
+    modal.classList.remove(
+        "hidden"
+    );
+}
+
+
+function cerrarModal() {
+
+    modal.classList.add(
+        "hidden"
+    );
+}
+
+
+function abrirFormulario() {
+
+    form.reset();
+
+    idInput.value = "";
+
+    estadoInput.value =
+        "Programada";
+
+    fechaInput.min =
+        hoy();
+
+    $("titulo-formulario")
+        .textContent =
+        "Registrar nueva cita";
+
+    formulario.classList.remove(
+        "hidden"
+    );
+}
+
+
+function cerrarFormulario() {
+
+    formulario.classList.add(
+        "hidden"
+    );
+
+    form.reset();
+
+    idInput.value = "";
+
+    estadoInput.value =
+        "Programada";
+}
+
 
 function aplicarFiltros() {
 
@@ -386,749 +717,204 @@ function aplicarFiltros() {
             .toLowerCase();
 
     const estado =
-        filtroEstado.value
-            .trim()
-            .toLowerCase();
+        filtroEstado.value;
 
     const fecha =
         filtroFecha.value;
 
-    const resultados =
+
+    const filtradas =
         citas.filter(cita => {
 
-            const contenido = [
-                cita.mascota,
-                cita.nombre_mascota,
-                cita.veterinario,
-                cita.nombre_veterinario,
-                cita.motivo,
-                cita.observaciones
-            ]
-                .join(" ")
-                .toLowerCase();
+            const textoCita =
+                `
+                ${cita.mascota || ""}
+                ${cita.veterinario || ""}
+                ${cita.motivo || ""}
+                ${cita.observaciones || ""}
+                `.toLowerCase();
 
-            const coincideTexto =
-                !texto ||
-                contenido.includes(texto);
-
-            const estadoCita =
-                normalizarEstado(cita.estado);
-
-            const coincideEstado =
-                !estado ||
-                estadoCita === estado ||
-                (
-                    estado === "programada" &&
-                    estadoCita === "pendiente"
-                );
 
             const fechaCita =
-                obtenerFecha(cita.fecha);
+                separarFechaHora(
+                    cita.fecha_hora
+                ).fecha;
 
-            const coincideFecha =
-                !fecha ||
-                fechaCita === fecha;
 
             return (
-                coincideTexto &&
-                coincideEstado &&
-                coincideFecha
+
+                (!texto ||
+                    textoCita.includes(texto))
+
+                &&
+
+                (!estado ||
+                    cita.estado === estado)
+
+                &&
+
+                (!fecha ||
+                    fechaCita === fecha)
+
             );
 
         });
 
-    mostrarCitas(resultados);
 
-    resultadoFiltro.textContent =
-        resultados.length === citas.length
-            ? `Mostrando ${resultados.length} registro(s).`
-            : `Mostrando ${resultados.length} de ${citas.length} registro(s).`;
-
+    mostrarCitas(
+        filtradas
+    );
 }
 
-
-/* ============================================================
-   TABLA
-   ============================================================ */
-
-function mostrarCitas(lista) {
-
-    tablaCitas.innerHTML = "";
-
-    if (!lista.length) {
-
-        tablaCitas.innerHTML = `
-            <tr>
-                <td colspan="8" class="vacio">
-                    📅 No se encontraron citas.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    lista.forEach((cita, indice) => {
-
-        const tr =
-            document.createElement("tr");
-
-        const mascota =
-            cita.mascota ||
-            cita.nombre_mascota ||
-            "Sin información";
-
-        const veterinario =
-            cita.veterinario ||
-            cita.nombre_veterinario ||
-            obtenerNombreVeterinario(
-                cita.veterinario_id
-            );
-
-        const estado =
-            normalizarEstado(cita.estado);
-
-        tr.innerHTML = `
-            <td>
-                <span class="numero">
-                    ${indice + 1}
-                </span>
-            </td>
-
-            <td>
-                <strong>
-                    ${escaparHTML(mascota)}
-                </strong>
-            </td>
-
-            <td>
-                ${escaparHTML(veterinario)}
-            </td>
-
-            <td>
-                ${formatearFecha(cita.fecha)}
-            </td>
-
-            <td>
-                ${cita.hora || "--"}
-            </td>
-
-            <td>
-                ${escaparHTML(
-                    cita.motivo || "Sin motivo"
-                )}
-            </td>
-
-            <td>
-                <span class="estado ${claseEstado(estado)}">
-                    ${capitalizarEstado(estado)}
-                </span>
-            </td>
-
-            <td>
-
-                <div class="acciones">
-
-                    <button
-                        type="button"
-                        class="btn-accion btn-detalle"
-                        title="Ver detalle"
-                        onclick="verDetalle(${obtenerId(cita)})"
-                    >
-                        👁
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn-accion btn-editar"
-                        title="Editar"
-                        onclick="editarCita(${obtenerId(cita)})"
-                    >
-                        ✏
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn-accion btn-eliminar"
-                        title="Eliminar"
-                        onclick="eliminarCita(${obtenerId(cita)})"
-                    >
-                        🗑
-                    </button>
-
-                </div>
-
-            </td>
-        `;
-
-        tablaCitas.appendChild(tr);
-
-    });
-
-}
-
-
-/* ============================================================
-   GUARDAR / ACTUALIZAR
-   ============================================================ */
-
-async function guardarCita(evento) {
-
-    evento.preventDefault();
-
-    const id =
-        citaId.value.trim();
-
-    const datos = {
-
-        mascota_id:
-            Number(mascotaSelect.value),
-
-        veterinario_id:
-            Number(veterinarioSelect.value),
-
-        fecha:
-            fechaInput.value,
-
-        hora:
-            horaInput.value,
-
-        motivo:
-            motivoInput.value.trim(),
-
-        observaciones:
-            observacionesInput.value.trim(),
-
-        estado:
-            estadoInput.value
-
-    };
-
-    if (
-        !datos.mascota_id ||
-        !datos.veterinario_id ||
-        !datos.fecha ||
-        !datos.hora ||
-        !datos.motivo
-    ) {
-
-        alert(
-            "Complete todos los campos obligatorios."
-        );
-
-        return;
-    }
-
-    const conflicto =
-        citas.some(cita => {
-
-            const citaActual =
-                String(obtenerId(cita)) === String(id);
-
-            if (citaActual) return false;
-
-            const mascota =
-                Number(
-                    cita.mascota_id ??
-                    cita.id_mascota
-                );
-
-            const fecha =
-                obtenerFecha(cita.fecha);
-
-            const hora =
-                String(cita.hora || "")
-                    .slice(0, 5);
-
-            return (
-                mascota === datos.mascota_id &&
-                fecha === datos.fecha &&
-                hora === datos.hora &&
-                normalizarEstado(cita.estado)
-                    !== "cancelada"
-            );
-
-        });
-
-    if (conflicto) {
-
-        alert(
-            "La mascota ya tiene una cita registrada para esa fecha y hora."
-        );
-
-        return;
-    }
-
-    try {
-
-        const url =
-            id
-                ? `${API_URL}/citas/${id}`
-                : `${API_URL}/citas`;
-
-        const metodo =
-            id ? "PUT" : "POST";
-
-        const respuesta =
-            await fetch(url, {
-
-                method: metodo,
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(datos)
-
-            });
-
-        const resultado =
-            await respuesta.json();
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                resultado.mensaje ||
-                resultado.message ||
-                "No fue posible guardar la cita."
-            );
-
-        }
-
-        alert(
-            id
-                ? "Cita actualizada correctamente."
-                : "Cita registrada correctamente."
-        );
-
-        cerrarFormulario();
-
-        await cargarCitas();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(error.message);
-
-    }
-
-}
-
-
-/* ============================================================
-   EDITAR
-   ============================================================ */
-
-window.editarCita = function(id) {
-
-    const cita =
-        citas.find(
-            elemento =>
-                String(obtenerId(elemento)) === String(id)
-        );
-
-    if (!cita) {
-        alert("No se encontró la cita.");
-        return;
-    }
-
-    citaId.value =
-        obtenerId(cita);
-
-    mascotaSelect.value =
-        cita.mascota_id ??
-        cita.id_mascota ??
-        "";
-
-    veterinarioSelect.value =
-        cita.veterinario_id ??
-        cita.id_usuario ??
-        cita.id_veterinario ??
-        "";
-
-    fechaInput.value =
-        obtenerFecha(cita.fecha);
-
-    horaInput.value =
-        String(cita.hora || "")
-            .slice(0, 5);
-
-    motivoInput.value =
-        cita.motivo || "";
-
-    observacionesInput.value =
-        cita.observaciones || "";
-
-    const estado =
-        normalizarEstado(cita.estado);
-
-    estadoInput.value =
-        estado === "pendiente"
-            ? "Programada"
-            : capitalizarEstado(estado);
-
-    tituloFormulario.textContent =
-        "Editar cita";
-
-    formularioCita.hidden = false;
-
-    formularioCita.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
-};
-
-
-/* ============================================================
-   ELIMINAR
-   ============================================================ */
-
-window.eliminarCita = async function(id) {
-
-    const confirmar =
-        confirm(
-            "¿Está seguro de eliminar esta cita?"
-        );
-
-    if (!confirmar) return;
-
-    try {
-
-        const respuesta =
-            await fetch(
-                `${API_URL}/citas/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-        const resultado =
-            await respuesta.json();
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                resultado.mensaje ||
-                "No fue posible eliminar la cita."
-            );
-
-        }
-
-        alert(
-            "Cita eliminada correctamente."
-        );
-
-        await cargarCitas();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(error.message);
-
-    }
-
-};
-
-
-/* ============================================================
-   DETALLE
-   ============================================================ */
-
-window.verDetalle = function(id) {
-
-    const cita =
-        citas.find(
-            elemento =>
-                String(obtenerId(elemento)) === String(id)
-        );
-
-    if (!cita) return;
-
-    const estado =
-        normalizarEstado(cita.estado);
-
-    detalleEstado.textContent =
-        capitalizarEstado(estado);
-
-    detalleEstado.className =
-        `estado ${claseEstado(estado)}`;
-
-    detalleMascota.textContent =
-        cita.mascota ||
-        cita.nombre_mascota ||
-        "Sin información";
-
-    detalleVeterinario.textContent =
-        cita.veterinario ||
-        cita.nombre_veterinario ||
-        obtenerNombreVeterinario(
-            cita.veterinario_id
-        );
-
-    detalleFecha.textContent =
-        formatearFecha(cita.fecha);
-
-    detalleHora.textContent =
-        cita.hora || "--";
-
-    detalleMotivo.textContent =
-        cita.motivo || "Sin información";
-
-    detalleObservaciones.textContent =
-        cita.observaciones ||
-        "Sin observaciones.";
-
-    modalDetalle.hidden = false;
-
-};
-
-
-/* ============================================================
-   FORMULARIO
-   ============================================================ */
-
-function abrirFormulario() {
-
-    formCita.reset();
-
-    citaId.value = "";
-
-    tituloFormulario.textContent =
-        "Registrar nueva cita";
-
-    estadoInput.value =
-        "Programada";
-
-    establecerFechaMinima();
-
-    formularioCita.hidden = false;
-
-    formularioCita.scrollIntoView({
-        behavior: "smooth"
-    });
-
-}
-
-
-function cerrarFormulario() {
-
-    formularioCita.hidden = true;
-
-    formCita.reset();
-
-    citaId.value = "";
-
-    tituloFormulario.textContent =
-        "Registrar nueva cita";
-
-    estadoInput.value =
-        "Programada";
-
-}
-
-
-function limpiarFormulario() {
-
-    citaId.value = "";
-
-    tituloFormulario.textContent =
-        "Registrar nueva cita";
-
-    estadoInput.value =
-        "Programada";
-
-}
-
-
-/* ============================================================
-   MODAL
-   ============================================================ */
-
-function cerrarDetalle() {
-    modalDetalle.hidden = true;
-}
-
-
-/* ============================================================
-   FILTROS
-   ============================================================ */
 
 function limpiarFiltros() {
 
     buscador.value = "";
-
     filtroEstado.value = "";
-
     filtroFecha.value = "";
 
     aplicarFiltros();
-
 }
 
 
-/* ============================================================
-   UTILIDADES
-   ============================================================ */
+function actualizarResumen() {
 
-function obtenerId(objeto) {
+    $("total-citas").textContent =
+        citas.length;
 
-    return (
-        objeto.id_cita ??
-        objeto.id ??
-        objeto.ID
+    $("citas-pendientes").textContent =
+        citas.filter(
+            cita =>
+                cita.estado ===
+                "Programada"
+        ).length;
+
+    $("citas-atendidas").textContent =
+        citas.filter(
+            cita =>
+                cita.estado ===
+                "Atendida"
+        ).length;
+
+    $("citas-canceladas").textContent =
+        citas.filter(
+            cita =>
+                cita.estado ===
+                "Cancelada"
+        ).length;
+}
+
+
+function mostrarMensaje(
+    texto,
+    tipo = ""
+) {
+
+    if (!mensajeTabla) return;
+
+    mensajeTabla.textContent =
+        texto;
+
+    mensajeTabla.className =
+        `message ${tipo}`;
+
+    clearTimeout(
+        window.mensajeCita
     );
 
-}
+    window.mensajeCita =
+        setTimeout(() => {
 
+            mensajeTabla.textContent =
+                "";
 
-function obtenerNombreVeterinario(id) {
+            mensajeTabla.className =
+                "message hidden";
 
-    const veterinario =
-        veterinarios.find(
-            elemento =>
-                String(
-                    elemento.id_usuario ??
-                    elemento.id ??
-                    elemento.ID
-                ) === String(id)
-        );
-
-    if (!veterinario) {
-        return "Sin información";
-    }
-
-    return (
-        `${veterinario.nombre || ""}
-         ${veterinario.apellido || ""}`
-    ).replace(/\s+/g, " ").trim();
-
-}
-
-
-function obtenerFecha(fecha) {
-
-    if (!fecha) return "";
-
-    return String(fecha)
-        .slice(0, 10);
-
-}
-
-
-function formatearFecha(fecha) {
-
-    const valor =
-        obtenerFecha(fecha);
-
-    if (!valor) return "--";
-
-    const partes =
-        valor.split("-");
-
-    if (partes.length !== 3) {
-        return valor;
-    }
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-
-}
-
-
-function normalizarEstado(estado) {
-
-    const valor =
-        String(estado || "")
-            .trim()
-            .toLowerCase();
-
-    if (valor === "pendiente") {
-        return "pendiente";
-    }
-
-    if (valor === "programada") {
-        return "programada";
-    }
-
-    if (valor === "atendida") {
-        return "atendida";
-    }
-
-    if (valor === "cancelada") {
-        return "cancelada";
-    }
-
-    return valor;
-
-}
-
-
-function capitalizarEstado(estado) {
-
-    if (!estado) return "Sin estado";
-
-    return estado.charAt(0).toUpperCase()
-        + estado.slice(1);
-
+        }, 3500);
 }
 
 
 function claseEstado(estado) {
 
-    switch (estado) {
+    return String(
+        estado || ""
+    ).toLowerCase();
+}
 
-        case "programada":
-        case "pendiente":
-            return "estado-programada";
 
-        case "atendida":
-            return "estado-atendida";
+function separarFechaHora(valor) {
 
-        case "cancelada":
-            return "estado-cancelada";
+    if (!valor) {
 
-        default:
-            return "";
-
+        return {
+            fecha: "",
+            hora: ""
+        };
     }
 
+
+    const texto =
+        String(valor)
+            .replace("T", " ");
+
+
+    const partes =
+        texto.split(" ");
+
+
+    return {
+
+        fecha:
+            partes[0] || "",
+
+        hora:
+            (partes[1] || "")
+                .substring(0, 5)
+
+    };
 }
 
 
-function escaparHTML(valor) {
+function formatearFecha(valor) {
 
-    return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (!valor) return "-";
 
+    const partes =
+        valor
+            .substring(0, 10)
+            .split("-");
+
+
+    if (partes.length !== 3) {
+        return valor;
+    }
+
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
 
-function establecerFechaMinima() {
+function hoy() {
 
-    const hoy =
-        new Date()
-            .toISOString()
-            .slice(0, 10);
-
-    fechaInput.min = hoy;
-
+    return new Date()
+        .toISOString()
+        .slice(0, 10);
 }
 
 
-function mostrarMensaje(texto, tipo) {
+function escapeHtml(valor) {
 
-    mensajeTabla.textContent =
-        texto || "";
-
-    mensajeTabla.className =
-        `mensaje-tabla ${tipo || ""}`;
-
+    return String(
+        valor ?? ""
+    ).replace(
+        /[&<>'"]/g,
+        caracter => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "'": "&#39;",
+            '"': "&quot;"
+        }[caracter])
+    );
 }
