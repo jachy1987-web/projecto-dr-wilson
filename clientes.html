@@ -1,146 +1,466 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Wilson | Citas</title>
 
-    <title>Doctor Wilson - Clientes</title>
-
-    <link rel="stylesheet" href="css/clientes.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="citas.css">
 </head>
 
 <body>
 
-    <!-- ENCABEZADO -->
-    <header>
-        <img src="imagenes/logo-doctor-wilson.png"
-             class="logo"
-             alt="Doctor Wilson">
+<div class="dashboard-container">
 
-        <h1>Registro de Clientes</h1>
-    </header>
+    <aside class="sidebar">
 
+        <div class="logo-container">
+            <div class="logo-icon">🐾</div>
 
-    <!-- FORMULARIO DE CLIENTES -->
-    <div class="contenedor">
+            <div>
+                <h2>Doctor Wilson</h2>
+                <span>Veterinaria</span>
+            </div>
+        </div>
 
-        <form class="formulario" id="formularioClientes">
+        <nav class="sidebar-menu">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="mascotas.html">🐶 Mascotas</a>
+            <a href="propietarios.html">👤 Propietarios</a>
+            <a href="citas.html" class="active">📅 Citas</a>
+            <a href="historias.html">📋 Historias clínicas</a>
+            <a href="vacunacion.html">💉 Vacunación</a>
+            <a href="facturacion.html">💰 Facturación</a>
+        </nav>
 
-            <!-- NOMBRES -->
-            <label for="nombre">Nombre</label>
-            <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                placeholder="Ingrese el nombre"
-                required
-            >
-
-
-            <!-- APELLIDOS -->
-            <label for="apellido">Apellido</label>
-            <input
-                type="text"
-                id="apellido"
-                name="apellido"
-                placeholder="Ingrese el apellido"
-                required
-            >
+    </aside>
 
 
-            <!-- TIPO DE DOCUMENTO -->
-            <label for="tipoDocumento">Tipo de documento</label>
+    <main class="main-content">
 
-            <select
-                id="tipoDocumento"
-                name="tipoDocumento"
-                required
-            >
-                <option value="">Seleccione un documento</option>
-                <option value="CC">Cédula de ciudadanía</option>
-                <option value="TI">Tarjeta de identidad</option>
-                <option value="CE">Cédula de extranjería</option>
-                <option value="PAS">Pasaporte</option>
-            </select>
+        <header class="top-header">
 
+            <div>
+                <h1>Gestión de citas</h1>
+                <p>Administra las citas veterinarias de tus pacientes.</p>
+            </div>
 
-            <!-- NUMERO DE DOCUMENTO -->
-            <label for="documento">Número de documento</label>
-<input type="text" id="documento" name="documento"
-       placeholder="Ingrese el número de documento" required>
-    
+            <button id="btn-nueva-cita" class="btn-primary">
+                + Nueva cita
+            </button>
+
+        </header>
 
 
-            <!-- TELEFONO -->
-            <label for="telefono">Teléfono</label>
+        <section class="summary-cards">
 
-            <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                placeholder="Ingrese el teléfono"
-                required
-            >
+            <div class="summary-card">
+                <div class="summary-icon">📅</div>
+                <div>
+                    <span>Total de citas</span>
+                    <strong id="total-citas">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">⏳</div>
+                <div>
+                    <span>Programadas</span>
+                    <strong id="citas-pendientes">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">✅</div>
+                <div>
+                    <span>Atendidas</span>
+                    <strong id="citas-atendidas">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">❌</div>
+                <div>
+                    <span>Canceladas</span>
+                    <strong id="citas-canceladas">0</strong>
+                </div>
+            </div>
+
+        </section>
 
 
-            <!-- CORREO -->
-            <label for="correo">Correo electrónico</label>
+        <section id="formulario-cita" class="form-section hidden">
 
-            <input
-                type="email"
-                id="correo"
-                name="correo"
-                placeholder="Ingrese el correo electrónico"
-                required
-            >
+            <div class="section-header">
 
+                <div>
+                    <h2 id="titulo-formulario">
+                        Registrar nueva cita
+                    </h2>
 
-            <!-- DIRECCION -->
-            <label for="direccion">Dirección</label>
+                    <p>
+                        Completa la información requerida.
+                    </p>
+                </div>
 
-            <input
-                type="text"
-                id="direccion"
-                name="direccion"
-                placeholder="Ingrese la dirección"
-                required
-
-            
-        >
+            </div>
 
 
-            <!-- BOTONES -->
-            <div class="botones">
+            <form id="form-cita">
 
-                <button type="submit">
-                    Guardar
-                </button>
+                <input type="hidden" id="cita-id">
 
-                <button type="reset">
-                    Limpiar
-                </button>
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="mascota_id">
+                            Mascota *
+                        </label>
+
+                        <select id="mascota_id" required>
+
+                            <option value="">
+                                Seleccionar mascota
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="veterinario_id">
+                            Veterinario *
+                        </label>
+
+                        <select id="veterinario_id" required>
+
+                            <option value="">
+                                Seleccionar veterinario
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="fecha">
+                            Fecha *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fecha"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="hora">
+                            Hora *
+                        </label>
+
+                        <input
+                            type="time"
+                            id="hora"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="motivo">
+                            Motivo de la consulta *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="motivo"
+                            maxlength="200"
+                            placeholder="Ej: Consulta general, vacunación..."
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="observaciones">
+                            Observaciones
+                        </label>
+
+                        <textarea
+                            id="observaciones"
+                            rows="4"
+                            maxlength="250"
+                            placeholder="Información adicional de la cita..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="estado">
+                            Estado *
+                        </label>
+
+                        <select id="estado" required>
+
+                            <option value="Programada">
+                                Programada
+                            </option>
+
+                            <option value="Atendida">
+                                Atendida
+                            </option>
+
+                            <option value="Cancelada">
+                                Cancelada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        id="btn-cancelar-form"
+                        class="btn-secondary">
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn-primary">
+                        Guardar cita
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <section class="table-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Listado de citas</h2>
+
+                    <p>
+                        Consulta y administra las citas registradas.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="filters-container">
+
+                <div class="filter-group">
+
+                    <label for="buscador">
+                        Buscar
+                    </label>
+
+                    <input
+                        type="search"
+                        id="buscador"
+                        placeholder="Buscar mascota, veterinario o motivo..."
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="filtro-estado">
+                        Estado
+                    </label>
+
+                    <select id="filtro-estado">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="Programada">
+                            Programadas
+                        </option>
+
+                        <option value="Atendida">
+                            Atendidas
+                        </option>
+
+                        <option value="Cancelada">
+                            Canceladas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="filtro-fecha">
+                        Fecha
+                    </label>
+
+                    <input
+                        type="date"
+                        id="filtro-fecha"
+                    >
+
+                </div>
+
 
                 <button
-                    type="button"
-                    onclick="window.location.href='principal.html'">
-                    Volver
+                    id="btn-limpiar-filtros"
+                    class="btn-secondary">
+                    Limpiar filtros
                 </button>
 
             </div>
 
-        </form>
+
+            <div
+                id="mensaje-tabla"
+                class="message hidden">
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Mascota</th>
+                            <th>Veterinario</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabla-citas"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<div id="modal-detalle" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Detalle de la cita</h2>
+
+                <p>
+                    Información completa de la cita seleccionada.
+                </p>
+            </div>
+
+            <button
+                id="btn-cerrar-modal"
+                class="modal-close">
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="detail-grid">
+
+            <div class="detail-item">
+                <span>Estado</span>
+                <strong id="detalle-estado">-</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Mascota</span>
+                <strong id="detalle-mascota">-</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Veterinario</span>
+                <strong id="detalle-veterinario">-</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Fecha</span>
+                <strong id="detalle-fecha">-</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Hora</span>
+                <strong id="detalle-hora">-</strong>
+            </div>
+
+            <div class="detail-item full-width">
+                <span>Motivo</span>
+                <strong id="detalle-motivo">-</strong>
+            </div>
+
+            <div class="detail-item full-width">
+                <span>Observaciones</span>
+                <p id="detalle-observaciones">-</p>
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                id="btn-cerrar-modal-footer"
+                class="btn-secondary">
+                Cerrar
+            </button>
+
+        </div>
 
     </div>
 
-    <!-- LISTA DE PROPIETARIOS -->
-<div class="contenedor">
+</div>
 
-   
 
-    <!-- JAVASCRIPT -->
-    <script src="clientes.js"></script>
+<script src="citas.js"></script>
 
 </body>
-
 </html>
