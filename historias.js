@@ -1,13 +1,17 @@
 /* ============================================================
-   DOCTOR WILSON - HISTORIAS CLÍNICAS
+   DOCTOR WILSON
+   MÓDULO CRUD - HISTORIAS CLÍNICAS
    ============================================================ */
 
-const API_HISTORIAS = "/api/historias-clinicas";
-const API_MASCOTAS = "/api/mascotas";
-const API_USUARIOS = "/api/usuarios";
+const API = "/api";
+
+let historias = [];
+let mascotas = [];
+let usuarios = [];
+
 
 /* ============================================================
-   ELEMENTOS DEL DOM
+   ELEMENTOS
    ============================================================ */
 
 const formHistoria = document.getElementById("form-historia");
@@ -16,78 +20,194 @@ const idHistoria = document.getElementById("id_historia");
 const idMascota = document.getElementById("id_mascota");
 const idUsuario = document.getElementById("id_usuario");
 const fecha = document.getElementById("fecha");
-const motivoConsulta = document.getElementById("motivo_consulta");
-const diagnostico = document.getElementById("diagnostico");
-const tratamiento = document.getElementById("tratamiento");
-const observaciones = document.getElementById("observaciones");
+const motivoConsulta =
+    document.getElementById("motivo_consulta");
+const diagnostico =
+    document.getElementById("diagnostico");
+const tratamiento =
+    document.getElementById("tratamiento");
+const observaciones =
+    document.getElementById("observaciones");
 
-const btnGuardar = document.getElementById("btn-guardar");
-const btnCancelar = document.getElementById("btn-cancelar");
-const btnLimpiar = document.getElementById("btn-limpiar");
-const btnActualizar = document.getElementById("btn-actualizar");
+const btnGuardar =
+    document.getElementById("btn-guardar");
 
-const tablaHistorias = document.getElementById("tabla-historias");
+const btnCancelar =
+    document.getElementById("btn-cancelar");
 
-const buscarHistoria = document.getElementById("buscar-historia");
-const filtroFecha = document.getElementById("filtro-fecha");
-const filtroMascota = document.getElementById("filtro-mascota");
-const btnLimpiarFiltros = document.getElementById("btn-limpiar-filtros");
+const btnLimpiar =
+    document.getElementById("btn-limpiar");
 
-const totalHistorias = document.getElementById("total-historias");
-const totalMascotas = document.getElementById("total-mascotas");
-const totalConsultas = document.getElementById("total-consultas");
+const btnActualizar =
+    document.getElementById("btn-actualizar");
+
+const tablaHistorias =
+    document.getElementById("tabla-historias");
+
+const buscarHistoria =
+    document.getElementById("buscar-historia");
+
+const filtroFecha =
+    document.getElementById("filtro-fecha");
+
+const filtroMascota =
+    document.getElementById("filtro-mascota");
+
+const btnLimpiarFiltros =
+    document.getElementById("btn-limpiar-filtros");
+
+const totalHistorias =
+    document.getElementById("total-historias");
+
+const totalMascotas =
+    document.getElementById("total-mascotas");
+
+const totalConsultas =
+    document.getElementById("total-consultas");
+
+const tituloFormulario =
+    document.getElementById("titulo-formulario");
+
 
 /* ============================================================
    MODAL
    ============================================================ */
 
-const modalDetalle = document.getElementById("modal-detalle");
-const btnCerrarModal = document.getElementById("btn-cerrar-modal");
-const btnCerrarModalFooter = document.getElementById(
-    "btn-cerrar-modal-footer"
-);
+const modalDetalle =
+    document.getElementById("modal-detalle");
 
-const detalleMascota = document.getElementById("detalle-mascota");
-const detalleVeterinario = document.getElementById("detalle-veterinario");
-const detalleFecha = document.getElementById("detalle-fecha");
-const detalleMotivo = document.getElementById("detalle-motivo");
-const detalleDiagnostico = document.getElementById("detalle-diagnostico");
-const detalleTratamiento = document.getElementById("detalle-tratamiento");
-const detalleObservaciones = document.getElementById(
-    "detalle-observaciones"
-);
+const btnCerrarModal =
+    document.getElementById("btn-cerrar-modal");
 
-/* ============================================================
-   VARIABLES
-   ============================================================ */
+const btnCerrarModalFooter =
+    document.getElementById(
+        "btn-cerrar-modal-footer"
+    );
 
-let historias = [];
-let mascotas = [];
-let usuarios = [];
+const detalleMascota =
+    document.getElementById("detalle-mascota");
+
+const detalleVeterinario =
+    document.getElementById("detalle-veterinario");
+
+const detalleFecha =
+    document.getElementById("detalle-fecha");
+
+const detalleMotivo =
+    document.getElementById("detalle-motivo");
+
+const detalleDiagnostico =
+    document.getElementById("detalle-diagnostico");
+
+const detalleTratamiento =
+    document.getElementById("detalle-tratamiento");
+
+const detalleObservaciones =
+    document.getElementById(
+        "detalle-observaciones"
+    );
 
 
 /* ============================================================
    INICIO
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    iniciarHistorias
+);
 
-    cargarDatos();
+
+async function iniciarHistorias() {
 
     establecerFechaActual();
 
-});
+    configurarEventos();
+
+    await cargarInformacion();
+
+}
+
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+
+function configurarEventos() {
+
+    formHistoria.addEventListener(
+        "submit",
+        guardarHistoria
+    );
+
+    btnCancelar.addEventListener(
+        "click",
+        cancelarEdicion
+    );
+
+    btnLimpiar.addEventListener(
+        "click",
+        limpiarFormulario
+    );
+
+    btnActualizar.addEventListener(
+        "click",
+        cargarInformacion
+    );
+
+    buscarHistoria.addEventListener(
+        "input",
+        aplicarFiltros
+    );
+
+    filtroFecha.addEventListener(
+        "change",
+        aplicarFiltros
+    );
+
+    filtroMascota.addEventListener(
+        "change",
+        aplicarFiltros
+    );
+
+    btnLimpiarFiltros.addEventListener(
+        "click",
+        limpiarFiltros
+    );
+
+    btnCerrarModal.addEventListener(
+        "click",
+        cerrarModal
+    );
+
+    btnCerrarModalFooter.addEventListener(
+        "click",
+        cerrarModal
+    );
+
+    document
+        .querySelector(
+            "#modal-detalle .modal-overlay"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarModal
+        );
+
+}
 
 
 /* ============================================================
    CARGAR INFORMACIÓN
    ============================================================ */
 
-async function cargarDatos() {
+async function cargarInformacion() {
+
+    mostrarEstadoTabla(
+        "Cargando información..."
+    );
 
     try {
-
-        mostrarCargando();
 
         await Promise.all([
             cargarMascotas(),
@@ -95,122 +215,16 @@ async function cargarDatos() {
             cargarHistorias()
         ]);
 
-    } catch (error) {
-
-        console.error("Error al cargar información:", error);
-
-        mostrarError(
-            "No fue posible cargar la información del módulo."
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   CARGAR MASCOTAS
-   ============================================================ */
-
-async function cargarMascotas() {
-
-    try {
-
-        const respuesta = await fetch(API_MASCOTAS);
-
-        if (!respuesta.ok) {
-            throw new Error("No se pudieron cargar las mascotas.");
-        }
-
-        const datos = await respuesta.json();
-
-        mascotas = Array.isArray(datos)
-            ? datos
-            : datos.mascotas || datos.data || [];
-
-        llenarSelectMascotas();
-
-    } catch (error) {
-
-        console.error(error);
-
-        mascotas = [];
-
-        throw error;
-
-    }
-
-}
-
-
-/* ============================================================
-   CARGAR USUARIOS / VETERINARIOS
-   ============================================================ */
-
-async function cargarUsuarios() {
-
-    try {
-
-        const respuesta = await fetch(API_USUARIOS);
-
-        if (!respuesta.ok) {
-            throw new Error("No se pudieron cargar los usuarios.");
-        }
-
-        const datos = await respuesta.json();
-
-        usuarios = Array.isArray(datos)
-            ? datos
-            : datos.usuarios || datos.data || [];
-
-        llenarSelectUsuarios();
-
-    } catch (error) {
-
-        console.error(error);
-
-        usuarios = [];
-
-        throw error;
-
-    }
-
-}
-
-
-/* ============================================================
-   CARGAR HISTORIAS
-   ============================================================ */
-
-async function cargarHistorias() {
-
-    try {
-
-        const respuesta = await fetch(API_HISTORIAS);
-
-        if (!respuesta.ok) {
-            throw new Error("No se pudieron cargar las historias clínicas.");
-        }
-
-        const datos = await respuesta.json();
-
-        historias = Array.isArray(datos)
-            ? datos
-            : datos.historias || datos.data || [];
-
-        renderizarHistorias();
-
         actualizarResumen();
 
     } catch (error) {
 
         console.error(error);
 
-        mostrarError(
-            "No fue posible cargar las historias clínicas."
+        mostrarEstadoTabla(
+            "No fue posible cargar la información. Verifique el servidor.",
+            true
         );
-
-        throw error;
 
     }
 
@@ -218,222 +232,406 @@ async function cargarHistorias() {
 
 
 /* ============================================================
-   LLENAR SELECT DE MASCOTAS
+   MASCOTAS
    ============================================================ */
 
-function llenarSelectMascotas() {
+async function cargarMascotas() {
 
-    if (!idMascota) return;
+    const respuesta =
+        await fetch(`${API}/mascotas`);
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            "Error al consultar mascotas."
+        );
+
+    }
+
+    const datos =
+        await respuesta.json();
+
+    mascotas =
+        Array.isArray(datos)
+            ? datos
+            : datos.mascotas ||
+              datos.data ||
+              [];
+
+    llenarMascotas();
+
+}
+
+
+/* ============================================================
+   USUARIOS / VETERINARIOS
+   ============================================================ */
+
+async function cargarUsuarios() {
+
+    const respuesta =
+        await fetch(`${API}/usuarios`);
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            "Error al consultar usuarios."
+        );
+
+    }
+
+    const datos =
+        await respuesta.json();
+
+    const usuariosCargados =
+        Array.isArray(datos)
+            ? datos
+            : datos.usuarios ||
+              datos.data ||
+              [];
+
+    /*
+       Se conserva la lógica del proyecto:
+       si existen usuarios con rol veterinario,
+       solamente ellos aparecen como veterinarios.
+    */
+
+    const veterinarios =
+        usuariosCargados.filter(usuario => {
+
+            const rol =
+                String(
+                    usuario.rol ||
+                    usuario.nombre_rol ||
+                    usuario.tipo_rol ||
+                    ""
+                ).toLowerCase();
+
+            return rol.includes("veterin");
+
+        });
+
+    usuarios =
+        veterinarios.length
+            ? veterinarios
+            : usuariosCargados;
+
+    llenarUsuarios();
+
+}
+
+
+/* ============================================================
+   HISTORIAS
+   ============================================================ */
+
+async function cargarHistorias() {
+
+    const respuesta =
+        await fetch(
+            `${API}/historias-clinicas`
+        );
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            "Error al consultar historias clínicas."
+        );
+
+    }
+
+    const datos =
+        await respuesta.json();
+
+    historias =
+        Array.isArray(datos)
+            ? datos
+            : datos.historias ||
+              datos.data ||
+              [];
+
+    actualizarResumen();
+
+    aplicarFiltros();
+
+}
+
+
+/* ============================================================
+   LLENAR SELECT MASCOTAS
+   ============================================================ */
+
+function llenarMascotas() {
 
     idMascota.innerHTML = `
-        <option value="">Seleccione una mascota</option>
+        <option value="">
+            Seleccione una mascota
+        </option>
     `;
 
     filtroMascota.innerHTML = `
-        <option value="">Todas las mascotas</option>
+        <option value="">
+            Todas las mascotas
+        </option>
     `;
 
     mascotas.forEach(mascota => {
 
-        const id = obtenerIdMascota(mascota);
-        const nombre = obtenerNombreMascota(mascota);
+        const id =
+            mascota.id_mascota ??
+            mascota.id ??
+            mascota.ID;
+
+        const nombre =
+            mascota.nombre ||
+            mascota.nombre_mascota ||
+            `Mascota #${id}`;
 
         if (!id) return;
 
-        idMascota.innerHTML += `
+        idMascota.insertAdjacentHTML(
+            "beforeend",
+            `
             <option value="${id}">
                 ${escaparHTML(nombre)}
             </option>
-        `;
+            `
+        );
 
-        filtroMascota.innerHTML += `
+        filtroMascota.insertAdjacentHTML(
+            "beforeend",
+            `
             <option value="${id}">
                 ${escaparHTML(nombre)}
             </option>
-        `;
-
-    });
-
-}
-
-
-/* ============================================================
-   LLENAR SELECT DE USUARIOS
-   ============================================================ */
-
-function llenarSelectUsuarios() {
-
-    if (!idUsuario) return;
-
-    idUsuario.innerHTML = `
-        <option value="">Seleccione un veterinario</option>
-    `;
-
-    usuarios.forEach(usuario => {
-
-        const id = obtenerIdUsuario(usuario);
-        const nombre = obtenerNombreUsuario(usuario);
-
-        if (!id) return;
-
-        idUsuario.innerHTML += `
-            <option value="${id}">
-                ${escaparHTML(nombre)}
-            </option>
-        `;
-
-    });
-
-}
-
-
-/* ============================================================
-   OBTENER ID MASCOTA
-   ============================================================ */
-
-function obtenerIdMascota(mascota) {
-
-    return (
-        mascota.id_mascota ??
-        mascota.id ??
-        mascota.ID
-    );
-
-}
-
-
-/* ============================================================
-   OBTENER NOMBRE MASCOTA
-   ============================================================ */
-
-function obtenerNombreMascota(mascota) {
-
-    if (mascota.nombre) {
-        return mascota.nombre;
-    }
-
-    if (mascota.nombre_mascota) {
-        return mascota.nombre_mascota;
-    }
-
-    return `Mascota #${obtenerIdMascota(mascota)}`;
-
-}
-
-
-/* ============================================================
-   OBTENER ID USUARIO
-   ============================================================ */
-
-function obtenerIdUsuario(usuario) {
-
-    return (
-        usuario.id_usuario ??
-        usuario.id ??
-        usuario.ID
-    );
-
-}
-
-
-/* ============================================================
-   OBTENER NOMBRE USUARIO
-   ============================================================ */
-
-function obtenerNombreUsuario(usuario) {
-
-    if (usuario.nombre_completo) {
-        return usuario.nombre_completo;
-    }
-
-    const nombre = usuario.nombre || "";
-    const apellido = usuario.apellido || "";
-
-    const completo = `${nombre} ${apellido}`.trim();
-
-    if (completo) {
-        return completo;
-    }
-
-    if (usuario.usuario) {
-        return usuario.usuario;
-    }
-
-    if (usuario.correo) {
-        return usuario.correo;
-    }
-
-    return `Veterinario #${obtenerIdUsuario(usuario)}`;
-
-}
-
-
-/* ============================================================
-   RENDERIZAR TABLA
-   ============================================================ */
-
-function renderizarHistorias() {
-
-    const textoBusqueda =
-        buscarHistoria?.value.trim().toLowerCase() || "";
-
-    const fechaSeleccionada =
-        filtroFecha?.value || "";
-
-    const mascotaSeleccionada =
-        filtroMascota?.value || "";
-
-    const resultados = historias.filter(historia => {
-
-        const mascota = buscarMascota(historia.id_mascota);
-
-        const usuario = buscarUsuario(historia.id_usuario);
-
-        const nombreMascota =
-            obtenerNombreMascota(mascota || {});
-
-        const nombreUsuario =
-            obtenerNombreUsuario(usuario || {});
-
-        const textoHistoria = `
-            ${historia.id_historia || ""}
-            ${historia.fecha || ""}
-            ${nombreMascota}
-            ${historia.motivo_consulta || ""}
-            ${historia.diagnostico || ""}
-            ${historia.tratamiento || ""}
-            ${historia.observaciones || ""}
-            ${nombreUsuario}
-        `.toLowerCase();
-
-        const coincideBusqueda =
-            !textoBusqueda ||
-            textoHistoria.includes(textoBusqueda);
-
-        const coincideFecha =
-            !fechaSeleccionada ||
-            convertirFechaParaComparar(historia.fecha) ===
-            fechaSeleccionada;
-
-        const coincideMascota =
-            !mascotaSeleccionada ||
-            String(historia.id_mascota) ===
-            String(mascotaSeleccionada);
-
-        return (
-            coincideBusqueda &&
-            coincideFecha &&
-            coincideMascota
+            `
         );
 
     });
 
-    if (resultados.length === 0) {
+}
+
+
+/* ============================================================
+   LLENAR SELECT VETERINARIOS
+   ============================================================ */
+
+function llenarUsuarios() {
+
+    idUsuario.innerHTML = `
+        <option value="">
+            Seleccione un veterinario
+        </option>
+    `;
+
+    usuarios.forEach(usuario => {
+
+        const id =
+            usuario.id_usuario ??
+            usuario.id ??
+            usuario.ID;
+
+        if (!id) return;
+
+        const nombre =
+            obtenerNombreUsuario(usuario);
+
+        idUsuario.insertAdjacentHTML(
+            "beforeend",
+            `
+            <option value="${id}">
+                ${escaparHTML(nombre)}
+            </option>
+            `
+        );
+
+    });
+
+}
+
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+
+function aplicarFiltros() {
+
+    const texto =
+        buscarHistoria.value
+            .trim()
+            .toLowerCase();
+
+    const fechaFiltro =
+        filtroFecha.value;
+
+    const mascotaFiltro =
+        filtroMascota.value;
+
+    const resultados =
+        historias.filter(historia => {
+
+            const mascota =
+                buscarMascota(
+                    historia.id_mascota
+                );
+
+            const usuario =
+                buscarUsuario(
+                    historia.id_usuario
+                );
+
+            const nombreMascota =
+                historia.mascota ||
+                obtenerNombreMascota(
+                    mascota
+                );
+
+            const nombreVeterinario =
+                historia.veterinario ||
+                obtenerNombreUsuario(
+                    usuario
+                );
+
+            const texto =
+                [
+                    historia.id_historia,
+                    nombreMascota,
+                    nombreVeterinario,
+                    historia.motivo_consulta,
+                    historia.diagnostico,
+                    historia.tratamiento,
+                    historia.observaciones,
+                    historia.fecha
+                ]
+                    .join(" ")
+                    .toLowerCase();
+
+            const coincideTexto =
+                !texto ||
+                texto.includes(texto);
+
+            const coincideFecha =
+                !fechaFiltro ||
+                obtenerFecha(
+                    historia.fecha
+                ) === fechaFiltro;
+
+            const coincideMascota =
+                !mascotaFiltro ||
+                String(
+                    historia.id_mascota
+                ) === String(
+                    mascotaFiltro
+                );
+
+            return (
+                coincideTexto &&
+                coincideFecha &&
+                coincideMascota
+            );
+
+        });
+
+    /*
+       Corrección importante:
+       se vuelve a calcular correctamente la búsqueda.
+    */
+
+    const resultadosFinales =
+        historias.filter(historia => {
+
+            const mascota =
+                buscarMascota(
+                    historia.id_mascota
+                );
+
+            const usuario =
+                buscarUsuario(
+                    historia.id_usuario
+                );
+
+            const nombreMascota =
+                historia.mascota ||
+                obtenerNombreMascota(
+                    mascota
+                );
+
+            const nombreVeterinario =
+                historia.veterinario ||
+                obtenerNombreUsuario(
+                    usuario
+                );
+
+            const texto =
+                [
+                    historia.id_historia,
+                    nombreMascota,
+                    nombreVeterinario,
+                    historia.motivo_consulta,
+                    historia.diagnostico,
+                    historia.tratamiento,
+                    historia.observaciones
+                ]
+                    .join(" ")
+                    .toLowerCase();
+
+            return (
+                (!texto || texto.includes(textoBusquedaActual())) &&
+                (
+                    !fechaFiltro ||
+                    obtenerFecha(
+                        historia.fecha
+                    ) === fechaFiltro
+                ) &&
+                (
+                    !mascotaFiltro ||
+                    String(
+                        historia.id_mascota
+                    ) === String(
+                        mascotaFiltro
+                    )
+                )
+            );
+
+        });
+
+    renderizarTabla(
+        resultadosFinales
+    );
+
+}
+
+
+/* ============================================================
+   TEXTO ACTUAL DE BÚSQUEDA
+   ============================================================ */
+
+function textoBusquedaActual() {
+
+    return buscarHistoria.value
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* ============================================================
+   RENDER TABLA
+   ============================================================ */
+
+function renderizarTabla(lista) {
+
+    tablaHistorias.innerHTML = "";
+
+    if (!lista.length) {
 
         tablaHistorias.innerHTML = `
             <tr>
-                <td colspan="7" class="vacio">
-                    No se encontraron historias clínicas.
+                <td
+                    colspan="7"
+                    class="vacio"
+                >
+                    📋 No se encontraron historias clínicas.
                 </td>
             </tr>
         `;
@@ -442,155 +640,140 @@ function renderizarHistorias() {
 
     }
 
-    tablaHistorias.innerHTML = resultados
-        .map(historia => construirFila(historia))
-        .join("");
+    lista.forEach(
+        (historia, indice) => {
 
-}
+            const mascota =
+                buscarMascota(
+                    historia.id_mascota
+                );
 
+            const usuario =
+                buscarUsuario(
+                    historia.id_usuario
+                );
 
-/* ============================================================
-   CONSTRUIR FILA
-   ============================================================ */
+            const nombreMascota =
+                historia.mascota ||
+                obtenerNombreMascota(
+                    mascota
+                );
 
-function construirFila(historia) {
+            const nombreVeterinario =
+                historia.veterinario ||
+                obtenerNombreUsuario(
+                    usuario
+                );
 
-    const mascota =
-        buscarMascota(historia.id_mascota);
+            const fila =
+                document.createElement("tr");
 
-    const usuario =
-        buscarUsuario(historia.id_usuario);
+            fila.innerHTML = `
+                <td>
+                    <span class="numero">
+                        ${indice + 1}
+                    </span>
+                </td>
 
-    const nombreMascota =
-        obtenerNombreMascota(mascota || {});
+                <td>
+                    ${escaparHTML(
+                        formatearFecha(
+                            historia.fecha
+                        )
+                    )}
+                </td>
 
-    const nombreUsuario =
-        obtenerNombreUsuario(usuario || {});
+                <td>
+                    <strong>
+                        ${escaparHTML(
+                            nombreMascota
+                        )}
+                    </strong>
+                </td>
 
-    const fechaMostrar =
-        formatearFecha(historia.fecha);
+                <td>
+                    ${escaparHTML(
+                        historia.motivo_consulta ||
+                        "Sin registrar"
+                    )}
+                </td>
 
-    return `
-        <tr>
+                <td>
+                    <span class="texto-tabla">
+                        ${escaparHTML(
+                            historia.diagnostico ||
+                            "Sin diagnóstico"
+                        )}
+                    </span>
+                </td>
 
-            <td>
-                ${escaparHTML(historia.id_historia)}
-            </td>
+                <td>
+                    ${escaparHTML(
+                        nombreVeterinario
+                    )}
+                </td>
 
-            <td>
-                ${escaparHTML(fechaMostrar)}
-            </td>
+                <td class="acciones">
 
-            <td>
-                <strong>
-                    ${escaparHTML(nombreMascota)}
-                </strong>
-            </td>
+                    <button
+                        type="button"
+                        class="btn-accion btn-detalle"
+                        title="Ver detalle"
+                        onclick="verDetalle(${historia.id_historia})"
+                    >
+                        👁️
+                    </button>
 
-            <td>
-                ${escaparHTML(
-                    historia.motivo_consulta || "Sin registrar"
-                )}
-            </td>
+                    <button
+                        type="button"
+                        class="btn-accion btn-editar"
+                        title="Editar"
+                        onclick="editarHistoria(${historia.id_historia})"
+                    >
+                        ✏️
+                    </button>
 
-            <td>
-                ${escaparHTML(
-                    historia.diagnostico || "Sin registrar"
-                )}
-            </td>
+                    <button
+                        type="button"
+                        class="btn-accion btn-eliminar"
+                        title="Eliminar"
+                        onclick="eliminarHistoria(${historia.id_historia})"
+                    >
+                        🗑️
+                    </button>
 
-            <td>
-                ${escaparHTML(nombreUsuario)}
-            </td>
+                </td>
+            `;
 
-            <td class="acciones">
+            tablaHistorias.appendChild(
+                fila
+            );
 
-                <button
-                    type="button"
-                    class="btn-accion btn-detalle"
-                    onclick="verDetalle(${historia.id_historia})"
-                    title="Ver detalle"
-                >
-                    👁️
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-accion btn-editar"
-                    onclick="editarHistoria(${historia.id_historia})"
-                    title="Editar"
-                >
-                    ✏️
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-accion btn-eliminar"
-                    onclick="eliminarHistoria(${historia.id_historia})"
-                    title="Eliminar"
-                >
-                    🗑️
-                </button>
-
-            </td>
-
-        </tr>
-    `;
-
-}
-
-
-/* ============================================================
-   BUSCAR MASCOTA
-   ============================================================ */
-
-function buscarMascota(id) {
-
-    return mascotas.find(
-        mascota =>
-            String(obtenerIdMascota(mascota)) ===
-            String(id)
+        }
     );
 
 }
 
 
 /* ============================================================
-   BUSCAR USUARIO
+   GUARDAR / ACTUALIZAR
    ============================================================ */
 
-function buscarUsuario(id) {
+async function guardarHistoria(evento) {
 
-    return usuarios.find(
-        usuario =>
-            String(obtenerIdUsuario(usuario)) ===
-            String(id)
-    );
-
-}
-
-
-/* ============================================================
-   REGISTRAR / ACTUALIZAR
-   ============================================================ */
-
-formHistoria?.addEventListener("submit", async event => {
-
-    event.preventDefault();
+    evento.preventDefault();
 
     if (!validarFormulario()) {
         return;
     }
 
-    const id = idHistoria.value.trim();
+    const id =
+        idHistoria.value.trim();
 
     const datos = {
 
-        id_mascota: Number(idMascota.value),
-
-        id_usuario: Number(idUsuario.value),
-
-        fecha: fecha.value,
+        fecha:
+            fecha.value,
 
         motivo_consulta:
             motivoConsulta.value.trim(),
@@ -602,49 +785,54 @@ formHistoria?.addEventListener("submit", async event => {
             tratamiento.value.trim(),
 
         observaciones:
-            observaciones.value.trim()
+            observaciones.value.trim(),
+
+        id_mascota:
+            Number(idMascota.value),
+
+        id_usuario:
+            Number(idUsuario.value)
 
     };
 
     try {
 
-        btnGuardar.disabled = true;
-
-        btnGuardar.textContent =
-            id
-                ? "⏳ Actualizando..."
-                : "⏳ Registrando...";
+        bloquearFormulario(true);
 
         const url =
             id
-                ? `${API_HISTORIAS}/${id}`
-                : API_HISTORIAS;
+                ? `${API}/historias-clinicas/${id}`
+                : `${API}/historias-clinicas`;
 
         const metodo =
             id
                 ? "PUT"
                 : "POST";
 
-        const respuesta = await fetch(url, {
+        const respuesta =
+            await fetch(
+                url,
+                {
+                    method: metodo,
 
-            method: metodo,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(datos)
-
-        });
+                    body:
+                        JSON.stringify(datos)
+                }
+            );
 
         const resultado =
-            await respuesta.json().catch(() => ({}));
+            await respuesta.json();
 
         if (!respuesta.ok) {
 
             throw new Error(
                 resultado.mensaje ||
-                resultado.error ||
+                resultado.message ||
                 "No fue posible guardar la historia clínica."
             );
 
@@ -665,120 +853,41 @@ formHistoria?.addEventListener("submit", async event => {
         console.error(error);
 
         alert(
-            error.message ||
-            "Ocurrió un error al guardar la historia clínica."
+            error.message
         );
 
     } finally {
 
-        btnGuardar.disabled = false;
-
-        btnGuardar.textContent =
-            idHistoria.value
-                ? "💾 Actualizar historia"
-                : "💾 Registrar historia";
+        bloquearFormulario(false);
 
     }
-
-});
-
-
-/* ============================================================
-   VALIDAR FORMULARIO
-   ============================================================ */
-
-function validarFormulario() {
-
-    if (!idMascota.value) {
-
-        alert("Seleccione una mascota.");
-
-        idMascota.focus();
-
-        return false;
-
-    }
-
-    if (!idUsuario.value) {
-
-        alert("Seleccione el veterinario.");
-
-        idUsuario.focus();
-
-        return false;
-
-    }
-
-    if (!fecha.value) {
-
-        alert("Seleccione la fecha de consulta.");
-
-        fecha.focus();
-
-        return false;
-
-    }
-
-    if (!motivoConsulta.value.trim()) {
-
-        alert("Ingrese el motivo de consulta.");
-
-        motivoConsulta.focus();
-
-        return false;
-
-    }
-
-    const fechaSeleccionada =
-        new Date(`${fecha.value}T00:00:00`);
-
-    const hoy = new Date();
-
-    hoy.setHours(0, 0, 0, 0);
-
-    if (fechaSeleccionada > hoy) {
-
-        alert(
-            "La fecha de la consulta no puede ser futura."
-        );
-
-        fecha.focus();
-
-        return false;
-
-    }
-
-    return true;
 
 }
 
 
 /* ============================================================
-   EDITAR HISTORIA
+   EDITAR
    ============================================================ */
 
-async function editarHistoria(id) {
-
-    try {
-
-        const respuesta =
-            await fetch(`${API_HISTORIAS}/${id}`);
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                "No fue posible consultar la historia clínica."
-            );
-
-        }
-
-        const datos =
-            await respuesta.json();
+window.editarHistoria =
+    function(id) {
 
         const historia =
-            datos.data ||
-            datos.historia ||
-            datos;
+            historias.find(
+                item =>
+                    String(
+                        item.id_historia
+                    ) === String(id)
+            );
+
+        if (!historia) {
+
+            alert(
+                "No se encontró la historia clínica."
+            );
+
+            return;
+        }
 
         idHistoria.value =
             historia.id_historia;
@@ -790,7 +899,9 @@ async function editarHistoria(id) {
             historia.id_usuario;
 
         fecha.value =
-            convertirFechaParaInput(historia.fecha);
+            obtenerFecha(
+                historia.fecha
+            );
 
         motivoConsulta.value =
             historia.motivo_consulta || "";
@@ -804,6 +915,9 @@ async function editarHistoria(id) {
         observaciones.value =
             historia.observaciones || "";
 
+        tituloFormulario.textContent =
+            "Editar historia clínica";
+
         btnGuardar.textContent =
             "💾 Actualizar historia";
 
@@ -811,122 +925,131 @@ async function editarHistoria(id) {
             "inline-flex";
 
         document
-            .getElementById("titulo-formulario")
+            .querySelector(
+                ".formulario-tarjeta"
+            )
             ?.scrollIntoView({
                 behavior: "smooth",
-                block: "center"
+                block: "start"
             });
 
-    } catch (error) {
-
-        console.error(error);
-
-        alert(error.message);
-
-    }
-
-}
+    };
 
 
 /* ============================================================
-   ELIMINAR HISTORIA
+   ELIMINAR
    ============================================================ */
 
-async function eliminarHistoria(id) {
-
-    const confirmar =
-        confirm(
-            "¿Está seguro de eliminar esta historia clínica?\n\n" +
-            "Esta acción no se puede deshacer."
-        );
-
-    if (!confirmar) {
-        return;
-    }
-
-    try {
-
-        const respuesta =
-            await fetch(`${API_HISTORIAS}/${id}`, {
-
-                method: "DELETE"
-
-            });
-
-        const resultado =
-            await respuesta.json().catch(() => ({}));
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                resultado.mensaje ||
-                resultado.error ||
-                "No fue posible eliminar la historia clínica."
-            );
-
-        }
-
-        alert(
-            "Historia clínica eliminada correctamente."
-        );
-
-        await cargarHistorias();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            error.message ||
-            "Ocurrió un error al eliminar la historia clínica."
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   VER DETALLE
-   ============================================================ */
-
-async function verDetalle(id) {
-
-    try {
-
-        const respuesta =
-            await fetch(`${API_HISTORIAS}/${id}`);
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                "No fue posible consultar el detalle."
-            );
-
-        }
-
-        const datos =
-            await respuesta.json();
+window.eliminarHistoria =
+    async function(id) {
 
         const historia =
-            datos.data ||
-            datos.historia ||
-            datos;
+            historias.find(
+                item =>
+                    String(
+                        item.id_historia
+                    ) === String(id)
+            );
+
+        if (!historia) {
+            return;
+        }
+
+        const confirmar =
+            confirm(
+                `¿Está seguro de eliminar la historia clínica #${id}?`
+            );
+
+        if (!confirmar) {
+            return;
+        }
+
+        try {
+
+            const respuesta =
+                await fetch(
+                    `${API}/historias-clinicas/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+            const resultado =
+                await respuesta.json();
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    resultado.mensaje ||
+                    "No fue posible eliminar la historia clínica."
+                );
+
+            }
+
+            alert(
+                "Historia clínica eliminada correctamente."
+            );
+
+            await cargarHistorias();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                error.message
+            );
+
+        }
+
+    };
+
+
+/* ============================================================
+   DETALLE
+   ============================================================ */
+
+window.verDetalle =
+    function(id) {
+
+        const historia =
+            historias.find(
+                item =>
+                    String(
+                        item.id_historia
+                    ) === String(id)
+            );
+
+        if (!historia) {
+            return;
+        }
 
         const mascota =
-            buscarMascota(historia.id_mascota);
+            buscarMascota(
+                historia.id_mascota
+            );
 
         const usuario =
-            buscarUsuario(historia.id_usuario);
+            buscarUsuario(
+                historia.id_usuario
+            );
 
         detalleMascota.textContent =
-            obtenerNombreMascota(mascota || {});
+            historia.mascota ||
+            obtenerNombreMascota(
+                mascota
+            );
 
         detalleVeterinario.textContent =
-            obtenerNombreUsuario(usuario || {});
+            historia.veterinario ||
+            obtenerNombreUsuario(
+                usuario
+            );
 
         detalleFecha.textContent =
-            formatearFecha(historia.fecha);
+            formatearFecha(
+                historia.fecha
+            );
 
         detalleMotivo.textContent =
             historia.motivo_consulta ||
@@ -934,27 +1057,24 @@ async function verDetalle(id) {
 
         detalleDiagnostico.textContent =
             historia.diagnostico ||
-            "Sin registrar";
+            "Sin diagnóstico registrado.";
 
         detalleTratamiento.textContent =
             historia.tratamiento ||
-            "Sin registrar";
+            "Sin tratamiento registrado.";
 
         detalleObservaciones.textContent =
             historia.observaciones ||
-            "Sin registrar";
+            "Sin observaciones.";
 
-        modalDetalle.classList.remove("hidden");
+        modalDetalle.classList.remove(
+            "hidden"
+        );
 
-    } catch (error) {
+        modalDetalle.style.display =
+            "flex";
 
-        console.error(error);
-
-        alert(error.message);
-
-    }
-
-}
+    };
 
 
 /* ============================================================
@@ -963,62 +1083,74 @@ async function verDetalle(id) {
 
 function cerrarModal() {
 
-    modalDetalle?.classList.add("hidden");
+    modalDetalle.classList.add(
+        "hidden"
+    );
+
+    modalDetalle.style.display =
+        "none";
 
 }
 
 
-btnCerrarModal?.addEventListener(
-    "click",
-    cerrarModal
-);
-
-btnCerrarModalFooter?.addEventListener(
-    "click",
-    cerrarModal
-);
-
-modalDetalle?.querySelector(
-    ".modal-overlay"
-)?.addEventListener(
-    "click",
-    cerrarModal
-);
-
-
 /* ============================================================
-   CANCELAR EDICIÓN
+   VALIDACIÓN
    ============================================================ */
 
-btnCancelar?.addEventListener(
-    "click",
-    limpiarFormulario
-);
+function validarFormulario() {
+
+    if (!idMascota.value) {
+
+        alert(
+            "Seleccione una mascota."
+        );
+
+        idMascota.focus();
+
+        return false;
+    }
+
+    if (!idUsuario.value) {
+
+        alert(
+            "Seleccione el veterinario."
+        );
+
+        idUsuario.focus();
+
+        return false;
+    }
+
+    if (!fecha.value) {
+
+        alert(
+            "Seleccione la fecha de consulta."
+        );
+
+        fecha.focus();
+
+        return false;
+    }
+
+    if (!motivoConsulta.value.trim()) {
+
+        alert(
+            "Ingrese el motivo de consulta."
+        );
+
+        motivoConsulta.focus();
+
+        return false;
+    }
+
+    return true;
+
+}
 
 
 /* ============================================================
    LIMPIAR FORMULARIO
    ============================================================ */
-
-btnLimpiar?.addEventListener(
-    "click",
-    () => {
-
-        setTimeout(() => {
-
-            idHistoria.value = "";
-
-            btnGuardar.textContent =
-                "💾 Registrar historia";
-
-            btnCancelar.style.display =
-                "none";
-
-        }, 0);
-
-    }
-);
-
 
 function limpiarFormulario() {
 
@@ -1027,6 +1159,9 @@ function limpiarFormulario() {
     idHistoria.value = "";
 
     establecerFechaActual();
+
+    tituloFormulario.textContent =
+        "Registrar historia clínica";
 
     btnGuardar.textContent =
         "💾 Registrar historia";
@@ -1038,83 +1173,31 @@ function limpiarFormulario() {
 
 
 /* ============================================================
-   ACTUALIZAR
+   CANCELAR EDICIÓN
    ============================================================ */
 
-btnActualizar?.addEventListener(
-    "click",
-    async () => {
+function cancelarEdicion() {
 
-        btnActualizar.disabled = true;
+    limpiarFormulario();
 
-        btnActualizar.textContent =
-            "⏳ Actualizando...";
-
-        try {
-
-            await cargarDatos();
-
-        } finally {
-
-            btnActualizar.disabled = false;
-
-            btnActualizar.textContent =
-                "🔄 Actualizar";
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   BUSCADOR
-   ============================================================ */
-
-buscarHistoria?.addEventListener(
-    "input",
-    renderizarHistorias
-);
-
-
-/* ============================================================
-   FILTRO FECHA
-   ============================================================ */
-
-filtroFecha?.addEventListener(
-    "change",
-    renderizarHistorias
-);
-
-
-/* ============================================================
-   FILTRO MASCOTA
-   ============================================================ */
-
-filtroMascota?.addEventListener(
-    "change",
-    renderizarHistorias
-);
+}
 
 
 /* ============================================================
    LIMPIAR FILTROS
    ============================================================ */
 
-btnLimpiarFiltros?.addEventListener(
-    "click",
-    () => {
+function limpiarFiltros() {
 
-        buscarHistoria.value = "";
+    buscarHistoria.value = "";
 
-        filtroFecha.value = "";
+    filtroFecha.value = "";
 
-        filtroMascota.value = "";
+    filtroMascota.value = "";
 
-        renderizarHistorias();
+    aplicarFiltros();
 
-    }
-);
+}
 
 
 /* ============================================================
@@ -1123,10 +1206,10 @@ btnLimpiarFiltros?.addEventListener(
 
 function actualizarResumen() {
 
-    const cantidadHistorias =
+    totalHistorias.textContent =
         historias.length;
 
-    const mascotasAtendidas =
+    const mascotasUnicas =
         new Set(
             historias
                 .map(
@@ -1134,193 +1217,221 @@ function actualizarResumen() {
                         historia.id_mascota
                 )
                 .filter(Boolean)
-        ).size;
-
-    totalHistorias.textContent =
-        cantidadHistorias;
+        );
 
     totalMascotas.textContent =
-        mascotasAtendidas;
+        mascotasUnicas.size;
 
     totalConsultas.textContent =
-        cantidadHistorias;
+        historias.length;
 
 }
 
 
 /* ============================================================
-   FECHA ACTUAL
+   UTILIDADES
    ============================================================ */
 
-function establecerFechaActual() {
+function buscarMascota(id) {
 
-    if (!fecha.value) {
-
-        const ahora = new Date();
-
-        const anio =
-            ahora.getFullYear();
-
-        const mes =
+    return mascotas.find(
+        mascota =>
             String(
-                ahora.getMonth() + 1
-            ).padStart(2, "0");
+                mascota.id_mascota ??
+                mascota.id ??
+                mascota.ID
+            ) === String(id)
+    );
 
-        const dia =
+}
+
+
+function buscarUsuario(id) {
+
+    return usuarios.find(
+        usuario =>
             String(
-                ahora.getDate()
-            ).padStart(2, "0");
+                usuario.id_usuario ??
+                usuario.id ??
+                usuario.ID
+            ) === String(id)
+    );
 
-        fecha.value =
-            `${anio}-${mes}-${dia}`;
+}
 
+
+function obtenerNombreMascota(mascota) {
+
+    if (!mascota) {
+        return "Sin información";
     }
 
+    return (
+        mascota.nombre ||
+        mascota.nombre_mascota ||
+        `Mascota #${
+            mascota.id_mascota ??
+            mascota.id ??
+            ""
+        }`
+    );
+
 }
 
 
-/* ============================================================
-   CONVERTIR FECHA PARA INPUT
-   ============================================================ */
+function obtenerNombreUsuario(usuario) {
 
-function convertirFechaParaInput(valor) {
+    if (!usuario) {
+        return "Sin información";
+    }
 
-    if (!valor) {
+    if (usuario.nombre_completo) {
+        return usuario.nombre_completo;
+    }
+
+    const nombre =
+        usuario.nombre || "";
+
+    const apellido =
+        usuario.apellido || "";
+
+    const completo =
+        `${nombre} ${apellido}`
+            .replace(/\s+/g, " ")
+            .trim();
+
+    if (completo) {
+        return completo;
+    }
+
+    if (usuario.usuario) {
+        return usuario.usuario;
+    }
+
+    return `Veterinario #${
+        usuario.id_usuario ??
+        usuario.id ??
+        ""
+    }`;
+
+}
+
+
+function obtenerFecha(fechaValor) {
+
+    if (!fechaValor) {
         return "";
     }
 
-    if (
-        typeof valor === "string" &&
-        /^\d{4}-\d{2}-\d{2}/.test(valor)
-    ) {
-
-        return valor.substring(0, 10);
-
-    }
-
-    const fechaConvertida =
-        new Date(valor);
-
-    if (Number.isNaN(fechaConvertida.getTime())) {
-        return "";
-    }
-
-    const anio =
-        fechaConvertida.getFullYear();
-
-    const mes =
-        String(
-            fechaConvertida.getMonth() + 1
-        ).padStart(2, "0");
-
-    const dia =
-        String(
-            fechaConvertida.getDate()
-        ).padStart(2, "0");
-
-    return `${anio}-${mes}-${dia}`;
+    return String(
+        fechaValor
+    ).substring(0, 10);
 
 }
 
 
-/* ============================================================
-   FORMATEAR FECHA
-   ============================================================ */
+function formatearFecha(fechaValor) {
 
-function formatearFecha(valor) {
+    const fechaISO =
+        obtenerFecha(
+            fechaValor
+        );
 
-    if (!valor) {
-        return "Sin fecha";
-    }
-
-    const fechaTexto =
-        convertirFechaParaInput(valor);
-
-    if (!fechaTexto) {
-        return valor;
+    if (!fechaISO) {
+        return "--";
     }
 
     const partes =
-        fechaTexto.split("-");
+        fechaISO.split("-");
 
     if (partes.length !== 3) {
-        return valor;
+        return fechaISO;
     }
 
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return `
+        ${partes[2]}/
+        ${partes[1]}/
+        ${partes[0]}
+    `.replace(/\s+/g, "");
 
 }
 
 
-/* ============================================================
-   FECHA PARA COMPARACIÓN
-   ============================================================ */
+function establecerFechaActual() {
 
-function convertirFechaParaComparar(valor) {
+    if (!fecha) {
+        return;
+    }
 
-    return convertirFechaParaInput(valor);
+    if (!idHistoria.value) {
 
-}
+        fecha.value =
+            new Date()
+                .toISOString()
+                .substring(0, 10);
 
-
-/* ============================================================
-   MOSTRAR CARGANDO
-   ============================================================ */
-
-function mostrarCargando() {
-
-    tablaHistorias.innerHTML = `
-        <tr>
-            <td
-                colspan="7"
-                class="cargando"
-            >
-                Cargando historias clínicas...
-            </td>
-        </tr>
-    `;
+    }
 
 }
 
-
-/* ============================================================
-   MOSTRAR ERROR
-   ============================================================ */
-
-function mostrarError(mensaje) {
-
-    tablaHistorias.innerHTML = `
-        <tr>
-            <td
-                colspan="7"
-                class="error-tabla"
-            >
-                ⚠️ ${escaparHTML(mensaje)}
-            </td>
-        </tr>
-    `;
-
-}
-
-
-/* ============================================================
-   SEGURIDAD HTML
-   ============================================================ */
 
 function escaparHTML(valor) {
 
-    if (
-        valor === null ||
-        valor === undefined
-    ) {
-        return "";
-    }
+    return String(
+        valor ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
-    return String(valor)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+}
+
+
+function bloquearFormulario(bloquear) {
+
+    btnGuardar.disabled =
+        bloquear;
+
+    btnCancelar.disabled =
+        bloquear;
+
+    btnLimpiar.disabled =
+        bloquear;
+
+}
+
+
+function mostrarEstadoTabla(
+    mensaje,
+    error = false
+) {
+
+    tablaHistorias.innerHTML = `
+        <tr>
+            <td
+                colspan="7"
+                class="${error ? "error-tabla" : "cargando"}"
+            >
+                ${escaparHTML(mensaje)}
+            </td>
+        </tr>
+    `;
 
 }
