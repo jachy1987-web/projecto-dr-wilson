@@ -3221,3 +3221,293 @@ app.listen(PORT, function () {
     console.log("Estado: ACTIVO");
     console.log("==========================================");
 });
+// ======================================================
+// MÓDULO DE EDWARD: ESPECIES
+// ======================================================
+
+// CREAR ESPECIE
+app.post("/api/especies", function (req, res) {
+    const { nombre, descripcion } = req.body;
+
+    if (!esObligatorio(nombre)) {
+        return res.status(400).json({
+            mensaje: "El nombre de la especie es obligatorio"
+        });
+    }
+
+    const sql = "INSERT INTO especies (nombre, descripcion) VALUES (?, ?)";
+
+    conexion.query(sql, [nombre.trim(), descripcion || null], function (error, resultado) {
+        if (error) {
+            if (error.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({ mensaje: "Esta especie ya está registrada" });
+            }
+            return responderError(res, error, "Error al registrar la especie");
+        }
+        res.status(201).json({
+            mensaje: "Especie registrada correctamente",
+            id_especie: resultado.insertId
+        });
+    });
+});
+
+// CONSULTAR ESPECIES
+app.get("/api/especies", function (req, res) {
+    const sql = "SELECT id_especie, nombre, descripcion FROM especies ORDER BY nombre ASC";
+
+    conexion.query(sql, function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al consultar las especies");
+        }
+        res.json(resultado);
+    });
+});
+
+// ACTUALIZAR ESPECIE
+app.put("/api/especies/:id", function (req, res) {
+    const id = req.params.id;
+    const { nombre, descripcion } = req.body;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({ mensaje: "ID de especie no válido" });
+    }
+    if (!esObligatorio(nombre)) {
+        return res.status(400).json({ mensaje: "El nombre de la especie es obligatorio" });
+    }
+
+    const sql = "UPDATE especies SET nombre = ?, descripcion = ? WHERE id_especie = ?";
+
+    conexion.query(sql, [nombre.trim(), descripcion || null, id], function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al actualizar la especie");
+        }
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensaje: "Especie no encontrada" });
+        }
+        res.json({ mensaje: "Especie actualizada correctamente" });
+    });
+});
+
+// ELIMINAR ESPECIE
+app.delete("/api/especies/:id", function (req, res) {
+    const id = req.params.id;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({ mensaje: "ID de especie no válido" });
+    }
+
+    const sql = "DELETE FROM especies WHERE id_especie = ?";
+
+    conexion.query(sql, [id], function (error, resultado) {
+        if (error) {
+            if (error.code === "ER_ROW_IS_REFERENCED_2") {
+                return res.status(409).json({ mensaje: "No se puede eliminar la especie porque tiene razas o mascotas asociadas" });
+            }
+            return responderError(res, error, "Error al eliminar la especie");
+        }
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensaje: "Especie no encontrada" });
+        }
+        res.json({ mensaje: "Especie eliminada correctamente" });
+    });
+});
+
+
+// ======================================================
+// MÓDULO DE EDWARD: RAZAS
+// ======================================================
+
+// CREAR RAZA
+app.post("/api/razas", function (req, res) {
+    const { nombre, descripcion, id_especie } = req.body;
+
+    if (!esObligatorio(nombre) || !esObligatorio(id_especie)) {
+        return res.status(400).json({
+            mensaje: "El nombre de la raza y la especie son obligatorios"
+        });
+    }
+
+    const sql = "INSERT INTO razas (nombre, descripcion, id_especie) VALUES (?, ?, ?)";
+
+    conexion.query(sql, [nombre.trim(), descripcion || null, id_especie], function (error, resultado) {
+        if (error) {
+            if (error.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({ mensaje: "Esta raza ya está registrada" });
+            }
+            return responderError(res, error, "Error al registrar la raza");
+        }
+        res.status(201).json({
+            mensaje: "Raza registrada correctamente",
+            id_raza: resultado.insertId
+        });
+    });
+});
+
+// CONSULTAR RAZAS
+app.get("/api/razas", function (req, res) {
+    const sql = `
+        SELECT r.id_raza, r.nombre AS nombre_raza, r.descripcion, r.id_especie, e.nombre AS nombre_especie 
+        FROM razas r
+        INNER JOIN especies e ON r.id_especie = e.id_especie
+        ORDER BY r.nombre ASC
+    `;
+
+    conexion.query(sql, function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al consultar las razas");
+        }
+        res.json(resultado);
+    });
+});
+
+// ACTUALIZAR RAZA
+app.put("/api/razas/:id", function (req, res) {
+    const id = req.params.id;
+    const { nombre, descripcion, id_especie } = req.body;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({ mensaje: "ID de raza no válido" });
+    }
+    if (!esObligatorio(nombre) || !esObligatorio(id_especie)) {
+        return res.status(400).json({ mensaje: "Nombre y especie son obligatorios" });
+    }
+
+    const sql = "UPDATE razas SET nombre = ?, descripcion = ?, id_especie = ? WHERE id_raza = ?";
+
+    conexion.query(sql, [nombre.trim(), descripcion || null, id_especie, id], function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al actualizar la raza");
+        }
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensaje: "Raza no encontrada" });
+        }
+        res.json({ mensaje: "Raza actualizada correctamente" });
+    });
+});
+
+// ELIMINAR RAZA
+app.delete("/api/razas/:id", function (req, res) {
+    const id = req.params.id;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({ mensaje: "ID de raza no válido" });
+    }
+
+    const sql = "DELETE FROM razas WHERE id_raza = ?";
+
+    conexion.query(sql, [id], function (error, resultado) {
+        if (error) {
+            if (error.code === "ER_ROW_IS_REFERENCED_2") {
+                return res.status(409).json({ mensaje: "No se puede eliminar la raza porque tiene mascotas asociadas" });
+            }
+            return responderError(res, error, "Error al eliminar la raza");
+        }
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensaje: "Raza no encontrada" });
+        }
+        res.json({ mensaje: "Raza eliminada correctamente" });
+    });
+});
+// ======================================================
+// MÓDULO DE EDWARD: FACTURAS Y DETALLES
+// ======================================================
+
+// CREAR FACTURA CON SUS DETALLES (Uso de Transacción)
+app.post("/api/facturas", function (req, res) {
+    const { id_propietario, subtotal, impuesto, total, estado, detalles } = req.body;
+
+    if (!esObligatorio(id_propietario) || !esObligatorio(subtotal) || !esObligatorio(total) || !detalles || detalles.length === 0) {
+        return res.status(400).json({
+            mensaje: "Propietario, subtotal, total y al menos un producto en el detalle son obligatorios"
+        });
+    }
+
+    conexion.beginTransaction(function (err) {
+        if (err) { return responderError(res, err, "Error al iniciar la facturación"); }
+
+        const sqlFactura = `
+            INSERT INTO facturas (id_propietario, fecha, subtotal, impuesto, total, estado) 
+            VALUES (?, NOW(), ?, ?, ?, ?)
+        `;
+        
+        conexion.query(
+            sqlFactura, 
+            [id_propietario, subtotal, impuesto || 0.00, total, estado || 'pendiente'], 
+            function (errorFactura, resultadoFactura) {
+                
+                if (errorFactura) {
+                    return conexion.rollback(function () {
+                        responderError(res, errorFactura, "Error al crear el encabezado de la factura");
+                    });
+                }
+
+                const idNuevaFactura = resultadoFactura.insertId;
+                
+                // Mapeamos los detalles calculando automáticamente el subtotal de cada ítem
+                const sqlDetalle = "INSERT INTO detalle_factura (id_factura, descripcion, cantidad, precio_unitario, subtotal) VALUES ?";
+                const valoresDetalle = detalles.map(d => [
+                    idNuevaFactura, 
+                    d.descripcion.trim(), 
+                    d.cantidad, 
+                    d.precio_unitario, 
+                    (d.cantidad * d.precio_unitario)
+                ]);
+
+                conexion.query(sqlDetalle, [valoresDetalle], function (errorDetalle) {
+                    if (errorDetalle) {
+                        return conexion.rollback(function () {
+                            responderError(res, errorDetalle, "Error al insertar los detalles de la factura");
+                        });
+                    }
+
+                    conexion.commit(function (errCommit) {
+                        if (errCommit) {
+                            return conexion.rollback(function () {
+                                responderError(res, errCommit, "Error al guardar la factura definitivamente");
+                            });
+                        }
+                        res.status(201).json({
+                            mensaje: "Factura y detalles guardados con éxito",
+                            id_factura: idNuevaFactura
+                        });
+                    });
+                });
+            }
+        );
+    });
+});
+
+// CONSULTAR HISTORIAL DE FACTURAS
+app.get("/api/facturas", function (req, res) {
+    const sql = `
+        SELECT f.id_factura, f.fecha, f.subtotal, f.impuesto, f.total, f.estado, p.nombre, p.apellido 
+        FROM facturas f
+        INNER JOIN propietarios p ON f.id_propietario = p.id_propietario
+        ORDER BY f.fecha DESC
+    `;
+
+    conexion.query(sql, function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al consultar las facturas");
+        }
+        res.json(resultado);
+    });
+});
+
+// CONSULTAR LOS DETALLES DE UNA FACTURA ESPECÍFICA
+app.get("/api/facturas/:id/detalles", function (req, res) {
+    const id = req.params.id;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({ mensaje: "ID de factura no válido" });
+    }
+
+    const sql = "SELECT id_detalle, descripcion, cantidad, precio_unitario, subtotal FROM detalle_factura WHERE id_factura = ?";
+
+    conexion.query(sql, [id], function (error, resultado) {
+        if (error) {
+            return responderError(res, error, "Error al consultar los detalles de la factura");
+        }
+        res.json(resultado);
+    });
+});
