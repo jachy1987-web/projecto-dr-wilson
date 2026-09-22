@@ -1888,6 +1888,7 @@ app.post("/api/historias-clinicas", function (req, res) {
     const {
         fecha,
         motivo_consulta,
+        antecedentes,
         diagnostico,
         tratamiento,
         observaciones,
@@ -1911,13 +1912,14 @@ app.post("/api/historias-clinicas", function (req, res) {
         (
             fecha,
             motivo_consulta,
+            antecedentes,
             diagnostico,
             tratamiento,
             observaciones,
             id_mascota,
             id_usuario
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     conexion.query(
@@ -1925,6 +1927,7 @@ app.post("/api/historias-clinicas", function (req, res) {
         [
             fecha,
             motivo_consulta.trim(),
+            antecedentes || null,
             diagnostico || null,
             tratamiento || null,
             observaciones || null,
@@ -1957,6 +1960,7 @@ app.get("/api/historias-clinicas", function (req, res) {
             h.id_historia,
             h.fecha,
             h.motivo_consulta,
+            h.antecedentes,
             h.diagnostico,
             h.tratamiento,
             h.observaciones,
@@ -2002,6 +2006,7 @@ app.get("/api/historias-clinicas/:id", function (req, res) {
             h.id_historia,
             h.fecha,
             h.motivo_consulta,
+            h.antecedentes,
             h.diagnostico,
             h.tratamiento,
             h.observaciones,
@@ -2051,6 +2056,7 @@ app.put("/api/historias-clinicas/:id", function (req, res) {
     const {
         fecha,
         motivo_consulta,
+        antecedentes,
         diagnostico,
         tratamiento,
         observaciones,
@@ -2074,6 +2080,7 @@ app.put("/api/historias-clinicas/:id", function (req, res) {
         SET
             fecha = ?,
             motivo_consulta = ?,
+            antecedentes = ?,
             diagnostico = ?,
             tratamiento = ?,
             observaciones = ?,
@@ -2087,6 +2094,7 @@ app.put("/api/historias-clinicas/:id", function (req, res) {
         [
             fecha,
             motivo_consulta.trim(),
+            antecedentes || null,
             diagnostico || null,
             tratamiento || null,
             observaciones || null,
@@ -2418,6 +2426,12 @@ app.post("/api/vacunaciones", function (req, res) {
         });
     }
 
+    if (proxima_dosis && String(proxima_dosis) < String(fecha_aplicacion)) {
+        return res.status(400).json({
+            mensaje: "La próxima dosis no puede ser anterior a la fecha de aplicación"
+        });
+    }
+
     const verificarSql = `
         SELECT id_vacunacion
         FROM vacunaciones
@@ -2600,6 +2614,12 @@ app.put("/api/vacunaciones/:id", function (req, res) {
     ) {
         return res.status(400).json({
             mensaje: "Mascota, vacuna y fecha de aplicación son obligatorios"
+        });
+    }
+
+    if (proxima_dosis && String(proxima_dosis) < String(fecha_aplicacion)) {
+        return res.status(400).json({
+            mensaje: "La próxima dosis no puede ser anterior a la fecha de aplicación"
         });
     }
 
