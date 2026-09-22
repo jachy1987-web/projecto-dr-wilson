@@ -1,102 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendar Cita - Dr. Wilson</title>
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url("imagenes/fondo doctor wilson.png");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        .btn-volver-atras {
-            position: absolute; top: 25px; left: 25px;         
-            padding: 10px 22px; border-radius: 20px; 
-            background-color: #007bff; color: #ffffff;     
-            font-size: 15px; font-weight: bold; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); text-decoration: none;
-            transition: background-color 0.2s, transform 0.1s; z-index: 10;        
-        }
-        .btn-volver-atras:hover { background-color: #0056b3; transform: scale(1.05); }
-
-        h2 { color: #0c4a6e; margin-top: 20px; margin-bottom: 30px; font-size: 28px; font-weight: bold; text-align: center; width: 100%; }
-
-        .container-box {
-            background: #ffffff; width: 100%; max-width: 600px;
-            padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eef2f5; box-sizing: border-box; margin-bottom: 20px;
-        }
-
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; text-align: left; }
-        .form-group label { color: #2e7d32; font-weight: bold; font-size: 14px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
-        .form-group input:focus, .form-group select:focus { border-color: #007bff; outline: none; }
-
-        #lista-sugerencias-citas { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 180px; overflow-y: auto; }
-        #lista-sugerencias-citas div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 15px; }
-
-        .botones-contenedor { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
-        .btn-verde { padding: 13px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; color: white; background-color: #1e4620; transition: background 0.2s; }
-        .btn-verde:hover { background-color: #143016; }
-    </style>
-</head>
-
-<body>
-    <!-- Nos regresa al submenú de citas -->
-    <a href="menu-citas.html" class="btn-volver-atras">Atrás</a>
-
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px; width: 100%;">
-        <img src="imagenes/drwilson.png" alt="Logo Doctor Wilson" style="max-width: 420px !important; width: 100% !important; height: auto !important; display: block; margin: 0 auto;">
-    </div>
-
-    <h2>➕ Agendar Nueva Cita</h2>
-
-    <div class="container-box">
-        <form id="form-agendar-cita">
-            <!-- Buscador predictivo de pacientes -->
-            <div class="form-group" style="position: relative;">
-                <label for="cita-paciente">Nombre de la Mascota</label>
-                <input type="text" id="cita-paciente" placeholder="🔍 Escriba el nombre de la mascota..." required autocomplete="off">
-                <div id="lista-sugerencias-citas" style="position: absolute; width: 100%; top: 75px; z-index: 20; display: none;"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="cita-fecha">Fecha del Turno</label>
-                <input type="date" id="cita-fecha" required>
-            </div>
-
-            <div class="form-group">
-                <label for="cita-hora">Hora del Turno</label>
-                <input type="time" id="cita-hora" required>
-            </div>
-
-            <div class="form-group">
-                <label for="cita-motivo">Motivo de Consulta</label>
-                <input type="text" id="cita-motivo" placeholder="Ej: Control, Vacunación, Urgencia..." required>
-            </div>
-
-            <div class="botones-contenedor">
-                <button type="submit" class="btn-verde">Confirmar Cita</button>
-            </div>
-        </form>
-    </div>
-
-    <script src="agendar-cita.js"></script>
-</body>
-
-</html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Agendar Cita - Doctor Wilson</title>
+<meta http-equiv="refresh" content="0; url=citas.html">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<main style="min-height:100vh;display:grid;place-items:center;padding:30px;text-align:center;font-family:Arial,sans-serif">
+<div><h1>Agendar Cita</h1><p>Este módulo ahora se gestiona desde el módulo principal.</p>
+<p><a href="citas.html">Continuar</a></p></div>
+</main>
+<script>window.location.replace("citas.html");</script>
+</body></html>
