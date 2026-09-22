@@ -1,4 +1,4 @@
-const API = "http://localhost:3001/api";
+const API = window.DOCTOR_WILSON_API;
 
 const form = document.getElementById("form-historia");
 
@@ -16,6 +16,9 @@ const fecha =
 
 const motivo =
     document.getElementById("motivo_consulta");
+
+const antecedentes =
+    document.getElementById("antecedentes");
 
 const diagnostico =
     document.getElementById("diagnostico");
@@ -372,6 +375,7 @@ function aplicarFiltros() {
                     ${historia.mascota || ""}
                     ${historia.veterinario || ""}
                     ${historia.motivo_consulta || ""}
+                    ${historia.antecedentes || ""}
                     ${historia.diagnostico || ""}
                     ${historia.tratamiento || ""}
                     ${historia.observaciones || ""}
@@ -591,6 +595,10 @@ async function guardarHistoria(event) {
 
         motivo_consulta:
             motivo.value.trim(),
+
+        antecedentes:
+            antecedentes.value.trim()
+            || null,
 
         diagnostico:
             diagnostico.value.trim()
@@ -894,6 +902,12 @@ function verDetalle(id) {
         historia.motivo_consulta ||
         "-";
 
+
+    document.getElementById(
+        "detalle-antecedentes"
+    ).textContent =
+        historia.antecedentes ||
+        "Sin registrar";
 
     document.getElementById(
         "detalle-diagnostico"
