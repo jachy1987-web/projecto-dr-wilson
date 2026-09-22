@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de vacunas - Doctor Wilson</title>
+<link rel="stylesheet" href="css/vacunacion.css">
+</head>
+<body>
+<header class="cabecera">
+  <a href="vacunacion.html" class="btn-volver">
+    <span class="circulo-flecha">←</span><span class="texto-volver">VOLVER</span>
+  </a>
+  <img src="imagenes/drwilson.png" class="logo" alt="Doctor Wilson">
+</header>
+<main class="contenedor-principal">
+  <section class="encabezado-seccion">
+    <img src="imagenes/vacunacion.png" class="icono-vacunacion" alt="Vacunas">
+    <div>
+      <h1>Catálogo de vacunas</h1>
+      <p>Administra las vacunas disponibles para registrar aplicaciones a las mascotas.</p>
+    </div>
+  </section>
+
+  <section class="tarjeta formulario-tarjeta">
+    <div class="titulo-tarjeta">
+      <div class="icono-titulo">💉</div>
+      <div><h2 id="titulo-formulario">Registrar vacuna</h2><p>Nombre, dosis, fabricante y descripción.</p></div>
+    </div>
+    <form id="formVacuna" novalidate>
+      <input type="hidden" id="id_vacuna">
+      <div class="form-grid">
+        <div class="campo">
+          <label for="nombre">Nombre <span>*</span></label>
+          <input id="nombre" maxlength="100" required>
+        </div>
+        <div class="campo">
+          <label for="dosis">Dosis</label>
+          <input id="dosis" maxlength="50" placeholder="Ej. 1 ml">
+        </div>
+        <div class="campo">
+          <label for="fabricante">Fabricante</label>
+          <input id="fabricante" maxlength="100">
+        </div>
+        <div class="campo campo-completo">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" maxlength="255" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="botones">
+        <button class="btn btn-guardar" id="btnGuardar" type="submit">💾 Guardar vacuna</button>
+        <button class="btn btn-limpiar" id="btnLimpiar" type="button">Limpiar</button>
+        <button class="btn btn-cancelar" id="btnCancelar" type="button" hidden>Cancelar edición</button>
+      </div>
+      <div id="mensajeFormulario" class="mensaje-formulario"></div>
+    </form>
+  </section>
+
+  <section class="tarjeta registros-tarjeta">
+    <div class="titulo-registros">
+      <div><h2>Vacunas registradas</h2><p>Consulta y administra el catálogo.</p></div>
+      <button class="btn-actualizar" id="btnActualizar" type="button">↻ Actualizar</button>
+    </div>
+    <div class="filtros">
+      <div class="buscador">🔎<input id="buscar" type="search" placeholder="Buscar vacuna..."></div>
+      <button class="btn-filtro-limpiar" id="btnLimpiarFiltro" type="button">Limpiar filtro</button>
+    </div>
+    <div class="tabla-contenedor">
+      <table>
+        <thead><tr><th>#</th><th>Nombre</th><th>Dosis</th><th>Fabricante</th><th>Descripción</th><th>Acciones</th></tr></thead>
+        <tbody id="tablaVacunas"><tr><td colspan="6" class="cargando">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<footer><p>Sistema de gestión veterinaria <strong>Doctor Wilson</strong></p></footer>
+<script src="config.js"></script>
+<script src="vacunas.js"></script>
+</body>
+</html>

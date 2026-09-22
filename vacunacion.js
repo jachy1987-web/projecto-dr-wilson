@@ -1,4 +1,4 @@
-const API = "http://localhost:3001/api";
+const API = window.DOCTOR_WILSON_API;
 
 document.addEventListener(
     "DOMContentLoaded",
