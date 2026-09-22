@@ -1,86 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Citas - Dr. Wilson</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url("imagenes/fondo doctor wilson.png");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* 🔵 BOTÓN OVALADO AZUL ATRÁS */
-        .btn-volver-atras {
-            position: absolute; top: 25px; left: 25px;         
-            padding: 10px 22px; border-radius: 20px; 
-            background-color: #007bff; color: #ffffff;     
-            font-size: 15px; font-weight: bold; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); text-decoration: none;
-            transition: background-color 0.2s, transform 0.1s; z-index: 10;        
-        }
-        .btn-volver-atras:hover { background-color: #0056b3; transform: scale(1.05); }
-
-        h2 {
-            color: #0c4a6e; margin-bottom: 40px; font-size: 28px;
-            font-weight: bold; text-align: center; width: 100%;
-        }
-
-        .contenedor-tarjetas-propias {
-            display: flex; flex-wrap: wrap; gap: 25px;
-            width: 100%; max-width: 620px; justify-content: center;
-        }
-
-        .tarjeta-sub {
-            background: #ffffff; width: calc(50% - 15px); min-width: 260px;
-            padding: 40px 15px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #eef2f5;
-            box-sizing: border-box;
-        }
-        .tarjeta-sub:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: #3498db; }
-
-        .icon-emoji { font-size: 45px; margin-bottom: 15px; display: block; }
-        h3 { color: #1e293b; margin: 0; font-size: 16px; font-weight: bold; }
-    </style>
-</head>
-
-<body>
-    <!-- Regresa al Panel Principal -->
-    <a href="principal.html" class="btn-volver-atras">Atrás</a>
-
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px; width: 100%;">
-        <img src="imagenes/drwilson.png" alt="Logo Doctor Wilson" style="max-width: 420px !important; width: 100% !important; height: auto !important; display: block; margin: 0 auto;">
-    </div>
-
-    <h2>📅 Módulo de Citas Médicas</h2>
-
-    <div class="contenedor-tarjetas-propias">
-        <!-- Opción 1: Agendar Cita -->
-        <div class="tarjeta-sub" onclick="window.location.href='agendar-cita.html'">
-            <span class="icon-emoji">➕📅</span>
-            <h3>Agendar Cita</h3>
-        </div>
-
-        <!-- Opción 2: Ver / Cancelar Citas -->
-        <div class="tarjeta-sub" onclick="window.location.href='ver-citas.html'">
-            <span class="icon-emoji">📋🔍</span>
-            <h3>Ver y Cancelar Citas</h3>
-        </div>
-    </div>
-</body>
-
-</html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Menu Citas - Doctor Wilson</title>
+<meta http-equiv="refresh" content="0; url=citas.html">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<main style="min-height:100vh;display:grid;place-items:center;padding:30px;text-align:center;font-family:Arial,sans-serif">
+<div><h1>Menu Citas</h1><p>Este módulo ahora se gestiona desde el módulo principal.</p>
+<p><a href="citas.html">Continuar</a></p></div>
+</main>
+<script>window.location.replace("citas.html");</script>
+</body></html>
