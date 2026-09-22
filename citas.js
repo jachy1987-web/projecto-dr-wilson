@@ -1,4 +1,4 @@
-const API = "http://localhost:3001/api";
+const API = window.DOCTOR_WILSON_API;
 
 const form = document.getElementById("form-cita");
 const formulario = document.getElementById("formulario-cita");
@@ -918,3 +918,4 @@ function escapeHtml(valor) {
         }[caracter])
     );
 }
+
