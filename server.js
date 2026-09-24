@@ -1,5 +1,5 @@
 const express = require("express");
-const conexion = require("./db");
+const conexion = require("./backend/db");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 
@@ -327,7 +327,7 @@ app.delete("/api/propietarios/:id", function (req, res) {
 
 // REGISTRO
 app.post("/api/usuarios/registro", async function (req, res) {
-
+ // Obtener los datos enviados desde el formulario de registro.
     const {
         nombre,
         apellido,
@@ -335,6 +335,8 @@ app.post("/api/usuarios/registro", async function (req, res) {
         correo,
         contrasena
     } = req.body;
+
+    // Validar que todos los campos obligatorios tengan información.
 
     if (
         !esObligatorio(nombre) ||
@@ -348,9 +350,13 @@ app.post("/api/usuarios/registro", async function (req, res) {
         });
     }
 
+    // Cifrar la contraseña antes de guardarla en la base de datos.
+
     try {
 
         const contrasenaHash = await bcrypt.hash(contrasena, 10);
+
+        // Consulta SQL para insertar un nuevo usuario.
 
         const sql = `
             INSERT INTO usuarios
@@ -367,6 +373,7 @@ app.post("/api/usuarios/registro", async function (req, res) {
 
         // Rol 4 utilizado por el proyecto para usuarios registrados.
         const idRol = 4;
+// Ejecutar la consulta y registrar el usuario.
 
         conexion.query(
             sql,
@@ -412,13 +419,21 @@ app.post("/api/usuarios/registro", async function (req, res) {
     }
 });
 
-// LOGIN
+// ==============================================
+// SERVICIO WEB DE INICIO DE SESIÓN
+// Este servicio valida el correo y la contraseña
+// de un usuario registrado en el sistema.
+// ==============================================
 app.post("/api/usuarios/login", function (req, res) {
+
+    // Obtener el correo y la contraseña enviados por el usuario.
 
     const {
         correo,
         contrasena
     } = req.body;
+
+    // Validar que los campos obligatorios no estén vacíos.
 
     if (
         !esObligatorio(correo) ||
@@ -429,6 +444,7 @@ app.post("/api/usuarios/login", function (req, res) {
         });
     }
 
+    // Consultar en la base de datos el usuario por el correo ingresado.
     const sql = `
         SELECT
             id_usuario,
@@ -442,10 +458,14 @@ app.post("/api/usuarios/login", function (req, res) {
         WHERE correo = ?
     `;
 
+   // Ejecutar la consulta para buscar el usuario registrado. 
+
     conexion.query(
         sql,
         [correo.trim()],
         async function (error, resultados) {
+
+            // Validar si ocurrió un error en la consulta.
 
             if (error) {
                 return responderError(
@@ -465,10 +485,13 @@ app.post("/api/usuarios/login", function (req, res) {
 
             try {
 
+                // Comparar la contraseña ingresada con la almacenada en la base de datos.
                 const correcta = await bcrypt.compare(
                     contrasena,
                     usuario.contrasena
                 );
+
+                // Responder si la autenticación fue correcta o incorrecta.
 
                 if (!correcta) {
                     return res.status(401).json({
