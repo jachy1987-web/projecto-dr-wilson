@@ -1,0 +1,6 @@
+Evidencia GA7-220501096-AA1-EV04
+
+Proyecto: Doctor Wilson
+
+Archivo creado para documentar el proceso de control de versiones
+y sincronización del proyecto mediante Git y GitHub.
