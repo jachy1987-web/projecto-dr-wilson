@@ -2,34 +2,42 @@
 <html lang="es">
 
 <head>
+    <!-- Metadatos y configuración básica de la página -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Wilson - Administrativos</title>
+    <!-- Hoja de estilos específica para el módulo de administrativos/clientes -->
     <link rel="stylesheet" href="css/clientes.css">
 </head>
 
 <body>
 
-    <!-- ENCABEZADO -->
+    <!-- ========================================== -->
+    <!-- ENCABEZADO DE LA VISTA                     -->
+    <!-- ========================================== -->
     <header>
+        <!-- Logo institucional del proyecto Doctor Wilson -->
         <img src="imagenes/logo-doctor-wilson.png" class="logo" alt="Doctor Wilson">
         <h1>Registro de Administrativos</h1>
     </header>
 
-    <!-- FORMULARIO DE ADMINISTRATIVOS -->
+    <!-- ========================================== -->
+    <!-- CONTENEDOR PRINCIPAL DEL FORMULARIO        -->
+    <!-- ========================================== -->
     <div class="contenedor">
 
+        <!-- Formulario para captura y envío de datos del personal -->
         <form class="formulario" id="formularioAdministrativos">
 
-            <!-- NOMBRES -->
+            <!-- Campo: Nombres del empleado -->
             <label for="nombre">Nombre</label>
             <input type="text" id="nombre" name="nombre" placeholder="Ingrese el nombre" required>
 
-            <!-- APELLIDOS -->
+            <!-- Campo: Apellidos del empleado -->
             <label for="apellido">Apellido</label>
             <input type="text" id="apellido" name="apellido" placeholder="Ingrese el apellido" required>
 
-            <!-- TIPO DE DOCUMENTO -->
+            <!-- Campo: Selección del tipo de documento de identidad -->
             <label for="tipoDocumento">Tipo de documento</label>
             <select id="tipoDocumento" name="tipoDocumento" required>
                 <option value="">Seleccione un documento</option>
@@ -39,19 +47,19 @@
                 <option value="PAS">Pasaporte</option>
             </select>
 
-            <!-- NUMERO DE DOCUMENTO -->
+            <!-- Campo: Número de documento único -->
             <label for="documento">Número de documento</label>
             <input type="text" id="documento" name="documento" placeholder="Ingrese el número de documento" required>
 
-            <!-- TELEFONO -->
+            <!-- Campo: Número de contacto telefónico -->
             <label for="telefono">Teléfono</label>
             <input type="tel" id="telefono" name="telefono" placeholder="Ingrese el teléfono" required>
 
-            <!-- CORREO -->
+            <!-- Campo: Correo electrónico de contacto -->
             <label for="correo">Correo electrónico</label>
             <input type="email" id="correo" name="correo" placeholder="Ingrese el correo electrónico" required>
 
-            <!-- CARGO / ROL -->
+            <!-- Campo: Selección del rol o cargo dentro de la clínica -->
             <label for="cargo">Cargo o Rol</label>
             <select id="cargo" name="cargo" required>
                 <option value="">Seleccione un cargo</option>
@@ -61,14 +69,14 @@
                 <option value="Recepcionista">Recepcionista</option>
             </select>
 
-            <!-- ESTADO -->
+            <!-- Campo: Estado actual en el sistema (Activo / Inactivo) -->
             <label for="estado">Estado</label>
             <select id="estado" name="estado" required>
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
             </select>
 
-            <!-- BOTONES -->
+            <!-- Botones de acción del formulario (Guardar, Limpiar, Volver) -->
             <div class="botones">
                 <button type="submit">Guardar</button>
                 <button type="reset">Limpiar</button>
@@ -79,9 +87,12 @@
 
     </div>
 
-    <!-- LISTA DE ADMINISTRATIVOS -->
+    <!-- ========================================== -->
+    <!-- SECCIÓN DE TABLA / LISTADO DE PERSONAL     -->
+    <!-- ========================================== -->
     <div class="contenedor">
         <h2>Personal Registrado</h2>
+        <!-- Tabla dinámica para mostrar los registros obtenidos desde la base de datos o API -->
         <table id="tablaAdministrativos" border="1" style="width:100%; text-align:left; border-collapse:collapse; margin-top:15px;">
             <thead>
                 <tr>
@@ -94,12 +105,15 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Se llena mediante JS o PHP -->
+                <!-- Contenedor dinámico: Los registros se insertarán mediante JavaScript -->
             </tbody>
         </table>
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- ========================================== -->
+    <!-- SCRIPTS DE JAVASCRIPT                      -->
+    <!-- ========================================== -->
+    <!-- Archivo lógico para la gestión de eventos, validaciones y consumo de API -->
     <script src="administrativos.js"></script>
 
 </body>
