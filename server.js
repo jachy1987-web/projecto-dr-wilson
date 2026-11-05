@@ -743,6 +743,204 @@ app.get("/api/mascotas", function (req, res) {
     });
 });
 
+//=======================================================
+// VACUNAS
+//=======================================================
+
+// CONSULTAR
+// ======================================================
+// VACUNAS  (Johnny)
+// ======================================================
+
+// CONSULTAR
+app.get("/api/vacunas", function (req, res) {
+
+    const sql = `
+        SELECT
+            id_vacuna,
+            nombre,
+            descripcion,
+            dosis,
+            fabricante
+        FROM vacunas
+        ORDER BY nombre ASC
+    `;
+
+    conexion.query(sql, function (error, resultado) {
+
+        if (error) {
+            return responderError(
+                res,
+                error,
+                "Error al consultar las vacunas"
+            );
+        }
+
+        res.json(resultado);
+    });
+});
+
+// CREAR
+app.post("/api/vacunas", function (req, res) {
+
+    const {
+        nombre,
+        descripcion,
+        dosis,
+        fabricante
+    } = req.body;
+
+    if (!esObligatorio(nombre)) {
+        return res.status(400).json({
+            mensaje: "El nombre de la vacuna es obligatorio"
+        });
+    }
+
+    const sql = `
+        INSERT INTO vacunas
+        (nombre, descripcion, dosis, fabricante)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    conexion.query(
+        sql,
+        [
+            nombre.trim(),
+            descripcion || null,
+            dosis || null,
+            fabricante || null
+        ],
+        function (error, resultado) {
+
+            if (error) {
+                return responderError(
+                    res,
+                    error,
+                    "Error al registrar la vacuna"
+                );
+            }
+
+            res.status(201).json({
+                mensaje: "Vacuna registrada correctamente",
+                id_vacuna: resultado.insertId
+            });
+        }
+    );
+});
+
+// ACTUALIZAR
+app.put("/api/vacunas/:id", function (req, res) {
+
+    const id = req.params.id;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({
+            mensaje: "ID de vacuna no válido"
+        });
+    }
+
+    const {
+        nombre,
+        descripcion,
+        dosis,
+        fabricante
+    } = req.body;
+
+    if (!esObligatorio(nombre)) {
+        return res.status(400).json({
+            mensaje: "El nombre de la vacuna es obligatorio"
+        });
+    }
+
+    const sql = `
+        UPDATE vacunas
+        SET
+            nombre = ?,
+            descripcion = ?,
+            dosis = ?,
+            fabricante = ?
+        WHERE id_vacuna = ?
+    `;
+
+    conexion.query(
+        sql,
+        [
+            nombre.trim(),
+            descripcion || null,
+            dosis || null,
+            fabricante || null,
+            id
+        ],
+        function (error, resultado) {
+
+            if (error) {
+                return responderError(
+                    res,
+                    error,
+                    "Error al actualizar la vacuna"
+                );
+            }
+
+            if (resultado.affectedRows === 0) {
+                return res.status(404).json({
+                    mensaje: "Vacuna no encontrada"
+                });
+            }
+
+            res.json({
+                mensaje: "Vacuna actualizada correctamente"
+            });
+        }
+    );
+});
+
+// ELIMINAR
+app.delete("/api/vacunas/:id", function (req, res) {
+
+    const id = req.params.id;
+
+    if (!esIdValido(id)) {
+        return res.status(400).json({
+            mensaje: "ID de vacuna no válido"
+        });
+    }
+
+    const sql = `
+        DELETE FROM vacunas
+        WHERE id_vacuna = ?
+    `;
+
+    conexion.query(sql, [id], function (error, resultado) {
+
+        if (error) {
+
+            if (error.code === "ER_ROW_IS_REFERENCED_2") {
+                return res.status(409).json({
+                    mensaje: "No se puede eliminar la vacuna porque tiene aplicaciones registradas"
+                });
+            }
+
+            return responderError(
+                res,
+                error,
+                "Error al eliminar la vacuna"
+            );
+        }
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                mensaje: "Vacuna no encontrada"
+            });
+        }
+
+        res.json({
+            mensaje: "Vacuna eliminada correctamente"
+        });
+    });
+});
+
+
+
 // ======================================================
 // INICIO DEL SERVIDOR
 // ======================================================
