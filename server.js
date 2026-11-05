@@ -940,6 +940,73 @@ app.delete("/api/vacunas/:id", function (req, res) {
 });
 
 
+// CREAR
+app.post("/api/vacunaciones", function (req, res) {
+
+    const {
+        id_mascota,
+        id_vacuna,
+        fecha_aplicacion,
+        proxima_dosis,
+        observaciones
+    } = req.body;
+
+    if (
+        !esObligatorio(id_mascota) ||
+        !esObligatorio(id_vacuna) ||
+        !esObligatorio(fecha_aplicacion)
+    ) {
+        return res.status(400).json({
+            mensaje: "Mascota, vacuna y fecha de aplicación son obligatorios"
+        });
+    }
+
+    const sql = `
+        INSERT INTO vacunaciones
+        (
+            id_mascota,
+            id_vacuna,
+            fecha_aplicacion,
+            proxima_dosis,
+            observaciones
+        )
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    conexion.query(
+        sql,
+        [
+            id_mascota,
+            id_vacuna,
+            fecha_aplicacion,
+            proxima_dosis || null,
+            observaciones || null
+        ],
+        function (error, resultado) {
+
+            if (error) {
+
+                if (error.code === "ER_NO_REFERENCED_ROW_2") {
+                    return res.status(400).json({
+                        mensaje: "La mascota o la vacuna no existen"
+                    });
+                }
+
+                return responderError(
+                    res,
+                    error,
+                    "Error al registrar la vacunación"
+                );
+            }
+
+            res.status(201).json({
+                mensaje: "Vacunación registrada correctamente",
+                id_vacunacion: resultado.insertId
+            });
+        }
+    );
+});
+
 
 // ======================================================
 // INICIO DEL SERVIDOR

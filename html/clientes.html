@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Propietarios - Doctor Wilson</title><link rel="stylesheet" href="css/vacunacion.css"></head>
-<body><header class="cabecera"><a href="principal.html" class="btn-volver"><span class="circulo-flecha">←</span><span class="texto-volver">VOLVER</span></a><img src="imagenes/drwilson.png" class="logo" alt="Doctor Wilson"></header>
-<main class="contenedor-principal"><section class="encabezado-seccion"><img src="imagenes/mascota-dueño.png" class="icono-vacunacion" alt="Propietarios"><div><h1>Gestión de propietarios</h1><p>Administra los responsables de las mascotas registradas.</p></div></section>
+<title>Propietarios - Doctor Wilson</title><link rel="stylesheet" href="../css/vacunacion.css"></head>
+<body><header class="cabecera"><a href="principal.html" class="btn-volver"><span class="circulo-flecha">←</span><span class="texto-volver">VOLVER</span></a><img src="../imagenes/drwilson.png" class="logo" alt="Doctor Wilson"></header>
+<main class="contenedor-principal"><section class="encabezado-seccion"><img src="../imagenes/mascota-dueño.png" class="icono-vacunacion" alt="Propietarios"><div><h1>Gestión de propietarios</h1><p>Administra los responsables de las mascotas registradas.</p></div></section>
 <section class="tarjeta formulario-tarjeta"><div class="titulo-tarjeta"><div class="icono-titulo">👤</div><div><h2 id="titulo-formulario">Registrar propietario</h2><p>Datos de contacto del responsable.</p></div></div>
 <form id="formPropietario" novalidate><input type="hidden" id="id_propietario"><div class="form-grid">
 <div class="campo"><label for="nombre">Nombre <span>*</span></label><input id="nombre" maxlength="50" required></div>
@@ -15,4 +15,4 @@
 <section class="tarjeta registros-tarjeta"><div class="titulo-registros"><div><h2>Propietarios registrados</h2><p>Consulta, edita o elimina responsables.</p></div><button class="btn-actualizar" id="btnActualizar">↻ Actualizar</button></div>
 <div class="filtros"><div class="buscador">🔎<input id="buscar" type="search" placeholder="Buscar propietario..."></div><button class="btn-filtro-limpiar" id="btnLimpiarFiltro">Limpiar filtro</button></div>
 <div class="tabla-contenedor"><table><thead><tr><th>#</th><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Acciones</th></tr></thead><tbody id="tablaPropietarios"><tr><td colspan="7" class="cargando">Cargando...</td></tr></tbody></table></div></section></main>
-<footer><p>Sistema de gestión veterinaria <strong>Doctor Wilson</strong></p></footer><script src="config.js"></script><script src="clientes.js"></script></body></html>
+<footer><p>Sistema de gestión veterinaria <strong>Doctor Wilson</strong></p></footer><script src="../js/config.js"></script><script src="../js/clientes.js"></script></body></html>

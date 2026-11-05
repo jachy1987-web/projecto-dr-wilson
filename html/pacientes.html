@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Mascotas - Doctor Wilson</title><link rel="stylesheet" href="css/vacunacion.css"></head>
+<title>Mascotas - Doctor Wilson</title><link rel="stylesheet" href="../css/vacunacion.css"></head>
 <body>
 <header class="cabecera"><a href="principal.html" class="btn-volver"><span class="circulo-flecha">←</span><span class="texto-volver">VOLVER</span></a>
-<img src="imagenes/drwilson.png" class="logo" alt="Doctor Wilson"></header>
+<img src="../imagenes/drwilson.png" class="logo" alt="Doctor Wilson"></header>
 <main class="contenedor-principal">
-<section class="encabezado-seccion"><img src="imagenes/huella.png" class="icono-vacunacion" alt="Mascotas"><div><h1>Gestión de mascotas</h1><p>Registra y administra los pacientes de la veterinaria.</p></div></section>
+<section class="encabezado-seccion"><img src="../imagenes/huella.png" class="icono-vacunacion" alt="Mascotas"><div><h1>Gestión de mascotas</h1><p>Registra y administra los pacientes de la veterinaria.</p></div></section>
 <section class="tarjeta formulario-tarjeta"><div class="titulo-tarjeta"><div class="icono-titulo">🐾</div><div><h2 id="titulo-formulario">Registrar mascota</h2><p>La mascota queda vinculada a su propietario.</p></div></div>
 <form id="formMascota" novalidate><input type="hidden" id="id_mascota"><div class="form-grid">
 <div class="campo"><label for="nombre">Nombre <span>*</span></label><input id="nombre" required maxlength="50"></div>
@@ -22,4 +22,4 @@
 <div class="filtros"><div class="buscador">🔎<input id="buscar" type="search" placeholder="Buscar mascota, especie o propietario..."></div><button class="btn-filtro-limpiar" id="btnLimpiarFiltro" type="button">Limpiar filtro</button></div>
 <div class="tabla-contenedor"><table><thead><tr><th>#</th><th>Mascota</th><th>Sexo</th><th>Especie</th><th>Raza</th><th>Propietario</th><th>Acciones</th></tr></thead><tbody id="tablaMascotas"><tr><td colspan="7" class="cargando">Cargando...</td></tr></tbody></table></div></section>
 </main><footer><p>Sistema de gestión veterinaria <strong>Doctor Wilson</strong></p></footer>
-<script src="config.js"></script><script src="pacientes.js"></script></body></html>
+<script src="../js/config.js"></script><script src="../js/pacientes.js"></script></body></html>
