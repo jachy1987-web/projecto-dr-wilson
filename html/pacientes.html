@@ -16,7 +16,20 @@
 <div class="campo"><label for="id_raza">Raza</label><select id="id_raza"><option value="">Sin especificar</option></select></div>
 <div class="campo campo-completo"><label for="id_propietario">Propietario <span>*</span></label><select id="id_propietario" required></select></div>
 </div>
-<div class="botones"><button class="btn btn-guardar" type="submit" id="btnGuardar">💾 Guardar mascota</button><button class="btn btn-limpiar" type="button" id="btnLimpiar">Limpiar</button><button class="btn btn-cancelar" type="button" id="btnCancelar" hidden>Cancelar edición</button></div>
+<div class="buscador">
+    <label for="buscar" class="sr-only">
+        Buscar mascotas
+    </label>
+
+    <span aria-hidden="true">🔎</span>
+
+    <input
+        id="buscar"
+        type="search"
+        placeholder="Buscar mascota, especie o propietario..."
+        aria-label="Buscar mascota, especie o propietario"
+    >
+</div>
 <div id="mensajeFormulario" class="mensaje-formulario"></div></form></section>
 <section class="tarjeta registros-tarjeta"><div class="titulo-registros"><div><h2>Pacientes registrados</h2><p>Consulta, edita o elimina mascotas.</p></div><button class="btn-actualizar" id="btnActualizar" type="button">↻ Actualizar</button></div>
 <div class="filtros"><div class="buscador">🔎<input id="buscar" type="search" placeholder="Buscar mascota, especie o propietario..."></div><button class="btn-filtro-limpiar" id="btnLimpiarFiltro" type="button">Limpiar filtro</button></div>
